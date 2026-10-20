@@ -1,32 +1,86 @@
 schema: spec-driven
 
-# Project context (optional)
-# Add only constraints that should guide OpenSpec artifacts and workflows.
-# Include constraints an agent cannot infer by reading the code.
-# Keep general project documentation and discoverable codebase facts out.
-# Example:
-#   context: |
-#     Designs and tasks must cover Windows, macOS, and Linux
-#     Write all artifacts in Spanish
+# Project context: constraints for every OpenSpec artifact and workflow in this
+# repository. Keep it to what an agent cannot infer by reading the code.
+context: |
+  Product: a personal and family finance tool for a single household. It tracks
+  incomes, expenses, transfers and balances across the household's accounts
+  (cash, bank, crypto wallets), attributing each movement to the shared
+  household pool or to specific members, and reports on them. It is
+  self-hosted for one household, not a multi-tenant service. Several household
+  members sign in from their own devices, each limited to what an
+  administrator allows.
 
-# Per-artifact rules (optional)
-# Add custom rules for specific artifacts.
-# Example:
-#   rules:
-#     proposal:
-#       - Keep proposals under 500 words
-#       - Always state what is out of scope
-#     tasks:
-#       - Break tasks into chunks of max 2 hours
+  How it is built: the code is written and maintained by AI agents following
+  spec-driven development with OpenSpec, and reviewed by the human owner.
+  Specs are the contract: when behavior must change during implementation,
+  update the spec first (/opsx:update), then the code and tests.
 
-# Per-operation guidance (optional)
-# Add advisory guidance for how apply and archive work should be conducted.
-# This is separate from artifact rules above.
-# Example:
-#   operations:
-#     apply:
-#       guidance:
-#         - Keep test summaries concise
-#     archive:
-#       guidance:
-#         - Summarize the archive outcome before finishing
+  Delivery: one small change per capability area, in the order of
+  docs/roadmap.md, which also holds decisions already taken for later changes,
+  the catalog rules and the rules for AI inside the app. Read it before
+  exploring or proposing a change. Artifacts are written in English; the owner
+  may converse in Spanish.
+
+  Stack: SvelteKit 3 with Svelte 5 (runes only) and TypeScript 6, released
+  after most agents' training data. Follow the Kit 3 idioms recorded in the
+  design of bootstrap-app-foundation and check the official docs
+  (https://svelte.dev/docs/kit) before writing Kit or Svelte code. Verify
+  library versions and APIs against npm and official docs, not memory.
+
+  Cross-cutting rules every change must respect:
+  - Architecture: a modular monolith organized by feature
+    (src/lib/features/<feature>/, with a server/ part), as described in
+    docs/architecture.md. Routes are thin adapters; services authorize and
+    validate; each feature owns its tables; lint enforces the boundaries.
+  - Permissions: deny by default, decided on the server through the policy
+    matrix (actions x actors: anonymous, user, admin, system). Every new action
+    gets a row in the matrix. From the access-control change on, an item is
+    visible if its account or its attributed member is visible to the user.
+  - Translations: every user-facing text goes through the message catalogs.
+    New English texts need a translator description and a reviewed Spanish
+    translation in the same change. Never concatenate translated fragments.
+  - Money: integer minor units with the currency's exponent, never floats.
+    Transaction dates are calendar dates; timestamps are stored in UTC.
+  - Household data: UUIDv7 IDs that a device can generate, and creates that
+    are idempotent by ID, so offline entry stays possible.
+  - Catalogs (currencies, accounts, banks, crypto networks, member types,
+    roles, categories, languages, counterparties) follow the common catalog
+    rules in docs/roadmap.md: archive instead of delete, fields immutable
+    after first use, unique names, one permission per catalog.
+  - Privacy: household and financial data never leave the server. AI features
+    run only when an administrator triggers them, send only what their spec
+    allows, and go through the single ai-assistant feature.
+
+rules:
+  proposal:
+    - Name the docs/roadmap.md change this proposal implements, and say so if it departs from the roadmap.
+    - Always state what is out of scope.
+    - State the impact on the policy matrix (new or changed actions) and on translations.
+  specs:
+    - Every new action needs scenarios for each kind of actor that is allowed or denied.
+    - Every new screen or message is covered by the localization requirements; add a scenario when a text has plurals, arguments or right-to-left concerns.
+    - Catalog changes include scenarios for archiving a used item and for editing a field that becomes immutable after first use.
+    - Creates of household data include a duplicate-submission scenario (same ID sent twice).
+    - Scenarios must be testable; write concrete values in WHEN and THEN, not vague outcomes.
+  design:
+    - List the exact versions of new dependencies, checked on npm on the day of writing.
+    - Update the policy matrix (actions x actors) for every new or changed action.
+    - Record the alternatives considered and why they were rejected.
+    - Name any use case that needs more than one transaction, and why.
+  tasks:
+    - Each task states how it is verified; each task group lands its own tests and docs.
+    - Strict scenario traceability (a test quoting each scenario name) is checked when closing the change, not during it.
+    - End with a closing task that runs the full checks from a clean clone, including the scenario check.
+
+operations:
+  apply:
+    guidance:
+      - Run npm run check and the relevant tests before marking a task done.
+      - Commit per task group with the convention type(change-id) description, for example feat(add-transaction-ledger) record expenses.
+      - If a spec turns out to be wrong or incomplete, stop and update it with /opsx:update before changing code.
+      - Never weaken a lint rule, a permission or a test to make a task pass; report the conflict instead.
+  archive:
+    guidance:
+      - Summarize the archive outcome before finishing.
+      - Update the status of the change in docs/roadmap.md, and move any decision it settled out of the roadmap's open questions.
