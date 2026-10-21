@@ -27,6 +27,25 @@ Rules:
 5. **Archive only on `main`, after the merge.** Archiving merges the delta specs into `openspec/specs/`; doing it from a branch would merge against an incomplete view of `main`.
 6. **Delete the branch** after archive (and remove its worktree, if any).
 
+## Branch names
+
+| Work | Branch | Example |
+|---|---|---|
+| An OpenSpec change (the usual case) | `change/<change-id>` | `change/bootstrap-app-foundation` |
+| A fix after the change was archived (the spec is already correct) | `fix/<capability>-<what-it-fixes>` | `fix/ledger-archived-account-transfers` |
+| Tooling, configuration, dependencies | `chore/<topic>` | `chore/bump-svelte` |
+| Documentation outside a change (roadmap, workflow) | `docs/<topic>` | `docs/roadmap-counterparties` |
+| Packaging or continuous integration | `build/<topic>` or `ci/<topic>` | `build/docker-compose` |
+
+Rules:
+
+- For a change, use exactly the OpenSpec id: `change/` plus the folder name under `openspec/changes/`. That links the change, its branch and its commits, and the parallel-apply skill relies on this format.
+- Lowercase with hyphens only; no spaces, accents or `ñ`.
+- The prefix states the purpose of the whole branch, not the type of each commit. A `change/` branch holds commits of several types (`docs`, `feat`, `test`, `fix`, `chore`). `fix/`, `chore/`, `docs/`, `build/` and `ci/` branches are for single-purpose work outside a change; most of their commits match the prefix, but they may include others when the work needs it.
+- Short and descriptive, about 50 characters at most.
+- Don't put the task code in the branch name: each commit already carries it, and a branch may span several codes. If ever needed, append it at the end (`change/add-transaction-ledger-014`) so the prefix stays intact.
+- No `develop`, `release/` or `hotfix/` branches (Git Flow): with one environment and one person integrating, `main` plus short-lived branches is enough.
+
 ## Parallel changes with worktrees
 
 A Git worktree is an extra working folder attached to the same repository, with a different branch checked out. Several worktrees let several changes be implemented at the same time (for example by separate agent sessions) without stepping on each other.
