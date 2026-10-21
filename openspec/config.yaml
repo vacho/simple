@@ -17,9 +17,11 @@ context: |
   update the spec first (/opsx:update), then the code and tests.
 
   Delivery: one small change per capability area, in the order of
-  docs/roadmap.md, which also holds decisions already taken for later changes,
-  the catalog rules and the rules for AI inside the app. Read it before
-  exploring or proposing a change. Artifacts are written in English; the owner
+  docs/roadmap.md, which also holds decisions already taken for later
+  changes, the catalog rules and the rules for AI inside the app. Read it
+  before exploring or proposing a change. The Git flow (one branch per
+  change, parallel worktrees, merge and archive order) and the commit
+  convention are in docs/workflow.md. Artifacts are written in English; the owner
   may converse in Spanish.
 
   Stack: SvelteKit 3 with Svelte 5 (runes only) and TypeScript 6, released
@@ -76,11 +78,15 @@ rules:
 operations:
   apply:
     guidance:
+      - 'Apply only on the change branch "change/<change-id>" (or its worktree), never on main. In a worktree, work only on that change: never propose, archive or merge there.'
       - Run npm run check and the relevant tests before marking a task done.
-      - Commit per task group with the convention type(change-id) description, for example feat(add-transaction-ledger) record expenses.
+      - 'Commit per task group as "type(change-id): description - task-code", for example "feat(add-transaction-ledger): record expenses with allocations - 014". The task code comes from the owner''s to-do list; ask for it if it was not given, never invent it.'
+      - 'Tick the task group''s checkboxes in tasks.md in the same commit as its code; keep changes to the plan itself (proposal, specs, design, task text) in separate docs commits.'
       - If a spec turns out to be wrong or incomplete, stop and update it with /opsx:update before changing code.
       - Never weaken a lint rule, a permission or a test to make a task pass; report the conflict instead.
   archive:
     guidance:
+      - 'Archive only on main, after the change branch was merged with --no-ff; then delete the branch and its worktree.'
+      - 'After archive, fixes that only align code with the current spec use the capability name as commit scope, for example "fix(ledger): reject transfers to archived accounts - 027". A fix that changes specified behavior needs a new change.'
       - Summarize the archive outcome before finishing.
       - Update the status of the change in docs/roadmap.md, and move any decision it settled out of the roadmap's open questions.

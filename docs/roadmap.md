@@ -16,7 +16,7 @@ How the household finance app is built, one OpenSpec change at a time. This is a
 - **Verify** checks the code against the specs. Strict scenario traceability is checked when the change is closed.
 - **Archive** merges the change's delta specs into `openspec/specs/`.
 
-Commits follow `type(change-id): description`, for example `docs(add-ledger): propose change` or `feat(add-ledger): record expenses`.
+Git flow (one branch per change, parallel worktrees, merge and archive order) and the commit convention are in `docs/workflow.md`.
 
 ## Planned changes
 
