@@ -1,6 +1,6 @@
 # Architecture decision records
 
-The architecture decisions of this project, one file per decision. A change's `design.md` explains every decision the change makes, but it is archived with the change; the decisions that outlive it are recorded here so later changes can see them.
+The architecture and process decisions of this project, one file per decision. A change's `design.md` explains every decision the change makes, but it is archived with the change; the decisions that outlive it are recorded here so later changes can see them. Process decisions (how changes move through Git, commit conventions) are recorded here too, so the skills that carry them out hold the steps and the ADRs hold the reasons.
 
 ## How ADRs are written
 
@@ -13,6 +13,8 @@ The OpenSpec schema of this project (`openspec/schemas/simple/`) adds an `adr` s
 The `adr` skill (`.claude/skills/adr/SKILL.md`) does the mechanics, and can also be used outside a change to record or reverse a decision.
 
 A decision is durable when it constrains later changes or would be costly to reverse: storage, data representation, authentication, permissions, architecture, integration contracts. Version picks, tooling and one-off implementation details stay in the change's design.
+
+A process decision taken outside a change is recorded directly as `Accepted`, with `Change: none` and where it was decided.
 
 ## Statuses
 
@@ -70,3 +72,7 @@ The options rejected and why, one line each.
 | [0006](0006-runtime-translation-dictionaries.md) | Runtime translation dictionaries with typed English keys | Proposed |
 | [0007](0007-device-generated-ids-and-idempotent-creates.md) | Device-generated UUIDv7 IDs and idempotent creates for household data | Proposed |
 | [0008](0008-modular-monolith-by-feature.md) | Modular monolith organized by feature | Proposed |
+| [0009](0009-propose-and-archive-on-main.md) | Propose and archive on main, apply on a branch per change | Accepted |
+| [0010](0010-merge-no-ff-one-change-at-a-time.md) | Merge with --no-ff, one change at a time, re-verified on top of main | Accepted |
+| [0011](0011-parallel-changes-in-worktrees.md) | Parallel changes only under conditions, in worktrees outside the repository | Accepted |
+| [0012](0012-commit-convention-with-task-code.md) | Commit convention with the owner's task code | Accepted |
