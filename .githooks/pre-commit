@@ -1,0 +1,22 @@
+#!/bin/sh
+# Keeps code off main (change-flow skill, ADR 0009): on main, only the plan,
+# documentation and project tooling for agents may be committed. Code reaches
+# main through a merge of a change/, fix/, chore/, build/ or ci/ branch.
+
+branch=$(git symbolic-ref --short -q HEAD)
+[ "$branch" = "main" ] || exit 0
+
+# Concluding a merge (git commit after resolving conflicts) is allowed.
+[ -f "$(git rev-parse --git-path MERGE_HEAD)" ] && exit 0
+
+blocked=$(git diff --cached --name-only --diff-filter=ACDMRT | grep -Ev \
+  '^(openspec/|docs/|\.claude/|\.githooks/|CLAUDE\.md$|AGENTS\.md$|README\.md$)')
+
+if [ -n "$blocked" ]; then
+  echo "pre-commit: these files can't be committed on main:" >&2
+  echo "$blocked" | sed 's/^/  /' >&2
+  echo "Commit code on a branch: use the change-flow skill (start or branch)." >&2
+  exit 1
+fi
+
+exit 0

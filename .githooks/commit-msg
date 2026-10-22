@@ -1,0 +1,56 @@
+#!/bin/sh
+# Checks the commit title against the convention in the change-flow skill
+# (.claude/skills/change-flow/SKILL.md, ADR 0012):
+#   type(scope): description - <task-code>
+
+msg_file="$1"
+title=$(grep -v '^#' "$msg_file" | sed -n '/[^[:space:]]/{p;q;}')
+
+fail() {
+  echo "commit-msg: $1" >&2
+  echo "  title: $title" >&2
+  echo "  expected: type(scope): description - <task-code>" >&2
+  echo "  example:  feat(add-transaction-ledger): record expenses with allocations - 014" >&2
+  echo "  rules:    .claude/skills/change-flow/SKILL.md, \"Commit convention\"" >&2
+  exit 1
+}
+
+# Messages Git writes itself: merges, reverts, and fixup/squash commits.
+case "$title" in
+  "Merge "*|"Revert \""*|"fixup! "*|"squash! "*|"amend! "*) exit 0 ;;
+esac
+
+types='feat|fix|test|refactor|perf|style|docs|chore|build|ci'
+
+echo "$title" | grep -Eq "^($types)\(" ||
+  fail "the type must be one of: $(echo "$types" | tr '|' ' ')"
+echo "$title" | grep -Eq "^($types)\([a-z0-9][a-z0-9/-]*\): " ||
+  fail "the scope must be lowercase with hyphens, followed by \": \""
+echo "$title" | grep -Eq " - [0-9]+$" ||
+  fail "the title must end with \" - <task-code>\" (the owner's to-do item, for example 001)"
+
+description=$(echo "$title" | sed -E 's/^[a-z]+\([^)]*\): //; s/ - [0-9]+$//')
+[ -n "$description" ] || fail "the description is empty"
+echo "$description" | grep -q '^[[:upper:]]' &&
+  fail "the description must start in lowercase"
+echo "$description" | grep -q '\.$' &&
+  fail "the description must not end with a period"
+
+# On a change branch, the scope is the change id.
+branch=$(git symbolic-ref --short -q HEAD)
+case "$branch" in
+  change/*)
+    id=${branch#change/}
+    scope=$(echo "$title" | sed -E 's/^[a-z]+\(([^)]*)\).*/\1/')
+    [ "$scope" = "$id" ] || fail "on $branch the scope must be \"$id\", not \"$scope\""
+    ;;
+esac
+
+grep -iq '^co-authored-by:' "$msg_file" &&
+  fail "attribution lines (Co-Authored-By) are not allowed"
+
+length=$(printf '%s' "$title" | wc -m)
+[ "$length" -le 72 ] ||
+  echo "commit-msg: warning: the title has $length characters; aim for 72 or fewer" >&2
+
+exit 0
