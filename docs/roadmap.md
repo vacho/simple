@@ -49,10 +49,17 @@ Git flow (one branch per change, parallel worktrees, merge and archive order) an
 
 ### Open questions, by change
 
+- **Change 1:** package the app with Docker in this change, or in a separate one? Before applying, fold in with `/opsx:update`: the settings page reads the app version from `package.json` (ADR 0014), and a `"prepare": "git config core.hooksPath .githooks"` npm script enables the Git hooks in every clone (ADR 0013).
 - **Change 7:** an append-only ledger (corrections recorded as reversal or adjustment entries)? The base currency for reports?
 - **Change 3:** which role presets ship by default?
 - **Change 4:** confirm the defaults proposed in "AI inside the app" below (model, key handling, spending limit).
 - **Change 9:** which periods and comparisons belong in the MVP dashboard?
+
+### Open questions about the workflow
+
+- **Archive guidance:** add a rule to `operations.archive.guidance` in `openspec/config.yaml` that promotes decisions every later change must respect into `context`, and trims rules already enforced by code?
+- **First real use of the skills:** walk through `change-flow` with the owner on change 1 (`start`, `commit`, `close`, in particular the migration step in `close`), and `openspec-parallel-apply` on the first parallel changes (its "Known gaps" section). Update the skills, and the ADRs behind them if a decision changes.
+- **Working as a team (future):** if people, other AIs or other OpenSpec users join, decide on board conventions (one card per change, card id = task code), an `AGENTS.md` for tools other than Claude, CI running the checks and hooks on pull requests, a protected `main`, a single integrator who merges and archives, and a pull request template.
 
 ## Catalogs
 
