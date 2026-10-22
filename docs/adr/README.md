@@ -76,3 +76,5 @@ The options rejected and why, one line each.
 | [0010](0010-merge-no-ff-one-change-at-a-time.md) | Merge with --no-ff, one change at a time, re-verified on top of main | Accepted |
 | [0011](0011-parallel-changes-in-worktrees.md) | Parallel changes only under conditions, in worktrees outside the repository | Accepted |
 | [0012](0012-commit-convention-with-task-code.md) | Commit convention with the owner's task code | Accepted |
+| [0013](0013-git-hooks-for-commit-rules.md) | Git hooks as the safety net for the commit rules | Accepted |
+| [0014](0014-versions-and-release-tags.md) | Versions and release tags | Accepted |
