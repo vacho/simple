@@ -8,7 +8,7 @@ disable-model-invocation: true
 
 > **Status: DRAFT.** Written on 2026-10-21, before the app had any code and before any parallel change existed. It has never been run. On its first real use, walk through it step by step with the owner, fix whatever doesn't match reality (see "Known gaps" at the end), then remove this notice.
 
-Runs several OpenSpec changes in parallel: one git worktree and one agent per change. It implements and verifies; it never merges or archives without the owner's explicit approval. The rules come from `docs/workflow.md`; if this skill and that document disagree, the document wins and this skill must be updated.
+Runs several OpenSpec changes in parallel: one git worktree and one agent per change. It implements and verifies; it never merges or archives without the owner's explicit approval. The rules come from `docs/workflow.md`; if this skill and that document disagree, the document wins and this skill must be updated. Commits and closing a change use the `change-flow` skill; this skill adds only what is specific to parallel work (eligibility, worktrees, agents).
 
 ## Inputs
 
@@ -62,7 +62,7 @@ Start the agents in parallel, one per change, each told:
 
 - Work only inside `<worktree path>`, on change `<change-id>`. Read `CLAUDE.md` and `openspec/config.yaml` there first.
 - Run the apply workflow for `<change-id>`, then the verify workflow.
-- Commit per task group as `type(<change-id>): description - <task-code>`, ticking the group's checkboxes in `tasks.md` in the same commit.
+- Commit with the `change-flow` skill (action `commit`): one commit per task group as `type(<change-id>): description - <task-code>`, with the group's ticked checkboxes in `tasks.md`.
 - If a spec must change, commit it first as `docs(<change-id>): update specs ... - <task-code>`, and report it, because it may affect the other changes.
 - Never propose a new change, archive, merge, push, or touch another worktree.
 - Stop and report on any blocker instead of working around it (never weaken a lint rule, a permission or a test).
@@ -76,14 +76,7 @@ Start the agents in parallel, one per change, each told:
 
 ### 7. Merge and archive, only with the owner's approval
 
-When the owner approves, one change at a time, in roadmap order, follow `docs/workflow.md`, "Merging parallel branches":
-
-1. Bring the branch up to date with `main`.
-2. Regenerate its migrations so they follow `main`'s latest migration.
-3. Run `npm run check`, the tests and the verify workflow again.
-4. Merge into `main` with `--no-ff`, then run the archive workflow on `main`.
-5. Remove the worktree (`git worktree remove`) and delete the branch (`git branch -d`).
-6. Continue with the next change from step 1.
+When the owner approves, one change at a time, in roadmap order (`docs/workflow.md`, "Merging parallel branches"), run the `change-flow` skill's `close` action for it. It updates the branch with `main`, regenerates migrations, re-runs the checks and verify, merges with `--no-ff`, archives on `main`, and removes the worktree and branch. Then continue with the next change, which now updates on top of the one just archived.
 
 ## Known gaps (resolve on first use)
 

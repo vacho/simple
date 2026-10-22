@@ -318,3 +318,21 @@ apply:
   instruction: |
     Read context files, work through pending tasks, mark complete as you go.
     Pause if you hit blockers or need clarification.
+
+    Git (change-flow skill, .claude/skills/change-flow/SKILL.md, which
+    follows docs/workflow.md):
+    - Before the first task, check that the current branch is
+      change/<change-id>, in the main checkout or in its worktree. If it is
+      main, stop and start the change with the skill's start action; never
+      apply on main.
+    - In a worktree, work only on that change: never propose, archive or
+      merge there.
+    - When a task group is done, commit it with the skill's commit action:
+      the group's code, tests, docs and ticked checkboxes in one commit,
+      titled "type(<change-id>): description - <task-code>". Ask the owner
+      for the task code if it was not given; never invent it.
+    - A spec corrected during apply is committed on its own, before the code
+      that relies on it.
+    - When every task is done, run verify and report. Merging and archiving
+      happen later, on main, through the skill's close action and only with
+      the owner's approval.
