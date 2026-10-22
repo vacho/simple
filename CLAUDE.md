@@ -18,7 +18,7 @@ A personal and family finance app for a single household, built with spec-driven
 
 ## Branches and worktrees
 
-Full guide: `docs/workflow.md`.
+Full guide: `docs/workflow.md`. The `change-flow` skill automates it (start, commit, close, branch).
 
 - Propose and update proposals on `main`. Apply and verify on the branch `change/<change-id>`. Merge into `main` with `--no-ff`, then archive on `main`. Never archive or merge from a branch or worktree.
 - Changes run in parallel only under the conditions in `docs/workflow.md`, each in its own worktree under `../simple.worktrees/<change-id>`. An agent in a worktree works only on that change: it never proposes, archives or merges.

@@ -2,7 +2,7 @@
 
 How OpenSpec changes move through Git in this project: one branch per change, optional worktrees to run independent changes in parallel, and the commit convention.
 
-This is a working guide, not an OpenSpec artifact. `CLAUDE.md` and `openspec/config.yaml` summarize the rules agents must follow; this document explains them.
+This is a working guide, not an OpenSpec artifact, and the source of truth for the Git workflow. `CLAUDE.md` summarizes its rules for agents, and the automation below follows it. See "Automation" at the end.
 
 ## The flow of one change
 
@@ -101,7 +101,7 @@ One at a time, in roadmap order:
 
 ### Agents and worktrees
 
-A draft skill, `.claude/skills/openspec-parallel-apply/`, automates this section (it can only be started by hand with `/openspec-parallel-apply`). It has never been used: review and update it on its first real use.
+A draft skill, `.claude/skills/openspec-parallel-apply/`, automates this section (it can only be started by hand with `/openspec-parallel-apply`), using `change-flow` (see "Automation") for commits and closing. It has never been used: review and update it on its first real use.
 
 - One agent session per worktree, working only on that worktree's change.
 - An agent in a worktree may apply, verify, commit and update its change's specs. It never proposes a new change, never archives, and never merges.
@@ -128,3 +128,19 @@ What goes together:
 - Ticking checkboxes in `tasks.md` is progress tracking: it goes in the code commit of that task group.
 - A fix and the test proving it go in the same commit.
 - Archive commits contain no code.
+
+## Automation
+
+Agents don't follow this guide from memory. Two pieces carry it out:
+
+- **The project schema** (`openspec/schemas/simple/`): its apply step checks that work happens on `change/<id>` and commits each task group through the skill below. See also `docs/adr/README.md` for the ADR step it adds.
+- **The `change-flow` skill** (`.claude/skills/change-flow/`):
+
+| Action | When | What it does |
+|---|---|---|
+| `start <id>` | After the proposal is reviewed, on `main` | Checks the change is committed, valid and fully planned, then creates `change/<id>` |
+| `commit` | During proposing (plan) or apply (each task group) | Splits work by purpose and commits it with the convention above; asks for the task code |
+| `close <id>` | When the change is verified, with the owner's approval | Updates the branch with `main`, regenerates migrations, re-runs checks and verify, merges `--no-ff`, archives on `main` (accepting its ADRs), deletes the branch and worktree |
+| `branch <kind> <topic>` | Work outside a change | Creates a `fix/`, `chore/`, `docs/`, `build/` or `ci/` branch with the naming rules |
+
+Neither piece blocks work done outside it, such as a commit made by hand or by another tool. If this guide and the automation disagree, this guide wins and the automation is fixed.
