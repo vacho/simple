@@ -7,7 +7,7 @@ A personal and family finance app for a single household, built with spec-driven
 - `openspec/config.yaml`: project context and the rules every change must follow. Read it before planning or implementing.
 - `openspec/specs/`: what the system does today. `openspec/changes/`: work in progress.
 - `docs/roadmap.md`: the planned changes, decisions already taken, catalog rules and rules for AI inside the app.
-- `docs/adr/`: architecture decisions still in force, one file per decision. Read them before designing a change.
+- `docs/adr/`: architecture decision records, one file per decision. The project schema `openspec/schemas/simple/` adds an ADR step to every change.
 - `docs/architecture.md`: how the code is organized (created by the `bootstrap-app-foundation` change; until then, see D16 in that change's `design.md`).
 
 ## How to work

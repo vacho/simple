@@ -11,10 +11,10 @@ How the household finance app is built, one OpenSpec change at a time. This is a
 ```
 
 - **Explore** settles the open decisions of that change before anything is written.
-- **Propose** writes `proposal.md`, the delta specs, `design.md` and `tasks.md`.
+- **Propose** writes `proposal.md`, the delta specs, `design.md`, `adr.md` (the ADR review, which creates Proposed ADRs in `docs/adr/`) and `tasks.md`.
 - **Apply** implements the tasks in order. Each task writes the tests its verification needs.
 - **Verify** checks the code against the specs. Strict scenario traceability is checked when the change is closed.
-- **Archive** merges the change's delta specs into `openspec/specs/` and records the design decisions that outlive the change as ADRs in `docs/adr/`.
+- **Archive** merges the change's delta specs into `openspec/specs/` and accepts the change's Proposed ADRs in `docs/adr/` after checking them against the shipped code.
 
 Git flow (one branch per change, parallel worktrees, merge and archive order) and the commit convention are in `docs/workflow.md`.
 

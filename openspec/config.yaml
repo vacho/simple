@@ -1,4 +1,4 @@
-schema: spec-driven
+schema: simple
 
 # Project context: constraints for every OpenSpec artifact and workflow in this
 # repository. Keep it to what an agent cannot infer by reading the code.
@@ -21,8 +21,9 @@ context: |
   changes, the catalog rules and the rules for AI inside the app. Read it
   before exploring or proposing a change. The Git flow (one branch per
   change, parallel worktrees, merge and archive order) and the commit
-  convention are in docs/workflow.md. Architecture decisions still in force
-  are recorded as ADRs in docs/adr/; read them before designing a change.
+  convention are in docs/workflow.md. Architecture decisions are recorded as
+  ADRs in docs/adr/; the project schema (openspec/schemas/simple/) adds an adr
+  step between design and tasks.
   Artifacts are written in English; the owner may converse in Spanish.
 
   Stack: SvelteKit 3 with Svelte 5 (runes only) and TypeScript 6, released
@@ -70,7 +71,6 @@ rules:
     - List the exact versions of new dependencies, checked on npm on the day of writing.
     - Update the policy matrix (actions x actors) for every new or changed action.
     - Record the alternatives considered and why they were rejected.
-    - Respect the accepted ADRs in docs/adr/. A decision that contradicts one says so explicitly and names the ADR it will supersede.
     - Name any use case that needs more than one transaction, and why.
   tasks:
     - Each task states how it is verified; each task group lands its own tests and docs.
@@ -92,4 +92,4 @@ operations:
       - 'After archive, fixes that only align code with the current spec use the capability name as commit scope, for example "fix(ledger): reject transfers to archived accounts - 027". A fix that changes specified behavior needs a new change.'
       - Summarize the archive outcome before finishing.
       - Update the status of the change in docs/roadmap.md, and move any decision it settled out of the roadmap's open questions.
-      - 'Record each decision in design.md that outlives the change (it constrains later changes or would be costly to reverse) as a new ADR in docs/adr/, following docs/adr/README.md. Write a superseding ADR when the change replaced an accepted one; never edit an accepted ADR. Leave version picks, tooling and one-off implementation details in the archived design.'
+      - 'Accept the change''s ADRs with the adr skill (action accept): check each Proposed ADR listed in adr.md against the shipped code, set it to Accepted, mark the ADRs it supersedes, and report any ADR the implementation changed.'
