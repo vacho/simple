@@ -62,3 +62,11 @@ The options rejected and why, one line each.
 
 | ADR | Title | Status |
 |---|---|---|
+| [0001](0001-sveltekit-with-node-adapter.md) | SvelteKit 3 with the Node adapter as the application framework | Proposed |
+| [0002](0002-sqlite-with-drizzle.md) | SQLite through better-sqlite3 and Drizzle ORM | Proposed |
+| [0003](0003-own-session-authentication.md) | Own session authentication following the Lucia/Oslo pattern | Proposed |
+| [0004](0004-deny-by-default-policy-layer.md) | Single policy layer that denies by default | Proposed |
+| [0005](0005-money-as-integer-minor-units.md) | Money as integer minor units | Proposed |
+| [0006](0006-runtime-translation-dictionaries.md) | Runtime translation dictionaries with typed English keys | Proposed |
+| [0007](0007-device-generated-ids-and-idempotent-creates.md) | Device-generated UUIDv7 IDs and idempotent creates for household data | Proposed |
+| [0008](0008-modular-monolith-by-feature.md) | Modular monolith organized by feature | Proposed |
