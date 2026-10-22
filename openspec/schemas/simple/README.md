@@ -8,7 +8,8 @@ It is a fork of OpenSpec's built-in `spec-driven` schema, taken from OpenSpec 1.
 - `adr` (new): reviews the design against the ADRs in force, creates Proposed ADRs for its durable decisions and writes `adr.md` in the change. See `docs/adr/README.md` and the `adr` skill.
 - `tasks`: requires `adr` and honors the ADRs it lists.
 - `templates/adr.md` (new).
-- `apply`: checks the change branch and commits each task group through the `change-flow` skill (`.claude/skills/change-flow/`), following `docs/workflow.md`.
+- `proposal`: runs the `change-flow` skill's `prepare` action first (on `main`, clean tree).
+- `apply`: checks the change branch and commits each task group through the `change-flow` skill (`.claude/skills/change-flow/`).
 
 ## Upgrading OpenSpec
 

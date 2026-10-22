@@ -41,6 +41,10 @@ artifacts:
       behavior, so if behavior does not change, no spec should change either.
       Do not invent a requirement just to satisfy validation.
 
+      Before writing, run the change-flow skill's prepare action
+      (.claude/skills/change-flow/SKILL.md): on main, with a clean working
+      tree, so the plan commit holds only the plan.
+
       Keep it concise (1-2 pages). Focus on the "why" not the "how" -
       implementation details belong in design.md.
 
@@ -319,8 +323,8 @@ apply:
     Read context files, work through pending tasks, mark complete as you go.
     Pause if you hit blockers or need clarification.
 
-    Git (change-flow skill, .claude/skills/change-flow/SKILL.md, which
-    follows docs/workflow.md):
+    Git (change-flow skill, .claude/skills/change-flow/SKILL.md, the source
+    of truth for branches and commits):
     - Before the first task, check that the current branch is
       change/<change-id>, in the main checkout or in its worktree. If it is
       main, stop and start the change with the skill's start action; never

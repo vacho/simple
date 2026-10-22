@@ -16,7 +16,7 @@ How the household finance app is built, one OpenSpec change at a time. This is a
 - **Verify** checks the code against the specs. Strict scenario traceability is checked when the change is closed.
 - **Archive** merges the change's delta specs into `openspec/specs/` and accepts the change's Proposed ADRs in `docs/adr/` after checking them against the shipped code.
 
-Git flow (one branch per change, parallel worktrees, merge and archive order) and the commit convention are in `docs/workflow.md`.
+Git flow (one branch per change, parallel worktrees, merge and archive order) and the commit convention are in the `change-flow` skill (`.claude/skills/change-flow/`); the reasons are in ADRs 0009 to 0012 in `docs/adr/`.
 
 ## Planned changes
 
