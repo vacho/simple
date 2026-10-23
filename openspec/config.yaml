@@ -89,4 +89,4 @@ operations:
       - 'Archive as part of the change-flow skill''s close action: on main, after the change branch was merged.'
       - Summarize the archive outcome before finishing.
       - In docs/roadmap.md, set the change's Status to "Archived vX.Y.Z" (or "Archived" when there is no release), and move any decision it settled out of the roadmap's open questions.
-      - 'Accept the change''s ADRs with the adr skill (action accept): check each Proposed ADR listed in adr.md against the shipped code, set it to Accepted, mark the ADRs it supersedes, and report any ADR the implementation changed.'
+      - 'Accept the change''s ADRs with the adr skill (action accept), every step of it: check each Proposed ADR listed in adr.md against the shipped code (if one must change, show the owner the edit and wait for their yes before accepting it); set each to Accepted; point its Change line to the archived change folder; mark the ADRs it supersedes as Superseded by NNNN; update the index in docs/adr/README.md. Reject (adr skill) any Proposed ADR of the change that adr.md no longer lists. close.sh status lists any step still missing.'

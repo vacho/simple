@@ -207,7 +207,9 @@ artifacts:
       or Proposed. Keep the design consistent with them. When a decision must
       depart from one, say so in that decision, name the ADR by number, and
       explain why it should be superseded. Never edit an ADR from here; the
-      adr artifact records the superseding decision.
+      adr artifact records the superseding decision. When an Accepted ADR has
+      a pending Proposed ADR that supersedes it (from another open change),
+      follow the Accepted one and name the pending one in the decision.
     requires:
       - proposal
 
@@ -239,6 +241,10 @@ artifacts:
       4. For each design decision that departs from an ADR in force, create a
          Proposed ADR that names it under Supersedes. Do not touch the old
          ADR yet: it is marked Superseded only when this change is archived.
+         Only an Accepted ADR with no pending supersession can be superseded
+         (adr skill, supersede); otherwise stop and raise it with the owner.
+         When updating this change, a decision dropped from the design has
+         its Proposed ADR rejected (adr skill, reject), not deleted.
       5. Write adr.md in the change folder: the ADRs reviewed, the ADRs
          created (with the design decision each comes from), the ADRs to be
          superseded, and the design decisions judged not durable, each with a

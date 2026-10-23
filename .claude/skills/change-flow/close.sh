@@ -121,17 +121,41 @@ find_archive() { # <merge>
     --grep="^docs($id): archive change" -n 1
 }
 
-# What archiving still has to write: the change folder moved, the roadmap
-# status updated, and every ADR of this change accepted. Empty when done.
+# What archiving still has to write, empty when done: delta specs synced, the
+# change folder moved, the roadmap status set, and every ADR of this change
+# accepted by the adr skill (status, Change path, index row, superseded ADRs).
+adr_change_re() { echo "^- Change: \`?$id\`?([ ,(]|\$)"; }
+
+index_status() { # <NNNN> -> status in the README index, empty if no row
+  [ -f "$main_co/docs/adr/README.md" ] || return 0
+  awk -F'|' -v n="[$1]" 'index($2, n) == 2 { s=$4; gsub(/^ +| +$/, "", s); print s; exit }' "$main_co/docs/adr/README.md"
+}
+
 archive_missing() {
-  local miss= f
-  if [ -d "$main_co/openspec/changes/$id" ] || ! ls -d "$main_co"/openspec/changes/archive/*-"$id" >/dev/null 2>&1; then
+  local miss= f n st sup arch
+  arch=$(ls -d "$main_co"/openspec/changes/archive/*-"$id" 2>/dev/null | head -1)
+  if [ -d "$main_co/openspec/changes/$id" ] || [ -z "$arch" ]; then
     miss="$miss folder-not-moved"
+  elif [ -n "$(find "$arch/specs" -name spec.md 2>/dev/null | head -1)" ] \
+       && [ -z "$(git -C "$main_co" status --porcelain=v1 -- openspec/specs/)" ]; then
+    miss="$miss specs-not-synced"
   fi
   [ -n "$(git -C "$main_co" status --porcelain=v1 -- docs/roadmap.md)" ] || miss="$miss roadmap-status"
   for f in "$main_co"/docs/adr/[0-9]*.md; do
     [ -f "$f" ] || continue
-    grep -Eq "^- Change: $id( |\$)" "$f" && grep -q '^- Status: Proposed' "$f" && miss="$miss adr-$(basename "$f" .md)"
+    grep -Eq "$(adr_change_re)" "$f" || continue
+    n=$(basename "$f" | cut -c1-4)
+    st=$(sed -n 's/^- Status: //p' "$f" | head -1)
+    [ ! -f "$main_co/docs/adr/README.md" ] || [ "$(index_status "$n")" = "$st" ] || miss="$miss adr-$n-index"
+    case "$st" in
+      Proposed) miss="$miss adr-$n" ;;
+      Rejected) continue ;;
+    esac
+    grep -q "openspec/changes/$id/" "$f" && miss="$miss adr-$n-change-path"
+    for sup in $(sed -n 's/^- Supersedes: \([0-9]\{4\}\).*/\1/p' "$f"); do
+      grep -q "^- Status: Superseded by $n" "$main_co"/docs/adr/"$sup"-*.md 2>/dev/null || miss="$miss adr-$sup-not-superseded"
+      [ ! -f "$main_co/docs/adr/README.md" ] || [ "$(index_status "$sup")" = "Superseded by $n" ] || miss="$miss adr-$sup-index"
+    done
   done
   echo "${miss# }"
 }
@@ -141,7 +165,7 @@ archive_written_state() {
   local files foreign
   files=$(dirty_files "$main_co" | cut -c4-)
   [ -n "$files" ] || { echo none; return; }
-  foreign=$(printf '%s\n' "$files" | grep -Ev '^(openspec/|docs/adr/|docs/roadmap\.md$|"openspec/|"docs/)')
+  foreign=$(printf '%s\n' "$files" | grep -Ev '^(openspec/|docs/adr/|docs/roadmap\.md$|"openspec/|"docs/adr/)')
   [ -z "$foreign" ] || { echo foreign; return; }
   [ -z "$(archive_missing)" ] && echo complete || echo partial
 }

@@ -1,6 +1,6 @@
 #!/bin/sh
 # Checks the commit title against the convention in the change-flow skill
-# (.claude/skills/change-flow/SKILL.md, ADRs 0016 and 0019):
+# (.claude/skills/change-flow/SKILL.md, ADRs 0019 and 0022):
 #   type(scope): description - <task-code>
 
 msg_file="$1"

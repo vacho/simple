@@ -145,18 +145,26 @@ expect "merge from main checkout"              "merged:"                    "$("
 fake_archive; "$close" archive-commit change/x 003 >/dev/null
 expect "cleanup removes the worktree"          'cleaned up'                 "$("$close" cleanup change/x)"
 
-echo "12. archive is complete only when folder, roadmap and ADRs are all done"
+echo "12. archive is complete only when specs, folder, roadmap and every ADR step are done"
 new_repo s12
-printf -- '- Status: Proposed\n- Change: x (`openspec/changes/x/design.md`, decision D1)\n' > docs/adr/0001-a.md
-git -c core.hooksPath=/dev/null add -A; git -c core.hooksPath=/dev/null commit -q -m "add adr"
+printf -- '- Status: Accepted\n- Change: none\n' > docs/adr/0001-old.md
+printf -- '- Status: Proposed\n- Change: x (`openspec/changes/x/design.md`, decision D1)\n- Supersedes: 0001\n' > docs/adr/0002-new.md
+printf '| ADR | Title | Status |\n|---|---|---|\n| [0001](0001-old.md) | Old | Accepted |\n| [0002](0002-new.md) | New | Proposed |\n' > docs/adr/README.md
+mkdir -p openspec/changes/x/specs/cap; echo "## ADDED Requirements" > openspec/changes/x/specs/cap/spec.md
+git -c core.hooksPath=/dev/null add -A; git -c core.hooksPath=/dev/null commit -q -m "add adrs"
 git switch -q -c change/x; echo a > a.txt; git add a.txt; git commit -q -m "feat(x): add a - 003"
 "$close" merge change/x >/dev/null
 mkdir -p openspec/changes/archive; mv openspec/changes/x openspec/changes/archive/2026-10-23-x
-expect "folder moved only: partial"            'archived=partial \(missing: roadmap-status adr-0001-a\)' "$("$close" status change/x)"
-echo "x: Archived" >> docs/roadmap.md
-expect "roadmap too, ADR still Proposed"       'missing: adr-0001-a'        "$("$close" status change/x)"
-sed -i 's/^- Status: Proposed/- Status: Accepted/' docs/adr/0001-a.md
-expect "all four done: complete"               '^archived=complete'         "$("$close" status change/x)"
+expect "folder moved only"                     'missing: specs-not-synced roadmap-status adr-0002 adr-0002-change-path adr-0001-not-superseded' "$("$close" status change/x)"
+mkdir -p openspec/specs/cap; echo "# Spec" > openspec/specs/cap/spec.md; echo "x: Archived" >> docs/roadmap.md
+sed -i 's/^- Status: Proposed/- Status: Accepted/' docs/adr/0002-new.md
+expect "status set, path and index still stale" 'missing: adr-0002-index adr-0002-change-path adr-0001-not-superseded adr-0001-index\)' "$("$close" status change/x)"
+sed -i 's#openspec/changes/x/#openspec/changes/archive/2026-10-23-x/#' docs/adr/0002-new.md
+sed -i 's/| New | Proposed |/| New | Accepted |/' docs/adr/README.md
+sed -i 's/^- Status: Accepted/- Status: Superseded by 0002/' docs/adr/0001-old.md
+expect "superseded file done, its index row not" 'missing: adr-0001-index\)' "$("$close" status change/x)"
+sed -i 's/| Old | Accepted |/| Old | Superseded by 0002 |/' docs/adr/README.md
+expect "everything done: complete"             '^archived=complete'         "$("$close" status change/x)"
 
 echo "13. undo-archive discards only the archive output, keeping merge and release"
 new_repo s13
@@ -197,6 +205,33 @@ git commit -q --allow-empty -m "docs(roadmap): note - 003"
 "$close" sync change/x >/dev/null
 expect "status says resolve-sync"              '^next=resolve-sync'         "$("$close" status change/x)"
 expect "undo plans merge --abort in the worktree" "s16.wt' merge --abort"   "$("$close" undo change/x)"
+
+echo "19. a rejected ADR of the change still needs its index row updated"
+new_repo s19
+printf -- '- Status: Proposed\n- Change: x (`openspec/changes/x/design.md`, decision D2)\n' > docs/adr/0001-dropped.md
+printf '| ADR | Title | Status |\n|---|---|---|\n| [0001](0001-dropped.md) | Dropped | Proposed |\n' > docs/adr/README.md
+git -c core.hooksPath=/dev/null add -A; git -c core.hooksPath=/dev/null commit -q -m "add adr"
+git switch -q -c change/x; echo a > a.txt; git add a.txt; git commit -q -m "feat(x): add a - 003"
+"$close" merge change/x >/dev/null; fake_archive
+sed -i 's/^- Status: Proposed/- Status: Rejected/' docs/adr/0001-dropped.md
+expect "file rejected, index row not"          'missing: adr-0001-index\)'   "$("$close" status change/x)"
+sed -i 's/| Dropped | Proposed |/| Dropped | Rejected |/' docs/adr/README.md
+expect "both rejected: complete"               '^archived=complete'         "$("$close" status change/x)"
+
+echo "17. an owner document in docs/ with an accented name isn't archive output"
+new_repo s17
+git switch -q -c change/x; echo a > a.txt; git add a.txt; git commit -q -m "feat(x): add a - 003"
+"$close" merge change/x >/dev/null
+fake_archive; echo "notes" > "docs/niños.md"
+expect "it is reported as foreign"             '^archived=foreign'          "$("$close" status change/x)"
+
+echo "18. an ADR whose Change line uses backticks or a comma still belongs to the change"
+new_repo s18
+printf -- '- Status: Proposed\n- Change: `x`, decision D1\n' > docs/adr/0001-a.md
+git -c core.hooksPath=/dev/null add -A; git -c core.hooksPath=/dev/null commit -q -m "add adr"
+git switch -q -c change/x; echo a > a.txt; git add a.txt; git commit -q -m "feat(x): add a - 003"
+"$close" merge change/x >/dev/null; fake_archive
+expect "the Proposed ADR is still missing"     'missing: adr-0001'          "$("$close" status change/x)"
 
 rm -rf "$base" "$base".*
 echo; echo "passed $pass, failed $fail"

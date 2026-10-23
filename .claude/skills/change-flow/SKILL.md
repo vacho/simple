@@ -32,7 +32,7 @@ commit: docs(<id>): ...         docs(<id>): update specs ...           merge --n
 - Propose on `main`; update a change's plan on `main` until its branch exists, then on the branch; apply and verify on `change/<id>`; merge, then archive, on `main` ([ADR 0017](../../../docs/adr/0017-plan-updates-where-the-change-lives.md)).
 - Merge with `--no-ff`, one change at a time, re-verified on top of `main` ([ADR 0010](../../../docs/adr/0010-merge-no-ff-one-change-at-a-time.md)).
 - A change runs alone unless it meets the parallel conditions in `openspec-parallel-apply` ([ADR 0020](../../../docs/adr/0020-parallel-changes-in-worktrees.md)).
-- Commits follow the convention below ([ADR 0016](../../../docs/adr/0016-commit-convention-and-contents.md)), checked by the Git hooks in `.githooks/` ([ADR 0019](../../../docs/adr/0019-git-hooks-contract.md)).
+- Commits follow the convention below ([ADR 0022](../../../docs/adr/0022-commit-convention-and-contents.md)), checked by the Git hooks in `.githooks/` ([ADR 0019](../../../docs/adr/0019-git-hooks-contract.md)).
 - Each change, and each branch that changes what runs, ends in a version and a tag, released only after the owner approves the merge; a failed close is never undone without the owner's yes ([ADR 0018](../../../docs/adr/0018-versions-release-after-approval-and-rollback.md)).
 - Commits are proposed for review before they are made, unless the commit mode is `auto` ([ADR 0015](../../../docs/adr/0015-commits-reviewed-before-they-are-made.md)).
 
@@ -49,7 +49,7 @@ commit: docs(<id>): ...         docs(<id>): update specs ...           merge --n
 | An OpenSpec change (the usual case) | `change/<change-id>` | `change/bootstrap-app-foundation` |
 | A fix after the change was archived (the spec is already correct) | `fix/<capability>-<what-it-fixes>` | `fix/ledger-archived-account-transfers` |
 | Tooling, configuration, dependencies | `chore/<topic>` | `chore/bump-svelte` |
-| Project documents in `docs/` (ADRs, roadmap, the owner's documents), when they need longer work than a commit on `main` | `docs/<topic>` | `docs/roadmap-counterparties` |
+| Project documents in `docs/` other than ADRs (the roadmap, the owner's documents), when they need longer work than a commit on `main`. ADRs are never written on a branch | `docs/<topic>` | `docs/roadmap-counterparties` |
 | Packaging or continuous integration | `build/<topic>` or `ci/<topic>` | `build/docker-compose` |
 
 - For a change, use exactly the folder name under `openspec/changes/`.
@@ -87,7 +87,7 @@ One purpose per commit. Every file belongs to one kind, and a commit holds one k
 | Kind | Files | Committed on |
 |---|---|---|
 | **Plan** | `openspec/changes/<id>/` (proposal, specs, design, `adr.md`, the text of tasks); `openspec/specs/` and `openspec/changes/archive/`, which only archive writes, except filling a `TBD` Purpose by hand after archive | `main` while proposing, and for updates while `change/<id>` doesn't exist; once it exists, every update and spec fix goes on `change/<id>`, before the code that relies on it. `openspec/specs/` and the archive: `main` only |
-| **Project docs** | everything in `docs/` (ADRs, roadmap, documents the owner adds) | `main`, or a `docs/<topic>` branch |
+| **Project docs** | everything in `docs/` (ADRs, roadmap, documents the owner adds) | `main`; the roadmap and the owner's documents may also use a `docs/<topic>` branch, ADRs never do |
 | **Agent tooling** | `.claude/`, `.githooks/`, `openspec/schemas/`, `openspec/config.yaml`, `CLAUDE.md`, `AGENTS.md` | `main` or a `chore/` branch, never `change/<id>` |
 | **App** | everything else: `src/`, `tests/`, `scripts/`, `messages/`, `drizzle/`, `static/`, `package*.json`, tool configs (`.gitignore`, `.env.example`, `vite.config.ts` and the like), and `README.md` (the one document that describes the code, kept up to date by the tasks) | `change/<id>`, `fix/`, `chore/`, `build/` or `ci/` branches only |
 
@@ -109,8 +109,10 @@ Some work found while applying a change belongs on `main`, not in the change: a 
 2. In the branch's checkout: finish and commit the current task group, or stash it with `detour.sh stash <id>`, which prints the stash's object id. Keep that id; never use positions like `stash@{0}`, which move when anyone else stashes.
 3. In the main checkout, on `main`. Without a worktree, the main checkout is on `change/<id>`: `git switch main`, and check that `git branch --show-current` prints `main`. Make the tooling fix, or run the `adr` skill (an ADR made for a change in progress is `Proposed`, with that change in its `Change` line), and commit it there (its own kind).
 4. Back in the branch's checkout (without a worktree: `git switch change/<id>`, and check the current branch), with a clean tree: `close.sh sync change/<id>`, then `close.sh conclude-sync change/<id>` (a sync merge; follows the commit mode).
-5. If the detour changed an ADR the change depends on, update the change's plan (`design.md`, `adr.md`) now, while the tree is still clean, and commit it as its own plan commit.
+5. If the detour changed an ADR the change depends on, and the stashed work is app code, update the change's plan (`design.md`, `adr.md`) now, while the tree is still clean, and commit it as its own plan commit.
 6. Only then restore the work: `detour.sh restore <object id>`. Resolve any conflict and check the result with the owner. Then `detour.sh drop <object id>`, which drops exactly that entry.
+
+**A detour from inside `/opsx:update`:** when the work in progress is the plan update itself (only files under `openspec/changes/<id>/`), skip step 5: restore and drop the stash right after step 4, finish the update (`adr.md` now naming the ADR made on `main`), and commit it with `prepare` step 4. Updating `design.md` before restoring would conflict with the stashed copy of it.
 
 ## Commit mode
 
@@ -220,7 +222,7 @@ Brings a finished change into `main`. Only with the owner's explicit approval, g
 4. **Ask the owner**, in this run: show what will be merged (`git log main..change/<id> --oneline`) and the version it will become (level from "Versions", or "no release"). Their yes covers the release, merge and archive commits. If the answer is no, stop.
 5. **Release** (when there is one and `package.json` exists): `close.sh release change/<id> <level> <task-code>`. It bumps, commits `chore(<id>): release vX.Y.Z - <task-code>`, and refuses if that version's tag already exists.
 6. **Merge:** `close.sh merge change/<id>`. It switches the main checkout to `main` when there is no worktree, and merges with `--no-ff` and Git's message.
-7. **Archive**, in the main checkout: `/opsx:archive <id>`. The archive is complete only when all four of its outputs are written: the delta specs synced, the change folder moved, the change's ADRs accepted and the roadmap status set; `status` lists what is missing. Then `close.sh archive-commit change/<id> <task-code>`. If `status` reports it complete but not committed, only run `archive-commit`. If it reports it partly written: `close.sh show-archive change/<id>` to show the owner what was written (new files included, without touching the index), then, after the owner's yes, `close.sh undo-archive change/<id> --run`, which discards only that output and keeps the merge and release; then run this step again.
+7. **Archive**, in the main checkout: `/opsx:archive <id>`. The archive is complete only when all four of its outputs are written: the delta specs synced, the change folder moved, the change's ADRs accepted and the roadmap status set; `status` lists what is missing. Archiving runs the `adr` skill's `accept`; if it had to change a Proposed ADR to match the shipped code, it shows the owner that change and waits for their yes before accepting it (the one exception to the approval in step 4). `status` also checks every step of `accept`: status, `Change` path, index row, superseded ADRs. Then `close.sh archive-commit change/<id> <task-code>`. If `status` reports it complete but not committed, only run `archive-commit`. If it reports it partly written: `close.sh show-archive change/<id>` to show the owner what was written (new files included, without touching the index), then, after the owner's yes, `close.sh undo-archive change/<id> --run`, which discards only that output and keeps the merge and release; then run this step again.
 8. **Tag** (when a release was made): `close.sh tag change/<id> <task-code>`. It tags the archive commit and checks it.
 9. **Clean up:** `close.sh cleanup change/<id>`. It removes the worktree (never with `--force`: if Git refuses, the worktree has untracked work; report it) and deletes the branch.
 10. **Report:** version and tag (or "no release"), merge commit, archive commit, ADRs accepted, branch and worktree removed. Don't push commits or tags unless asked.
@@ -235,7 +237,7 @@ Creates a branch for work outside an OpenSpec change.
 
 ### Abandoning a change
 
-When the owner decides not to go on with a proposed change: set its Proposed ADRs to `Rejected` (`adr` skill), set its roadmap Status back to **Planned**, and delete its folder under `openspec/changes/` and its branch (only with the owner's yes, since this deletes work). Commit on `main` as project docs and plan commits.
+When the owner decides not to go on with a proposed change, in the main checkout on `main`: reject its Proposed ADRs (`adr` skill, action `reject`, which also updates the index), set its roadmap Status back to **Planned**, and, only with the owner's yes since this deletes work, delete its folder under `openspec/changes/`, remove its worktree if it has one (`git worktree remove ../simple.worktrees/<id>`, never `--force`), and delete its branch. Commit as project docs and plan commits.
 
 ## When close fails
 

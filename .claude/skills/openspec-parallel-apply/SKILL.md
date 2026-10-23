@@ -32,6 +32,7 @@ Every condition must hold:
 - Neither change depends on the other in `docs/roadmap.md`, and their dependencies are archived.
 - No capability spec is modified by more than one of them: compare the `specs/<capability>/` folders under each `openspec/changes/<change-id>/`.
 - All the proposals were made on `main` before any of their branches exists (`git branch --list 'change/*'`).
+- No change supersedes an ADR that another of them creates, supersedes or relies on: compare the `Supersedes` lines of the ADRs each `adr.md` lists. Two changes reshaping the same decision run one after the other.
 
 Report the result per change. Drop any change that fails, and say why.
 
