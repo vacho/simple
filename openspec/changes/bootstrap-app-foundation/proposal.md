@@ -15,8 +15,9 @@ The repository has OpenSpec scaffolding but no application yet. Every later slic
 - Add a consistent backup of the SQLite database that can be run on a schedule, with retention of a fixed number of copies, an automatic backup before every schema upgrade, and documented restore and rollback steps.
 - Add the internal foundations later slices rely on: schema migrations, an exact money representation (integer minor units per currency), and a test harness (unit and end-to-end).
 - Choose the concrete stack (UI framework, ORM, build and test tools) in `design.md`, targeting the latest stable releases (SvelteKit 3).
+- Version the app from the start: `package.json` `version`, shown to administrators on the settings page. Closing this change makes the first release, `v0.1.0` (ADR 0018). Every clone enables the project's Git hooks through npm's `prepare` script (ADR 0019).
 
-Out of scope: household members, linking users to members, admin creation of additional users, granular permission grants, categories, accounts, transactions, and the choice of a base reporting currency. Each belongs to a later change.
+Out of scope: household members, linking users to members, admin creation of additional users, granular permission grants, categories, accounts, transactions, and the choice of a base reporting currency. Each belongs to a later change. Packaging and deployment automation (Docker, hosting, CI) are decided once the app is built.
 
 ## Capabilities
 
@@ -37,3 +38,4 @@ Out of scope: household members, linking users to members, admin creation of add
 - New dependencies: a UI framework with server rendering, a SQLite driver, an ORM with migrations, a password hashing library, an internationalization library, and unit and end-to-end test runners (exact choices and versions in `design.md`).
 - Every user-facing string, in this and all later changes, goes through the translation catalogs; later changes must ship English and Spanish text together.
 - Operational: the app runs as a single Node.js process; the backup is a command meant to be called by a scheduler (cron or systemd timer) on the host.
+- Versioning: this change is the first release, a minor one per ADR 0018 (`0.0.1` -> `v0.1.0`), tagged on `main` when it is archived.

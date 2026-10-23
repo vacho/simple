@@ -2,7 +2,14 @@
 
 ## ADRs in force reviewed
 
-None yet: this is the first change, and `docs/adr/` had no ADRs.
+When this change was proposed, `docs/adr/` had no ADRs. Reviewed again on 2026-10-23 against the ADRs accepted since then:
+
+- 0010, 0015, 0016, 0017 and 0020 (merge, commit review mode, commit convention and contents, where the plan is updated, parallel changes; 0016 supersedes 0012, 0017 supersedes 0009, 0020 supersedes 0011): carried out by the `change-flow` skill; they don't affect the design.
+- 0019 (Git hooks contract; supersedes 0013): implemented by D2 and task 1.1 (`prepare` script).
+- 0018 (versions, release after approval, rollback; supersedes 0014): implemented by D13, tasks 1.1, 7.3 and 11.1, and the workflow follow-up in `tasks.md`.
+- 0016 also settles that there is no separate architecture document: 0008, created by this change, carries the code organization of D16 in full, and task 11.2 checks the code against it.
+
+The design follows all of them; none is superseded.
 
 ## ADRs created
 
@@ -28,5 +35,5 @@ None.
 - D9 PWA with the built-in service worker: the behavior is fixed by the `app-shell` spec; the tooling can be swapped.
 - D10 UI foundation: plain CSS and own primitives are reversible; the right-to-left rule is enforced by lint and covered by 0006.
 - D11 Testing: tooling and process.
-- D12 Project layout: the concrete layout of 0008, documented in `docs/architecture.md`.
+- D12 Project layout: the concrete layout of 0008, which records its rules; the folder tree itself stays in this design.
 - D13 Configuration: environment variables, a one-off detail.

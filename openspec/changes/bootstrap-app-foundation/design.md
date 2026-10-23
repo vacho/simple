@@ -71,7 +71,7 @@ How agents stay current: before writing Kit or Svelte code, consult the official
 - *Alternative: React SPA plus a separate API (Hono or Fastify).* Two apps, two builds and duplicated validation for a single-household tool.
 
 ### D2. TypeScript strict, npm, ESLint, Prettier
-TypeScript 6 in `strict` mode everywhere. The tsconfig extends `$app/tsconfig` with explicit `include`/`exclude`, and the service worker gets its own tsconfig extending `$app/tsconfig/service-worker`. npm is the package manager because it is already installed. `npm run check` runs `svelte-check`, ESLint, stylelint, Prettier, message generation and the translation checks (D14), and must pass before a task is considered done. Lint also bans the removed Kit 2 modules (`$app/stores`, `$env/*`, `$lib`, `$service-worker`), so outdated patterns fail fast.
+TypeScript 6 in `strict` mode everywhere. The tsconfig extends `$app/tsconfig` with explicit `include`/`exclude`, and the service worker gets its own tsconfig extending `$app/tsconfig/service-worker`. npm is the package manager because it is already installed. `package.json` has a `prepare` script that enables the project's Git hooks (ADR 0019) in every clone and worktree that is a Git checkout: `git rev-parse --git-dir >/dev/null 2>&1 && git config core.hooksPath .githooks || true`. The guard keeps `npm ci` working on a deploy target without `.git`. `npm run check` runs `svelte-check`, ESLint, stylelint, Prettier, message generation and the translation checks (D14), and must pass before a task is considered done. Lint also bans the removed Kit 2 modules (`$app/stores`, `$env/*`, `$lib`, `$service-worker`), so outdated patterns fail fast.
 
 ### D3. SQLite through better-sqlite3 and Drizzle ORM
 - `better-sqlite3`: synchronous, fast and mature; synchronous transactions keep D16's transaction rules simple. Backups use plain SQL (`VACUUM INTO`, D8), so they don't depend on driver-specific APIs.
@@ -257,7 +257,7 @@ src/
                            (no queries.ts: no read model yet)
       settings/            (no tables: only server/index.ts and server/service.ts)
         server/
-          service.ts       (getOverview: authorizes settings.view, returns app version and installed languages)
+          service.ts       (getOverview: authorizes settings.view, returns the app version (D13) and installed languages)
       languages/           (owns tables: languages, translations)
         server/
           index.ts, service.ts (listInstalled, getDictionary; later: add, generate, edit, activate)
@@ -294,13 +294,14 @@ drizzle/                   (generated SQL migrations, committed; drizzle-kit rea
 scripts/backup.ts, scripts/gen-messages.ts, scripts/check-messages.ts, scripts/check-scenarios.ts
 static/manifest.webmanifest, static/icons/
 tests/e2e/
-docs/architecture.md       (contributor guide to D16)
 data/                      (git-ignored: app.db, backups/)
 ```
 Later changes add folders under `features/` (`household/`, `accounts/`, `categories/`, `ledger/`, `reporting/` and so on) and pure rules under `domain/`.
 
 ### D13. Configuration
 Runtime environment variables (`.env.example` committed, `.env` git-ignored, loaded with `node --env-file=.env build`): `DATABASE_PATH`, `BACKUP_DIR`, `BACKUP_KEEP`, plus adapter-node's own `PORT`, `HOST`, `PROTOCOL_HEADER`, `HOST_HEADER`, `ADDRESS_HEADER` and `XFF_DEPTH` for reverse proxies. Build-time: an optional `APP_ORIGIN`, used as `paths.origin` (D5). App code reads variables through `$app/env/private`.
+
+App version: `package.json` `version`, in Semantic Versioning (ADR 0018), injected at build time with Vite `define`. Kit's `version.name` keeps its default, so every build still renews the service worker cache (D9) even when two builds share a version.
 
 ### D14. Internationalization: runtime dictionaries with typed English keys
 Languages are app data, not build artifacts. English is the base, built into the code. Every other language is installed in the database, so a language can be added without changing code, rebuilding or redeploying.
@@ -465,7 +466,7 @@ Each feature lives in `src/lib/features/<f>/`. Files directly in that folder are
 - [Feature boundaries erode over time (a quick import of another feature's repo)] → `eslint-plugin-boundaries` fails `npm run check` on any import that skips a feature's `server/index.ts`, on another feature's `schema.ts` imported outside `queries.ts`, and on SvelteKit imports in `server/core/`.
 - [`await` inside a better-sqlite3 transaction silently breaks atomicity or throws] → `withTransaction` rejects async callbacks at compile time, and the setup atomicity test fails if the pattern is broken.
 - [The `system` actor is misused to skip permissions] → only `auth` internals and scripts may construct it (lint), and system-only actions are few and listed in the policy table.
-- [More files per feature than plain SvelteKit] → accepted: it buys policy safety and testability. `docs/architecture.md` gives agents a template for a new feature.
+- [More files per feature than plain SvelteKit] → accepted: it buys policy safety and testability. ADR 0008 records these rules for later changes, and lint enforces the boundaries.
 - [Behind a reverse proxy, the CSRF check and throttling see the proxy, not the client] → the deployment notes require `PROTOCOL_HEADER`/`HOST_HEADER` (or `APP_ORIGIN`) and `ADDRESS_HEADER`/`XFF_DEPTH`.
 - [Hard-coded English strings slip in] → `svelte-check` can't catch literal text in markup, so review checks it, and the Spanish e2e run plus the axe checks in Spanish expose leftovers on the covered screens.
 - [A long-running `VACUUM INTO` holds a read snapshot] → it doesn't block writers under WAL. The WAL file can grow during the backup and is checkpointed afterwards. The database is small, so the backup takes seconds.
@@ -477,7 +478,7 @@ Each feature lives in `src/lib/features/<f>/`. Files directly in that folder are
 
 ## Migration Plan
 
-Greenfield, so there is nothing to migrate. The first deploy is: `npm ci && npm run build`, set the environment, `node --env-file=.env build`. Migrations apply on start, and the first visit shows setup. Every later upgrade with pending migrations takes a `pre-migrate-<version>-<timestamp>.db` backup before migrating (D8). To roll back an upgrade: stop the process, restore **the pre-migration backup taken by that upgrade** (not simply the latest scheduled backup, which may already have the new schema) following the restore steps in D8, and start the previous build, whose schema matches it. Data written after the upgrade is lost by the rollback, so the release notes for an upgrade should say so.
+Greenfield, so there is nothing to migrate. The first deploy is: `npm ci && npm run build`, set the environment, `node --env-file=.env build`. Migrations apply on start, and the first visit shows setup. Every later upgrade with pending migrations takes a `pre-migrate-<version>-<timestamp>.db` backup before migrating (D8). To roll back an upgrade: stop the process, restore **the pre-migration backup taken by that upgrade** (not simply the latest scheduled backup, which may already have the new schema) following the restore steps in D8, and start the previous release (check out its `vX.Y.Z` tag and build it, ADR 0018), whose schema matches it. Data written after the upgrade is lost by the rollback, so the release notes for an upgrade should say so.
 
 ## Open Questions
 
