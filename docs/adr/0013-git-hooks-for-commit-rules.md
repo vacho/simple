@@ -1,6 +1,6 @@
 # 0013. Git hooks as the safety net for the commit rules
 
-- Status: Accepted
+- Status: Superseded by 0019
 - Date: 2026-10-22
 - Change: none (process decision taken with the owner while defining the workflow, task 001)
 

@@ -72,9 +72,15 @@ The options rejected and why, one line each.
 | [0006](0006-runtime-translation-dictionaries.md) | Runtime translation dictionaries with typed English keys | Proposed |
 | [0007](0007-device-generated-ids-and-idempotent-creates.md) | Device-generated UUIDv7 IDs and idempotent creates for household data | Proposed |
 | [0008](0008-modular-monolith-by-feature.md) | Modular monolith organized by feature | Proposed |
-| [0009](0009-propose-and-archive-on-main.md) | Propose and archive on main, apply on a branch per change | Accepted |
+| [0009](0009-propose-and-archive-on-main.md) | Propose and archive on main, apply on a branch per change | Superseded by 0017 |
 | [0010](0010-merge-no-ff-one-change-at-a-time.md) | Merge with --no-ff, one change at a time, re-verified on top of main | Accepted |
-| [0011](0011-parallel-changes-in-worktrees.md) | Parallel changes only under conditions, in worktrees outside the repository | Accepted |
-| [0012](0012-commit-convention-with-task-code.md) | Commit convention with the owner's task code | Accepted |
-| [0013](0013-git-hooks-for-commit-rules.md) | Git hooks as the safety net for the commit rules | Accepted |
-| [0014](0014-versions-and-release-tags.md) | Versions and release tags | Accepted |
+| [0011](0011-parallel-changes-in-worktrees.md) | Parallel changes only under conditions, in worktrees outside the repository | Superseded by 0020 |
+| [0012](0012-commit-convention-with-task-code.md) | Commit convention with the owner's task code | Superseded by 0016 |
+| [0013](0013-git-hooks-for-commit-rules.md) | Git hooks as the safety net for the commit rules | Superseded by 0019 |
+| [0014](0014-versions-and-release-tags.md) | Versions and release tags | Superseded by 0018 |
+| [0015](0015-commits-reviewed-before-they-are-made.md) | Commits reviewed before they are made, configurable to automatic | Accepted |
+| [0016](0016-commit-convention-and-contents.md) | Commit convention and what each commit contains | Accepted |
+| [0017](0017-plan-updates-where-the-change-lives.md) | Propose on main, update the plan where the change lives, archive on main | Accepted |
+| [0018](0018-versions-release-after-approval-and-rollback.md) | Versions, release after approval, and recovery of a failed close | Accepted |
+| [0019](0019-git-hooks-contract.md) | Git hooks contract | Accepted |
+| [0020](0020-parallel-changes-in-worktrees.md) | Parallel changes only under conditions, in worktrees outside the repository | Accepted |

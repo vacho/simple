@@ -1,6 +1,6 @@
 # 0011. Parallel changes only under conditions, in worktrees outside the repository
 
-- Status: Accepted
+- Status: Superseded by 0020
 - Date: 2026-10-22
 - Change: none (process decision taken with the owner while defining the workflow, task 001)
 

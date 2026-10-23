@@ -1,6 +1,6 @@
 # 0012. Commit convention with the owner's task code
 
-- Status: Accepted
+- Status: Superseded by 0016
 - Date: 2026-10-22
 - Change: none (process decision taken with the owner while defining the workflow, task 001)
 

@@ -1,6 +1,6 @@
 # 0014. Versions and release tags
 
-- Status: Accepted
+- Status: Superseded by 0018
 - Date: 2026-10-22
 - Change: none (process decision taken with the owner while defining the workflow, task 001)
 

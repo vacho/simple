@@ -1,6 +1,6 @@
 # 0009. Propose and archive on main, apply on a branch per change
 
-- Status: Accepted
+- Status: Superseded by 0017
 - Date: 2026-10-22
 - Change: none (process decision taken with the owner while defining the workflow, task 001)
 
