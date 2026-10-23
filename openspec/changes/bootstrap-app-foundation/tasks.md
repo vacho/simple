@@ -86,5 +86,5 @@ Tests: each task writes the behavior tests its verification requires. Strict tra
 
 - Close with the `change-flow` skill (action `close`), only with the owner's approval.
 - Release level: minor, the first release: `0.0.1` -> `v0.1.0`, bumped only after the owner approves the merge (ADR 0018).
-- Archiving accepts ADRs 0001 to 0008, listed in `adr.md` (`adr` skill, action `accept`).
+- Archiving accepts ADRs 0001 to 0008 and 0021, listed in `adr.md` (`adr` skill, action `accept`).
 - Tag `v0.1.0` on the archive commit; push only when the owner asks.

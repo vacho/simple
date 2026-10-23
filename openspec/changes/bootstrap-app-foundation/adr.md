@@ -4,10 +4,10 @@
 
 When this change was proposed, `docs/adr/` had no ADRs. Reviewed again on 2026-10-23 against the ADRs accepted since then:
 
-- 0010, 0015, 0016, 0017 and 0020 (merge, commit review mode, commit convention and contents, where the plan is updated, parallel changes; 0016 supersedes 0012, 0017 supersedes 0009, 0020 supersedes 0011): carried out by the `change-flow` skill; they don't affect the design.
+- 0010, 0015, 0017, 0020 and 0022 (merge, commit review mode, where the plan is updated, parallel changes, commit convention and contents; 0017 supersedes 0009, 0020 supersedes 0011, 0022 supersedes 0016, which superseded 0012): carried out by the `change-flow` skill; they don't affect the design.
 - 0019 (Git hooks contract; supersedes 0013): implemented by D2 and task 1.1 (`prepare` script).
 - 0018 (versions, release after approval, rollback; supersedes 0014): implemented by D13, tasks 1.1, 7.3 and 11.1, and the workflow follow-up in `tasks.md`.
-- 0016 also settles that there is no separate architecture document: 0008, created by this change, carries the code organization of D16 in full, and task 11.2 checks the code against it.
+- 0022 also settles that there is no separate architecture document: 0008, created by this change, carries the code organization of D16 in full, and task 11.2 checks the code against it.
 
 The design follows all of them; none is superseded.
 
@@ -21,6 +21,7 @@ The design follows all of them; none is superseded.
 - [0006 Runtime translation dictionaries with typed English keys](../../../docs/adr/0006-runtime-translation-dictionaries.md), from D14
 - [0007 Device-generated UUIDv7 IDs and idempotent creates for household data](../../../docs/adr/0007-device-generated-ids-and-idempotent-creates.md), from D15
 - [0008 Modular monolith organized by feature](../../../docs/adr/0008-modular-monolith-by-feature.md), from D16
+- [0021 Calendar dates, UTC timestamps and canonical time zones](../../../docs/adr/0021-dates-time-zones-and-timestamps.md), from D14 (its time-zone and date rules; 0006 covers its translation rules). Added on 2026-10-23 after a review found these durable rules had no ADR
 
 ## ADRs to supersede
 
