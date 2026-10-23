@@ -16,27 +16,29 @@ How the household finance app is built, one OpenSpec change at a time. This is a
 - **Verify** checks the code against the specs. Strict scenario traceability is checked when the change is closed.
 - **Archive** merges the change's delta specs into `openspec/specs/` and accepts the change's Proposed ADRs in `docs/adr/` after checking them against the shipped code.
 
-Git flow (one branch per change, parallel worktrees, merge and archive order) and the commit convention are in the `change-flow` skill (`.claude/skills/change-flow/`); the reasons are in ADRs 0009 to 0012 in `docs/adr/`.
+Git flow (one branch per change, parallel worktrees, merge and archive order) and the commit convention are in the `change-flow` skill (`.claude/skills/change-flow/`); the reasons are in its ADRs in `docs/adr/`.
 
 ## Planned changes
 
-| # | Change | Delivers | Specs |
-|---|---|---|---|
-| 1 | `bootstrap-app-foundation` | App skeleton, setup, sign-in, sessions, deny-by-default policy, profile (language, time zone), runtime translations (English base, Spanish preinstalled), PWA shell, backups | `user-auth`, `access-control`, `app-shell`, `localization`, `data-backup` |
-| 2 | `add-household-members` | Household, member types catalog, members, admin creating users and linking them to members | `household`, modifies `user-auth` |
-| 3 | `add-access-control` | Roles as a catalog, per-user grants, visibility rule B (visible if the account or the attributed member is visible) | modifies `access-control` |
-| 4 | `add-language-catalog` | The in-app AI assistant (first consumer: translation); admin installs languages, generates their translations with an AI model, reviews, edits and activates them; export and import | `ai-assistant`, modifies `localization` |
-| 5 | `add-categories` | Category trees for income and expenses, tags, essential vs discretionary, seeded defaults | `categories` |
-| 6 | `add-currencies-and-accounts` | Currency, bank and crypto-network catalogs; accounts (bank, cash, crypto wallet, card, other) with owner, currency and opening balance | `currencies`, `accounts` |
-| 7 | `add-transaction-ledger` | Income, expenses, transfers (including cross-currency), allocations to members or the shared pool, splits, balance adjustments | `ledger` |
-| 8 | `add-quick-entry` | Fast entry form, shortcuts, smart defaults, recent suggestions, counterparties catalog | `quick-entry`, `counterparties` |
-| 9 | `add-dashboard-reporting` | Balances, net cash flow, breakdowns by category, member and period, household vs per-member views | `reporting` |
-| | **MVP** | | |
-| 10 | `add-recurring-transactions` | Recurring templates (shared or per member) proposing due entries to confirm | `recurrence` |
-| 11 | `add-budgets` | Budgets per category, member and period | `budgets` |
-| 12 | `add-multi-currency-reports` | Exchange rates table by date; reports totalled in a base currency | `exchange-rates`, modifies `reporting` |
-| 13 | `add-offline-quick-entry` | Log transactions offline, upload when back online | modifies `ledger`, `app-shell` |
-| 14 | `add-public-api` | Versioned JSON API with personal tokens | `public-api` |
+| # | Change | Delivers | Specs | Status |
+|---|---|---|---|---|
+| 1 | `bootstrap-app-foundation` | App skeleton, setup, sign-in, sessions, deny-by-default policy, profile (language, time zone), runtime translations (English base, Spanish preinstalled), PWA shell, backups | `user-auth`, `access-control`, `app-shell`, `localization`, `data-backup` | Proposed |
+| 2 | `add-household-members` | Household, member types catalog, members, admin creating users and linking them to members | `household`, modifies `user-auth` | Planned |
+| 3 | `add-access-control` | Roles as a catalog, per-user grants, visibility rule B (visible if the account or the attributed member is visible) | modifies `access-control` | Planned |
+| 4 | `add-language-catalog` | The in-app AI assistant (first consumer: translation); admin installs languages, generates their translations with an AI model, reviews, edits and activates them; export and import | `ai-assistant`, modifies `localization` | Planned |
+| 5 | `add-categories` | Category trees for income and expenses, tags, essential vs discretionary, seeded defaults | `categories` | Planned |
+| 6 | `add-currencies-and-accounts` | Currency, bank and crypto-network catalogs; accounts (bank, cash, crypto wallet, card, other) with owner, currency and opening balance | `currencies`, `accounts` | Planned |
+| 7 | `add-transaction-ledger` | Income, expenses, transfers (including cross-currency), allocations to members or the shared pool, splits, balance adjustments | `ledger` | Planned |
+| 8 | `add-quick-entry` | Fast entry form, shortcuts, smart defaults, recent suggestions, counterparties catalog | `quick-entry`, `counterparties` | Planned |
+| 9 | `add-dashboard-reporting` | Balances, net cash flow, breakdowns by category, member and period, household vs per-member views | `reporting` | Planned |
+| | **MVP** | | | |
+| 10 | `add-recurring-transactions` | Recurring templates (shared or per member) proposing due entries to confirm | `recurrence` | Planned |
+| 11 | `add-budgets` | Budgets per category, member and period | `budgets` | Planned |
+| 12 | `add-multi-currency-reports` | Exchange rates table by date; reports totalled in a base currency | `exchange-rates`, modifies `reporting` | Planned |
+| 13 | `add-offline-quick-entry` | Log transactions offline, upload when back online | modifies `ledger`, `app-shell` | Planned |
+| 14 | `add-public-api` | Versioned JSON API with personal tokens | `public-api` | Planned |
+
+Status: **Planned** (only in this roadmap), **Proposed** (its plan is committed in `openspec/changes/`), **Archived vX.Y.Z** (closed and released; just **Archived** when there was no release). Proposing sets Proposed and archiving sets Archived, through the `change-flow` skill and the archive guidance; abandoning a proposed change sets it back to Planned (`change-flow`, "Abandoning a change"); nothing else edits this column.
 
 ### Decisions already taken for later changes
 
@@ -49,7 +51,7 @@ Git flow (one branch per change, parallel worktrees, merge and archive order) an
 
 ### Open questions, by change
 
-- **Change 1:** package the app with Docker in this change, or in a separate one? Before applying, fold in with `/opsx:update`: the settings page reads the app version from `package.json` (ADR 0014), and a `"prepare": "git config core.hooksPath .githooks"` npm script enables the Git hooks in every clone (ADR 0013).
+- **Change 1:** deploy and packaging (Docker, hosting): decide once the app is built.
 - **Change 7:** an append-only ledger (corrections recorded as reversal or adjustment entries)? The base currency for reports?
 - **Change 3:** which role presets ship by default?
 - **Change 4:** confirm the defaults proposed in "AI inside the app" below (model, key handling, spending limit).
@@ -59,7 +61,9 @@ Git flow (one branch per change, parallel worktrees, merge and archive order) an
 
 - **Archive guidance:** add a rule to `operations.archive.guidance` in `openspec/config.yaml` that promotes decisions every later change must respect into `context`, and trims rules already enforced by code?
 - **First real use of the skills:** walk through `change-flow` with the owner on change 1 (`start`, `commit`, `close`, in particular the migration step in `close`), and `openspec-parallel-apply` on the first parallel changes (its "Known gaps" section). Update the skills, and the ADRs behind them if a decision changes.
-- **Working as a team (future):** if people, other AIs or other OpenSpec users join, decide on board conventions (one card per change, card id = task code), an `AGENTS.md` for tools other than Claude, CI running the checks and hooks on pull requests, a protected `main`, a single integrator who merges and archives, and a pull request template.
+- **`add-feature` skill:** when the second feature is built, write a skill with the steps for adding a feature by ADR 0008 (folders, files, policy rows, messages, tests), from what building the first two actually took.
+- **CI:** we will need continuous integration running `npm run check`, the tests, `openspec validate --strict` and the hooks' commit checks. Set it up with the first deploy, or when a second contributor joins.
+- **Working as a team (future):** if people, other AIs or other OpenSpec users join, decide on board conventions (one card per change, card id = task code), an `AGENTS.md` for tools other than Claude, CI on pull requests (see CI above), a protected `main`, a single integrator who merges and archives, and a pull request template.
 
 ## Catalogs
 
