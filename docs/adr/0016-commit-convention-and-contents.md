@@ -1,6 +1,6 @@
 # 0016. Commit convention and what each commit contains
 
-- Status: Accepted
+- Status: Superseded by 0022
 - Date: 2026-10-23
 - Change: none (process decision taken with the owner while defining the workflow)
 - Supersedes: 0012

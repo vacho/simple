@@ -6,9 +6,9 @@ The architecture and process decisions of this project, one file per decision. A
 
 The OpenSpec schema of this project (`openspec/schemas/simple/`) adds an `adr` step to every change, between design and tasks:
 
-1. **Design** reads the ADRs in force and names any it departs from.
+1. **Design** reads the ADRs in force (`Accepted` and `Proposed`) and names any it departs from. When an Accepted ADR has a pending Proposed ADR that supersedes it, the Accepted one stays the rule for other changes until that supersession is accepted.
 2. **ADR review** (`adr.md` in the change) creates a `Proposed` ADR for each durable decision of the design, and for each decision that replaces an ADR in force. Tasks cannot be planned until this step is done.
-3. **Archive** checks each Proposed ADR against the code that shipped, sets it to `Accepted`, and marks the ADRs it replaces as `Superseded by NNNN`.
+3. **Archive** checks each Proposed ADR against the code that shipped (showing the owner any edit and waiting for their yes), sets it to `Accepted`, points its `Change` line to the archived change, marks the ADRs it replaces as `Superseded by NNNN`, and updates the index. A Proposed ADR whose decision was dropped, or whose change was abandoned, is set to `Rejected`.
 
 The `adr` skill (`.claude/skills/adr/SKILL.md`) does the mechanics, and can also be used outside a change to record or reverse a decision.
 
@@ -20,16 +20,19 @@ A process decision taken outside a change is recorded directly as `Accepted`, wi
 
 | Status | Meaning |
 |---|---|
-| Proposed | Written during a change; may still be edited |
-| Accepted | The change shipped; never edited again |
+| Proposed | Written for a change that is still open; may still be edited within that change |
+| Accepted | The change shipped, or a decision already in force was recorded outside a change; never edited again |
 | Superseded by NNNN | Replaced by a later ADR; kept as history |
-| Rejected | The change that proposed it was abandoned |
+| Rejected | It won't ship: its change was abandoned, or the decision was dropped while the change continues |
 
 ## Rules
 
 - File name: `NNNN-kebab-title.md`, numbered in order and never reused (`0001-sqlite-with-drizzle.md`).
 - An accepted ADR is never edited, except to set its status to `Superseded by NNNN`. A changed decision gets a new ADR that names the one it supersedes.
 - ADR files are never deleted.
+- ADRs are written and committed on `main` only, never on a change or `docs/` branch, so numbers can't collide. During a change in progress, they go through `change-flow`'s "Detour to main".
+- Only an `Accepted` ADR can be superseded, and only by one pending supersession at a time. A `Proposed` ADR is changed within its own change.
+- The header lines (`- Status:`, `- Change:`, `- Supersedes:`) keep the template's exact form: scripts read them.
 - Keep each ADR short: the reasoning in full belongs to the change's design, which the ADR links to.
 - Add every ADR to the index below.
 
@@ -79,8 +82,10 @@ The options rejected and why, one line each.
 | [0013](0013-git-hooks-for-commit-rules.md) | Git hooks as the safety net for the commit rules | Superseded by 0019 |
 | [0014](0014-versions-and-release-tags.md) | Versions and release tags | Superseded by 0018 |
 | [0015](0015-commits-reviewed-before-they-are-made.md) | Commits reviewed before they are made, configurable to automatic | Accepted |
-| [0016](0016-commit-convention-and-contents.md) | Commit convention and what each commit contains | Accepted |
+| [0016](0016-commit-convention-and-contents.md) | Commit convention and what each commit contains | Superseded by 0022 |
 | [0017](0017-plan-updates-where-the-change-lives.md) | Propose on main, update the plan where the change lives, archive on main | Accepted |
 | [0018](0018-versions-release-after-approval-and-rollback.md) | Versions, release after approval, and recovery of a failed close | Accepted |
 | [0019](0019-git-hooks-contract.md) | Git hooks contract | Accepted |
 | [0020](0020-parallel-changes-in-worktrees.md) | Parallel changes only under conditions, in worktrees outside the repository | Accepted |
+| [0021](0021-dates-time-zones-and-timestamps.md) | Calendar dates, UTC timestamps and canonical time zones | Proposed |
+| [0022](0022-commit-convention-and-contents.md) | Commit convention and what each commit contains | Accepted |
