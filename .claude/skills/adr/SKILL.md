@@ -29,10 +29,10 @@ Architecture decision records live in `docs/adr/`, one file per decision. `docs/
 
 ### new
 
-1. Run `list` and check that no ADR in force already covers the decision. If one does, stop and say which.
+1. Run `list` and check that no ADR in force already covers the decision. If one does, stop and say which, unless this is a supersession (`supersede`) and that is the ADR being superseded.
 2. Take the next number: the highest `NNNN` in `docs/adr/` plus one, zero-padded to four digits. Numbers are never reused, even for Rejected ADRs.
 3. Name the file `NNNN-kebab-title.md` with a short title, and fill the template from `docs/adr/README.md`:
-   - Status: `Proposed` when written from a change's `adr` step; `Accepted` when the owner records a decision already in force outside a change.
+   - Status: `Proposed` when written for a change (from its `adr` step, or through a detour to `main` while the change is in progress); `Accepted` when the owner records a decision already in force outside a change.
    - Date: today.
    - Change: the change id with its design decision label; when there is no change, write `none` and say where the decision was taken.
 4. Keep it short: context, decision and consequences in a few lines each, alternatives one line each. The full reasoning stays in the design.
@@ -40,7 +40,7 @@ Architecture decision records live in `docs/adr/`, one file per decision. `docs/
 
 ### supersede
 
-1. Create the new ADR with `new`, adding `Supersedes: NNNN` to its header.
+1. Create the new ADR with `new`, adding `Supersedes: NNNN` to its header. The ADR being superseded doesn't count as a duplicate in `new` step 1. The new ADR restates everything from the old one that still holds, so the old one is no longer needed to know the rule.
 2. If the new ADR is `Proposed`, leave the old one as it is: it is marked when the change is archived (`accept`).
 3. If the new ADR is `Accepted` (no change involved), set the old ADR's status to `Superseded by NNNN` now. That status line is the only edit ever made to an accepted ADR.
 4. Update both rows in the index.

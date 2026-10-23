@@ -35,8 +35,8 @@ context: |
 
   Cross-cutting rules every change must respect:
   - Architecture: a modular monolith organized by feature
-    (src/lib/features/<feature>/, with a server/ part), as described in
-    docs/architecture.md. Routes are thin adapters; services authorize and
+    (src/lib/features/<feature>/, with a server/ part), as recorded in
+    ADR 0008 (docs/adr/). Routes are thin adapters; services authorize and
     validate; each feature owns its tables; lint enforces the boundaries.
   - Permissions: deny by default, decided on the server through the policy
     matrix (actions x actors: anonymous, user, admin, system). Every new action
@@ -76,7 +76,7 @@ rules:
   tasks:
     - Each task states how it is verified; each task group lands its own tests and docs.
     - Strict scenario traceability (a test quoting each scenario name) is checked when closing the change, not during it.
-    - End with a closing task that runs the full checks from a clean clone, including the scenario check.
+    - 'End with a final verification task that runs the full checks from a clean clone, including the scenario check. Don''t call it closing: closing the change is the change-flow skill''s close action, after every task is done.'
 
 operations:
   apply:
@@ -88,5 +88,5 @@ operations:
     guidance:
       - 'Archive as part of the change-flow skill''s close action: on main, after the change branch was merged.'
       - Summarize the archive outcome before finishing.
-      - Update the status of the change in docs/roadmap.md, and move any decision it settled out of the roadmap's open questions.
+      - In docs/roadmap.md, set the change's Status to "Archived vX.Y.Z" (or "Archived" when there is no release), and move any decision it settled out of the roadmap's open questions.
       - 'Accept the change''s ADRs with the adr skill (action accept): check each Proposed ADR listed in adr.md against the shipped code, set it to Accepted, mark the ADRs it supersedes, and report any ADR the implementation changed.'

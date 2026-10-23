@@ -1,7 +1,8 @@
 #!/bin/sh
-# Keeps code off main (change-flow skill, ADR 0009): on main, only the plan,
-# documentation and project tooling for agents may be committed. Code reaches
-# main through a merge of a change/, fix/, chore/, build/ or ci/ branch.
+# Keeps app code off main (change-flow skill, ADRs 0016, 0017 and 0019): on main,
+# only the plan, project docs (docs/) and agent tooling may be committed. App
+# code, README.md included, reaches main through a merge of a change/, fix/,
+# chore/, build/ or ci/ branch.
 
 branch=$(git symbolic-ref --short -q HEAD)
 [ "$branch" = "main" ] || exit 0
@@ -9,8 +10,11 @@ branch=$(git symbolic-ref --short -q HEAD)
 # Concluding a merge (git commit after resolving conflicts) is allowed.
 [ -f "$(git rev-parse --git-path MERGE_HEAD)" ] && exit 0
 
-blocked=$(git diff --cached --name-only --diff-filter=ACDMRT | grep -Ev \
-  '^(openspec/|docs/|\.claude/|\.githooks/|CLAUDE\.md$|AGENTS\.md$|README\.md$)')
+# Ask Git for staged paths outside the allowlist with exclude pathspecs, so
+# no file name (accents, spaces, newlines) is ever parsed here.
+blocked=$(git diff --cached --name-only --diff-filter=ACDMRT -- . \
+  ':(exclude)openspec/' ':(exclude)docs/' ':(exclude).claude/' \
+  ':(exclude).githooks/' ':(exclude,top)CLAUDE.md' ':(exclude,top)AGENTS.md')
 
 if [ -n "$blocked" ]; then
   echo "pre-commit: these files can't be committed on main:" >&2

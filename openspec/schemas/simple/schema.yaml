@@ -36,14 +36,19 @@ artifacts:
       Every change must either declare at least one capability (new or
       modified) or explicitly opt out of specs: `openspec validate` rejects a
       change with zero deltas unless the change's `.openspec.yaml` sets
-      `skip_specs: true`. Use `skip_specs: true` only when no spec-level
-      behavior changes (pure refactor, tooling, docs) - specs describe
-      behavior, so if behavior does not change, no spec should change either.
+      `skip_specs: true`. Use `skip_specs: true` only for a refactor of app
+      code with no spec-level behavior change - specs describe behavior, so if
+      behavior does not change, no spec should change either. Agent tooling
+      and project documentation are never OpenSpec changes: they go on `main`
+      or a `chore/` or `docs/` branch (change-flow skill).
       Do not invent a requirement just to satisfy validation.
 
-      Before writing, run the change-flow skill's prepare action
-      (.claude/skills/change-flow/SKILL.md): on main, with a clean working
-      tree, so the plan commit holds only the plan.
+      Before writing, make sure the change-flow skill's prepare action
+      (.claude/skills/change-flow/SKILL.md) ran its steps 1 to 3: on main (or
+      on change/<id> when updating a change whose branch exists), with a clean
+      working tree. Run them now only if they weren't run before this
+      workflow started. Its step 4 (commits) comes after every artifact is
+      written.
 
       Keep it concise (1-2 pages). Focus on the "why" not the "how" -
       implementation details belong in design.md.
@@ -216,6 +221,11 @@ artifacts:
       skill (.claude/skills/adr/SKILL.md) for the mechanics: numbering,
       template, supersession and the index in docs/adr/README.md.
 
+      ADRs live in docs/adr/, which is committed on main. When this step runs
+      while the change's branch change/<id> exists (an update during apply),
+      don't write docs/adr/ on the branch: create or edit the ADRs through
+      the change-flow skill's "Detour to main", then update adr.md here.
+
       Steps:
       1. List the ADRs in force (status Accepted or Proposed) in docs/adr/.
       2. Re-read design.md. For each decision, decide whether it is durable:
@@ -277,7 +287,9 @@ artifacts:
         when it checks broader integration or system behavior that spans
         multiple implementation tasks.
       - Each task group MUST land the tests and documentation its own work
-        calls for. Do NOT collect testing or documentation into a final group -
+        calls for. The documentation a task writes goes in README.md; tasks
+        never write in docs/, which holds project documents only (ADRs,
+        roadmap, the owner's documents). Do NOT collect testing or documentation into a final group -
         when a late group first exercises work from an early one, the failures
         cascade back through every group in between and force rework. A group
         whose work calls for neither, such as scaffolding or dependency setup,
@@ -297,7 +309,7 @@ artifacts:
 
       - [ ] 2.1 Implement data export function and verify the export test passes
       - [ ] 2.2 Add CSV formatting utilities and verify unit tests cover quoting and delimiters
-      - [ ] 2.3 Document the export API in docs/export.md and verify the documented command runs as written
+      - [ ] 2.3 Document the export command in README.md and verify the documented command runs as written
       ```
 
       When applicable, append workflow follow-up as plain bullets, for example:
@@ -329,8 +341,9 @@ apply:
       change/<change-id>, in the main checkout or in its worktree. If it is
       main, stop and start the change with the skill's start action; never
       apply on main.
-    - In a worktree, work only on that change: never propose, archive or
-      merge there.
+    - In a worktree, work only on that change: never propose, archive, or
+      merge into main there. Sync merges of main into the change branch are
+      allowed (change-flow skill, "Where each step runs").
     - When a task group is done, commit it with the skill's commit action:
       the group's code, tests, docs and ticked checkboxes in one commit,
       titled "type(<change-id>): description - <task-code>". Ask the owner
