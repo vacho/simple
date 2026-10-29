@@ -13,10 +13,10 @@ Tests: each task writes the behavior tests its verification requires. Strict tra
 
 ## 2. Database and migrations
 
-- [ ] 2.1 Add better-sqlite3 and Drizzle with a connection module applying the WAL, foreign_keys, busy_timeout and synchronous pragmas from `DATABASE_PATH` (read through `$app/env/private` in the app), and verify with an integration test that reads the pragmas back (D3)
-- [ ] 2.2 Define the Drizzle tables in their owning features (`features/users/server/schema.ts`: `users` with nullable `locale` and nullable `time_zone`; `features/auth/server/schema.ts`: `sessions`, `login_attempts`; `features/languages/server/schema.ts`: `languages`, `translations` with `source_hash`), point drizzle-kit at `src/lib/features/*/server/schema.ts`, generate the first migration into `drizzle/` and commit it, and verify the migration applies to an empty database in a test (D3, D4, D12, D14)
-- [ ] 2.3 Implement `server/startup.ts`, run once from the `init` hook in `hooks.server.ts` before the first request (open the database, then migrations; the pre-migration backup and the language seed are added to this sequence by tasks 10.3 and 5.2), stopping startup on failure. Verify that a fresh `DATABASE_PATH` gets the tables on first start, that a broken migration aborts startup, and that no request is served before startup completes (D3)
-- [ ] 2.4 Add a test helper that creates a temporary migrated database per test file, and verify two test files run in parallel without sharing data (D11)
+- [x] 2.1 Add better-sqlite3 and Drizzle with a connection module applying the WAL, foreign_keys, busy_timeout and synchronous pragmas from `DATABASE_PATH` (read through `$app/env/private` in the app), and verify with an integration test that reads the pragmas back (D3)
+- [x] 2.2 Define the Drizzle tables in their owning features (`features/users/server/schema.ts`: `users` with nullable `locale` and nullable `time_zone`; `features/auth/server/schema.ts`: `sessions`, `login_attempts`; `features/languages/server/schema.ts`: `languages`, `translations` with `source_hash`), point drizzle-kit at `src/lib/features/*/server/schema.ts`, generate the first migration into `drizzle/` and commit it, and verify the migration applies to an empty database in a test (D3, D4, D12, D14)
+- [x] 2.3 Implement `server/startup.ts`, run once from the `init` hook in `hooks.server.ts` before the first request (open the database, then migrations; the pre-migration backup and the language seed are added to this sequence by tasks 10.3 and 5.2), stopping startup on failure. Verify that a fresh `DATABASE_PATH` gets the tables on first start, that a broken migration aborts startup, and that no request is served before startup completes (D3)
+- [x] 2.4 Add a test helper that creates a temporary migrated database per test file, and verify two test files run in parallel without sharing data (D11)
 
 ## 3. Application core
 

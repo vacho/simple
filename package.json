@@ -16,7 +16,8 @@
 		"test:e2e": "playwright test",
 		"i18n:gen": "node --import tsx scripts/gen-messages.ts",
 		"predev": "npm run i18n:gen",
-		"prebuild": "npm run i18n:gen"
+		"prebuild": "npm run i18n:gen",
+		"db:generate": "drizzle-kit generate"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",
@@ -24,7 +25,9 @@
 		"@sveltejs/adapter-node": "^6.0.0",
 		"@sveltejs/kit": "^3.1.0",
 		"@sveltejs/vite-plugin-svelte": "^7.2.0",
+		"@types/better-sqlite3": "^9.6.0",
 		"@types/node": "^24",
+		"drizzle-kit": "^0.31.11",
 		"eslint": "^10.13.0",
 		"eslint-config-prettier": "^10.1.8",
 		"eslint-import-resolver-typescript": "^4.4.5",
@@ -49,6 +52,8 @@
 	},
 	"dependencies": {
 		"@formatjs/icu-messageformat-parser": "^3.5.22",
+		"better-sqlite3": "^13.0.3",
+		"drizzle-orm": "^0.45.4",
 		"intl-messageformat": "^12.1.4"
 	}
 }
