@@ -85,9 +85,10 @@ The options rejected and why, one line each.
 | [0016](0016-commit-convention-and-contents.md) | Commit convention and what each commit contains | Superseded by 0022 |
 | [0017](0017-plan-updates-where-the-change-lives.md) | Propose on main, update the plan where the change lives, archive on main | Accepted |
 | [0018](0018-versions-release-after-approval-and-rollback.md) | Versions, release after approval, and recovery of a failed close | Accepted |
-| [0019](0019-git-hooks-contract.md) | Git hooks contract | Accepted |
+| [0019](0019-git-hooks-contract.md) | Git hooks contract | Superseded by 0025 |
 | [0020](0020-parallel-changes-in-worktrees.md) | Parallel changes only under conditions, in worktrees outside the repository | Accepted |
 | [0021](0021-dates-time-zones-and-timestamps.md) | Calendar dates, UTC timestamps and canonical time zones | Proposed |
 | [0022](0022-commit-convention-and-contents.md) | Commit convention and what each commit contains | Superseded by 0024 |
 | [0023](0023-app-in-its-own-folder.md) | The app lives in its own folder | Proposed |
 | [0024](0024-commit-convention-file-kinds-and-multi-agent-tooling.md) | Commit convention, file kinds, and multi-agent tooling | Accepted |
+| [0025](0025-git-hooks-contract-with-multi-agent-tooling.md) | Git hooks contract, with multi-agent tooling | Accepted |

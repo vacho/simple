@@ -32,7 +32,7 @@ commit: docs(<id>): ...         docs(<id>): update specs ...           merge --n
 - Propose on `main`; update a change's plan on `main` until its branch exists, then on the branch; apply and verify on `change/<id>`; merge, then archive, on `main` ([ADR 0017](../../../docs/adr/0017-plan-updates-where-the-change-lives.md)).
 - Merge with `--no-ff`, one change at a time, re-verified on top of `main` ([ADR 0010](../../../docs/adr/0010-merge-no-ff-one-change-at-a-time.md)).
 - A change runs alone unless it meets the parallel conditions in `openspec-parallel-apply` ([ADR 0020](../../../docs/adr/0020-parallel-changes-in-worktrees.md)).
-- Commits follow the convention below ([ADR 0024](../../../docs/adr/0024-commit-convention-file-kinds-and-multi-agent-tooling.md)), checked by the Git hooks in `.githooks/` ([ADR 0019](../../../docs/adr/0019-git-hooks-contract.md)).
+- Commits follow the convention below ([ADR 0024](../../../docs/adr/0024-commit-convention-file-kinds-and-multi-agent-tooling.md)), checked by the Git hooks in `.githooks/` ([ADR 0025](../../../docs/adr/0025-git-hooks-contract-with-multi-agent-tooling.md)).
 - Each change, and each branch that changes what runs, ends in a version and a tag, released only after the owner approves the merge; a failed close is never undone without the owner's yes ([ADR 0018](../../../docs/adr/0018-versions-release-after-approval-and-rollback.md)).
 - Commits are proposed for review before they are made, unless the commit mode is `auto` ([ADR 0015](../../../docs/adr/0015-commits-reviewed-before-they-are-made.md)).
 
@@ -133,7 +133,7 @@ Every commit this skill makes follows the clone's commit mode: `git config simpl
 ## Git hooks
 
 - `.githooks/commit-msg` rejects attribution lines in any message, then titles that break the commit convention (merges, reverts and fixups are exempt from the title check only).
-- `.githooks/pre-commit` rejects app code on `main`: only `openspec/`, `docs/`, `.claude/`, `.githooks/`, `CLAUDE.md` and `AGENTS.md` may be committed there, except when concluding a merge.
+- `.githooks/pre-commit` rejects app code on `main`: only `openspec/`, `docs/`, `.claude/`, `.agents/`, `.githooks/`, `CLAUDE.md` and `AGENTS.md` may be committed there, except when concluding a merge.
 
 They run only when enabled in the clone: `git config core.hooksPath .githooks`. When a hook rejects a commit, fix the commit; never bypass it with `--no-verify`.
 

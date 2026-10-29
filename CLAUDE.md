@@ -21,14 +21,16 @@ A personal and family finance app for a single household, built with spec-driven
 
 Run the workflow action using your tool's syntax:
 
-| Action | Claude Code | Antigravity / Agents | CLI equivalent |
-|---|---|---|---|
-| **Explore** | `/opsx:explore` | `/opsx-explore` | `openspec explore` |
-| **Propose** | `/opsx:propose` | `/opsx-propose` | `openspec new change` |
-| **Apply** | `/opsx:apply` | `/opsx-apply` | `openspec instructions` |
-| **Update** | `/opsx:update` | `/opsx-update` | `openspec update` |
-| **Verify** | `/opsx:verify` | `/opsx-verify` | `openspec validate --strict` |
-| **Archive** | `/opsx:archive` | `/opsx-archive` | `openspec archive` |
+| Action | Claude Code | Antigravity / Agents |
+|---|---|---|
+| **Explore** | `/opsx:explore` | `/opsx-explore` |
+| **Propose** | `/opsx:propose` | `/opsx-propose` |
+| **Apply** | `/opsx:apply` | `/opsx-apply` |
+| **Update** | `/opsx:update` | `/opsx-update` |
+| **Verify** | `/opsx:verify` | `/opsx-verify` |
+| **Archive** | `/opsx:archive` | `/opsx-archive` |
+
+The workflows call the `openspec` CLI themselves (`status`, `instructions`, `validate`, `archive`); never run those commands as a substitute for a workflow. In particular, `openspec update` refreshes the generated tool files, not a change's plan, and archiving happens only inside `change-flow` `close`.
 
 *To add support for a new AI assistant: run `openspec init --tools <tool>`, and symlink or share the project skills (`change-flow`, `adr`).*
 
