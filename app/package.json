@@ -54,6 +54,7 @@
 		"@formatjs/icu-messageformat-parser": "^3.5.22",
 		"better-sqlite3": "^13.0.3",
 		"drizzle-orm": "^0.45.4",
-		"intl-messageformat": "^12.1.4"
+		"intl-messageformat": "^12.1.4",
+		"valibot": "^1.5.0"
 	}
 }
