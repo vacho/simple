@@ -88,5 +88,6 @@ The options rejected and why, one line each.
 | [0019](0019-git-hooks-contract.md) | Git hooks contract | Accepted |
 | [0020](0020-parallel-changes-in-worktrees.md) | Parallel changes only under conditions, in worktrees outside the repository | Accepted |
 | [0021](0021-dates-time-zones-and-timestamps.md) | Calendar dates, UTC timestamps and canonical time zones | Proposed |
-| [0022](0022-commit-convention-and-contents.md) | Commit convention and what each commit contains | Accepted |
+| [0022](0022-commit-convention-and-contents.md) | Commit convention and what each commit contains | Superseded by 0024 |
 | [0023](0023-app-in-its-own-folder.md) | The app lives in its own folder | Proposed |
+| [0024](0024-commit-convention-file-kinds-and-multi-agent-tooling.md) | Commit convention, file kinds, and multi-agent tooling | Accepted |
