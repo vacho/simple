@@ -2,6 +2,8 @@
 
 Tests: each task writes the behavior tests its verification requires. Strict traceability, meaning every spec scenario has a test whose name quotes it, is checked only when the change is closed (task 11.3). Specs may change while implementing and testing: update the spec first (`/opsx:update`), then the tests. When a task cites a requirement, it covers all of that requirement's scenarios (design D11).
 
+Paths are relative to `app/`, the app's own npm project, and commands run there (design D12, ADR 0023).
+
 ## 1. Project scaffolding
 
 - [x] 1.1 Scaffold with `npx sv create` (SvelteKit 3.1, Svelte 5, TypeScript 6 strict, pinning `typescript@^6.0.0` explicitly because `npm` would otherwise install 7, which Kit 3 doesn't support) and `adapter-node` configured in `vite.config.ts` (no `svelte.config.js`), with `#lib` subpath imports, the scaffolded `package.json` version kept below `0.1.0`, and the `prepare` script from D2. Verify `npm run dev` serves a page, `npm run build && node build` starts, `git config core.hooksPath` prints `.githooks` after `npm ci` in a fresh clone, and `npm ci` still succeeds in a copy without `.git` (design D0, D1, D2)
@@ -86,5 +88,5 @@ Tests: each task writes the behavior tests its verification requires. Strict tra
 
 - Close with the `change-flow` skill (action `close`), only with the owner's approval.
 - Release level: minor, the first release: `0.0.1` -> `v0.1.0`, bumped only after the owner approves the merge (ADR 0018).
-- Archiving accepts ADRs 0001 to 0008 and 0021, listed in `adr.md` (`adr` skill, action `accept`).
+- Archiving accepts ADRs 0001 to 0008, 0021 and 0023, listed in `adr.md` (`adr` skill, action `accept`).
 - Tag `v0.1.0` on the archive commit; push only when the owner asks.
