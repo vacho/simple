@@ -72,7 +72,7 @@ test.describe('with an English browser', () => {
 		await expect(page.locator('h1')).toHaveText('Profile');
 	});
 
-	test('Change time zone: applies on another device; UTC can be selected', async ({
+	test('Change time zone in the profile: applies on another device; UTC can be selected', async ({
 		page,
 		context,
 		browser

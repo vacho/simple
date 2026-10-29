@@ -71,6 +71,19 @@ describe('Sessions', () => {
 		}
 	});
 
+	it('Tolerance window: between 29 and 30 days, valid or not by when it was last extended', () => {
+		// Extended at the last use: still valid 29.5 days later.
+		const extended = start();
+		validateSession(db, extended.token, t0 + day + 1);
+		expect(validateSession(db, extended.token, t0 + day + 1 + 29.5 * day).user?.id).toBe(userId);
+		// Not extended at the last use (29 days or more remained): gone 29.5 days later.
+		const kept = start();
+		validateSession(db, kept.token, t0 + 12 * 60 * 60 * 1000);
+		expect(
+			validateSession(db, kept.token, t0 + 12 * 60 * 60 * 1000 + 29.5 * day).user
+		).toBeUndefined();
+	});
+
 	it('Idle session expires: cleared after 30 idle days, and the row is gone', () => {
 		const { token } = start();
 		expect(validateSession(db, token, t0 + 30 * day)).toEqual({

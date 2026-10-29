@@ -24,7 +24,8 @@
 		"test:e2e:pseudo": "I18N_PSEUDO=1 playwright test --grep @screens",
 		"lint:css": "stylelint \"src/**/*.{css,svelte}\"",
 		"icons": "node --import tsx scripts/gen-icons.ts",
-		"backup": "node --import tsx scripts/backup.ts"
+		"backup": "node --import tsx scripts/backup.ts",
+		"check:scenarios": "node --import tsx scripts/check-scenarios.ts"
 	},
 	"devDependencies": {
 		"@axe-core/playwright": "^4.14.0",

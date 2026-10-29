@@ -236,7 +236,7 @@ describe('Time zone from the browser', () => {
 		).timeZone;
 	};
 
-	it('stores the canonical form of an alias, and UTC as UTC', async () => {
+	it('UTC and aliases are accepted: stored in their canonical form', async () => {
 		expect(await zoneAfterSignIn('kolkata', 'Asia/Kolkata')).toBe('Asia/Calcutta');
 		expect(await zoneAfterSignIn('utc.user', 'UTC')).toBe('UTC');
 	});

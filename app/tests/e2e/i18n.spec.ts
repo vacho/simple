@@ -48,6 +48,11 @@ test('Browser language not installed: a French-only browser gets English', async
 	await app.stop();
 });
 
+test('Page language: a page shown in Spanish declares Spanish', async () => {
+	const { app, cookie } = await startSetUpApp();
+	expect(await home(app.url, cookie, 'es-BO')).toContain('<html lang="es" dir="ltr">');
+});
+
 test('Quality values are respected', async () => {
 	const { app, cookie } = await startSetUpApp();
 	expect(await home(app.url, cookie, 'en;q=0.5, es;q=1')).toContain('<html lang="es"');

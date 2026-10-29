@@ -5,7 +5,7 @@ const match = (header: string, installed = ['en', 'es']) =>
 	matchLocale(parseAcceptLanguage(header), installed);
 
 describe('Accept-Language matching', () => {
-	it('picks the first installed language in preference order', () => {
+	it('Preference order of the browser: the first installed language wins', () => {
 		expect(match('fr, es, en')).toBe('es');
 	});
 
@@ -17,7 +17,7 @@ describe('Accept-Language matching', () => {
 		expect(match('en;q=0.5, es;q=1')).toBe('es');
 	});
 
-	it('drops languages with q=0', () => {
+	it('Excluded language: q=0 drops it', () => {
 		expect(match('es;q=0, en;q=0.8')).toBe('en');
 	});
 
@@ -30,12 +30,12 @@ describe('Accept-Language matching', () => {
 		expect(match('not a tag, es;q=abc, en;q=2, *, es-BO')).toBe('es');
 	});
 
-	it('falls back to the primary subtag', () => {
+	it('Regional variants: falls back to the primary subtag', () => {
 		expect(match('ca-ES', ['en', 'ca'])).toBe('ca');
 		expect(match('es-BO')).toBe('es');
 	});
 
-	it('prefers an exact regional match over the primary subtag', () => {
+	it('Exact regional language wins over the primary subtag', () => {
 		expect(match('pt-BR', ['en', 'pt', 'pt-BR'])).toBe('pt-BR');
 	});
 });

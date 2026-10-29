@@ -67,18 +67,20 @@ test('Preference wins over the browser: saved Spanish on an English browser, sam
 });
 
 test.describe('Initial entry leads to setup', () => {
-	test('Opening the app root and the sign-in page on an empty installation', async () => {
-		const app = startApp(newDatabasePath());
-		await app.listening;
-		for (const pathname of ['/', '/login']) {
+	for (const [scenario, pathname] of [
+		['Opening the app root on an empty installation', '/'],
+		['Sign-in page on an empty installation', '/login']
+	]) {
+		test(`${scenario}: redirected to setup`, async () => {
+			const app = startApp(newDatabasePath());
+			await app.listening;
 			const response = await get(app, pathname, page);
-			expect(response.status, pathname).toBe(303);
-			expect(response.headers.get('location'), pathname).toBe('/setup');
-		}
-		await app.stop();
-	});
+			expect(response.status).toBe(303);
+			expect(response.headers.get('location')).toBe('/setup');
+		});
+	}
 
-	test('After setup, a visitor who is not signed in is sent to sign in', async () => {
+	test('After setup, and Anonymous request to a protected page: sent to sign in, remembering the page', async () => {
 		const { app } = await startSetUpApp();
 		const root = await get(app, '/', page);
 		expect([root.status, root.headers.get('location')]).toEqual([303, '/login']);
@@ -86,6 +88,16 @@ test.describe('Initial entry leads to setup', () => {
 		expect(deep.headers.get('location')).toBe('/login?redirectTo=%2Fsettings%3Fx%3D1');
 		await app.stop();
 	});
+});
+
+test('Public pages stay reachable: setup, sign-in and the manifest without a session', async () => {
+	const empty = startApp(newDatabasePath());
+	await empty.listening;
+	expect((await get(empty, '/setup', page)).status).toBe(200);
+	const { app } = await startSetUpApp();
+	for (const pathname of ['/login', '/manifest.webmanifest']) {
+		expect((await get(app, pathname, page)).status, pathname).toBe(200);
+	}
 });
 
 test('Anonymous request to a protected endpoint: 401 and no operation', async () => {

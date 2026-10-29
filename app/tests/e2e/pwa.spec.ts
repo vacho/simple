@@ -44,6 +44,13 @@ test('Installability criteria: the manifest is public and complete, and a servic
 	await controlled(page);
 });
 
+test('Installed app opens standalone: at the start URL, without the address bar', async () => {
+	// The manifest asks for it; opening from a real installed icon is checked by hand (task 9.5).
+	const { app } = await startSetUpApp();
+	const manifest = await (await fetch(`${app.url}/manifest.webmanifest`)).json();
+	expect([manifest.display, manifest.start_url, manifest.scope]).toEqual(['standalone', '/', '/']);
+});
+
 test.describe('with an English browser', () => {
 	test.use({ locale: 'en-US' });
 

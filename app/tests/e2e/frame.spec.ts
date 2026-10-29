@@ -85,6 +85,22 @@ test('User menu: the display name, a Profile link and a Sign out action', async 
 	await expect(page).toHaveURL(`${app.url}/profile`);
 });
 
+test.describe('Device prefers dark', () => {
+	test.use({ colorScheme: 'dark' });
+
+	test('the app renders with its dark theme', async ({ page, context }) => {
+		const { app, tokens } = await startWithMember();
+		await context.addCookies([{ name: 'session', value: tokens.admin, url: app.url }]);
+		await page.goto(`${app.url}/`);
+		const colors = await page.evaluate(() => {
+			const style = getComputedStyle(document.body);
+			return [style.backgroundColor, style.color];
+		});
+		// --color-bg and --color-text of the dark theme (tokens.css).
+		expect(colors).toEqual(['rgb(18, 20, 23)', 'rgb(232, 234, 237)']);
+	});
+});
+
 test.describe('Right-to-left page', () => {
 	test.use({ locale: 'ar', viewport: { width: 1024, height: 768 } });
 

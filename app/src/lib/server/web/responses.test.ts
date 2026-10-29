@@ -18,16 +18,19 @@ describe('denials', () => {
 	it.each([
 		['Forbidden', new Forbidden()],
 		['NotFound', new NotFound()]
-	])('render %s as the same 403 not-allowed error', (_name, appError) => {
-		for (const map of [throwForLoad, failForAction]) {
-			const thrown = caught(() => map(appError));
-			expect(isHttpError(thrown, 403)).toBe(true);
-			expect((thrown as { body: unknown }).body).toMatchObject({
-				message: 'Not allowed',
-				key: 'errors.not_allowed'
-			});
+	])(
+		'Denied operation reveals nothing: %s renders as the same 403 not-allowed error',
+		(_name, appError) => {
+			for (const map of [throwForLoad, failForAction]) {
+				const thrown = caught(() => map(appError));
+				expect(isHttpError(thrown, 403)).toBe(true);
+				expect((thrown as { body: unknown }).body).toMatchObject({
+					message: 'Not allowed',
+					key: 'errors.not_allowed'
+				});
+			}
 		}
-	});
+	);
 
 	it('answer endpoints with the same JSON for missing and forbidden records', async () => {
 		const forbidden = errorResponse(new Forbidden('profile.denied', { id: 7 }));

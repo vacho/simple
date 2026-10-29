@@ -84,7 +84,7 @@ async function check(page: Page, screen: string) {
 	}
 }
 
-test.describe(`every covered screen in ${locale} @screens`, () => {
+test.describe(`${pseudo ? 'No plain text in en-XA' : 'Spanish is complete'}: every covered screen @screens`, () => {
 	test.use({ locale, viewport: { width: 360, height: 740 } });
 
 	test('setup, with its validation errors', async ({ page }) => {
