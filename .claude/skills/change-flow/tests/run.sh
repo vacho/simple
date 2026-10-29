@@ -14,10 +14,10 @@ expect() { # <description> <pattern> <text>
   if printf '%s\n' "$3" | grep -qE -- "$2"; then ok "$1"; else bad "$1"; printf '%s\n' "$3" | sed 's/^/       | /'; fi
 }
 
-new_repo() { # <name>: main with package.json, an OpenSpec change folder, roadmap
+new_repo() { # <name>: main with app/package.json, an OpenSpec change folder, roadmap
   r="$base/$1"; mkdir -p "$r" && cd "$r" || exit 1
   git init -q -b main && git config user.email t@t && git config user.name t
-  printf '{ "name": "t", "version": "0.0.1" }\n' > package.json
+  mkdir -p app && printf '{ "name": "t", "version": "0.0.1" }\n' > app/package.json
   mkdir -p openspec/changes/x openspec/specs docs/adr
   echo "# Proposal" > openspec/changes/x/proposal.md
   echo "# Roadmap" > docs/roadmap.md
@@ -63,11 +63,11 @@ expect "and the close is done"                 '^next=done$'                "$("
 echo "2. an uncommitted release bump is dropped, never bumped twice"
 new_repo s2
 git switch -q -c change/x; echo a > a.txt; git add a.txt; git commit -q -m "feat(x): add a - 003"
-npm version minor --no-git-tag-version >/dev/null
+(cd app && npm version minor --no-git-tag-version >/dev/null)
 expect "release written is detected"           '^release_written=yes'       "$("$close" status change/x)"
 expect "release refuses to bump again"         'already exists'             "$("$close" release change/x minor 003 2>&1)"
-expect "drop-release restores package.json"    'dropped the uncommitted'    "$("$close" drop-release change/x)"
-expect "package.json is back to 0.0.1"         '"version": "0.0.1"'         "$(cat package.json)"
+expect "drop-release restores app/package.json"    'dropped the uncommitted'    "$("$close" drop-release change/x)"
+expect "package.json is back to 0.0.1"         '"version": "0.0.1"'         "$(cat app/package.json)"
 
 echo "3. a reused branch name isn't taken as already merged"
 new_repo s3
@@ -122,7 +122,7 @@ echo "9. an existing tag blocks a release with the same version"
 new_repo s9
 git tag -a v0.1.0 -m "old" ; git switch -q -c change/x; echo a > a.txt; git add a.txt; git commit -q -m "feat(x): add a - 003"
 expect "release refuses"                       'already exists; release not made' "$("$close" release change/x minor 003 2>&1)"
-expect "and leaves package.json untouched"     '^$'                         "$(git status --porcelain)"
+expect "and leaves app/package.json untouched"     '^$'                         "$(git status --porcelain)"
 
 echo "10. detour stash survives another stash"
 new_repo s10
