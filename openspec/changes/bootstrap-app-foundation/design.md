@@ -234,7 +234,7 @@ src/lib/server/policy/
   - Why: while implementing and testing, specs are expected to change. When they do, the spec is updated first (`/opsx:update`) and the tests follow. Requiring exact scenario names from day one would only create churn. Writing all tests at the end instead would let early bugs surface late and cascade through later tasks.
 
 ### D12. Project layout
-The app is its own npm project in `app/` (ADR 0023): `package.json`, `node_modules/`, tool configs and everything below. The repository root holds only the tooling used to build it (`.claude/`, `.githooks/`, `docs/`, `openspec/`, `CLAUDE.md`). The tree below is inside `app/`, and every path to an app file in this design and in `tasks.md` is relative to `app/`; npm commands run there.
+The app is its own npm project in `app/` (ADR 0023): `package.json`, `node_modules/`, tool configs and everything below. The repository root holds only the tooling used to build it (`.claude/`, `.agents/`, `.githooks/`, `docs/`, `openspec/`, `CLAUDE.md`, `AGENTS.md`). The tree below is inside `app/`, and every path to an app file in this design and in `tasks.md` is relative to `app/`; npm commands run there.
 
 Organized by feature, following D16.
 ```
