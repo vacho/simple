@@ -47,6 +47,142 @@
 		"text": "Algo salió mal. Inténtalo de nuevo.",
 		"source": "3ccd9d6586ef9143"
 	},
+	"household.action.archive": {
+		"text": "Archivar",
+		"source": "66f4804ee23ddc09"
+	},
+	"household.action.cancel": {
+		"text": "Cancelar",
+		"source": "19766ed6ccb2f4a3"
+	},
+	"household.action.delete": {
+		"text": "Eliminar",
+		"source": "e2d0a54968ead24e"
+	},
+	"household.action.unarchive": {
+		"text": "Desarchivar",
+		"source": "f565318d124534cf"
+	},
+	"household.base_class.adult": {
+		"text": "Adulto",
+		"source": "ad08defcbfea908e"
+	},
+	"household.base_class.dependent": {
+		"text": "Dependiente",
+		"source": "d45592edbb4b62ba"
+	},
+	"household.base_class.invalid": {
+		"text": "Elige una clase base.",
+		"source": "9047fddd9854f7cc"
+	},
+	"household.base_class.minor": {
+		"text": "Menor",
+		"source": "5717c39b819da72b"
+	},
+	"household.confirm.archive_type": {
+		"text": "¿Archivar el tipo de miembro \"{name}\"? Ya no se ofrecerá para los miembros; quienes lo tienen lo conservan.",
+		"source": "1c0add589878d269"
+	},
+	"household.confirm.delete_type": {
+		"text": "¿Eliminar el tipo de miembro \"{name}\"? Esto no se puede deshacer.",
+		"source": "f6f11bfb04ec1ff4"
+	},
+	"household.field.base_class": {
+		"text": "Clase base",
+		"source": "6e4e297f5b9fa8c3"
+	},
+	"household.field.name": {
+		"text": "Nombre",
+		"source": "dcd1d5223f73b3a9"
+	},
+	"household.id.conflict": {
+		"text": "Ya se guardó algo distinto desde este formulario. Vuelve a cargar la página e inténtalo de nuevo.",
+		"source": "0d2f214f2b80fe13"
+	},
+	"household.id.invalid": {
+		"text": "Este formulario está desactualizado. Vuelve a cargar la página e inténtalo de nuevo.",
+		"source": "1af9c3c63ae9b8ad"
+	},
+	"household.member_type.base_class_in_use": {
+		"text": "Hay miembros con este tipo, así que su clase base no puede cambiar.",
+		"source": "843b4e7c1a74a90f"
+	},
+	"household.member_type.in_use": {
+		"text": "Hay miembros con este tipo, así que no se puede eliminar. Archívalo en su lugar.",
+		"source": "cbe6591ed342e5b6"
+	},
+	"household.member_types.archived": {
+		"text": "Archivado",
+		"source": "bdb86505f8062d15"
+	},
+	"household.member_types.base_class_locked": {
+		"text": "Hay miembros con este tipo, así que la clase base es fija.",
+		"source": "d8ce15a1ceb36072"
+	},
+	"household.member_types.create": {
+		"text": "Crear tipo de miembro",
+		"source": "07d52aaf6cf42261"
+	},
+	"household.member_types.empty": {
+		"text": "Todavía no hay tipos de miembro. Crea el primero abajo.",
+		"source": "59cbecea1001a81d"
+	},
+	"household.member_types.intro": {
+		"text": "Nombra los tipos de miembro de tu hogar, como \"Hijo\" o \"Abuela\". Cada tipo tiene una clase base, que decide cómo se trata a sus miembros.",
+		"source": "c7c9bbac4d9a1699"
+	},
+	"household.member_types.member_count": {
+		"text": "{count, plural, one {# miembro} other {# miembros}}",
+		"source": "18848b51b01f20a1"
+	},
+	"household.member_types.new": {
+		"text": "Nuevo tipo de miembro",
+		"source": "6a8c716a12cb409e"
+	},
+	"household.member_types.save": {
+		"text": "Guardar",
+		"source": "1509f561f2416598"
+	},
+	"household.member_types.title": {
+		"text": "Tipos de miembro",
+		"source": "9eceaf1219255bae"
+	},
+	"household.name.control_characters": {
+		"text": "Quita los caracteres de control invisibles del nombre.",
+		"source": "e5d002b4c7c1ea7e"
+	},
+	"household.name.empty": {
+		"text": "Escribe un nombre.",
+		"source": "099f9079ba79b851"
+	},
+	"household.name.taken": {
+		"text": "Ese nombre ya está en uso.",
+		"source": "2f53556f10c2e522"
+	},
+	"household.name.too_long": {
+		"text": "Usa como máximo 64 caracteres.",
+		"source": "7962a4764eb168a0"
+	},
+	"household.settings.intro": {
+		"text": "El nombre del hogar, tal como lo ve cada miembro.",
+		"source": "b27fb7143dcbc4d0"
+	},
+	"household.settings.save": {
+		"text": "Guardar nombre",
+		"source": "b7297226fd1f4681"
+	},
+	"household.settings.saved": {
+		"text": "Nombre del hogar guardado.",
+		"source": "46186e39267f9fe1"
+	},
+	"household.settings.title": {
+		"text": "Hogar",
+		"source": "a1c6c97f415f0e0e"
+	},
+	"household.unnamed": {
+		"text": "Hogar sin nombre",
+		"source": "00abfbb5e0a42a97"
+	},
 	"offline.message": {
 		"text": "Vuelve a conectarte a internet para continuar.",
 		"source": "09d276de6a7e07d4"
@@ -54,6 +190,10 @@
 	"offline.title": {
 		"text": "Sin conexión",
 		"source": "050be7950a638d06"
+	},
+	"settings.sections": {
+		"text": "Ajustes del hogar",
+		"source": "81b40612cac916ab"
 	},
 	"settings.title": {
 		"text": "Configuración",

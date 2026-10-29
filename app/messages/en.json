@@ -47,6 +47,142 @@
 		"text": "Something went wrong. Please try again.",
 		"description": "Heading and page title shown when an unexpected error stops a page from loading."
 	},
+	"household.action.archive": {
+		"text": "Archive",
+		"description": "Button that archives a member type or a member."
+	},
+	"household.action.cancel": {
+		"text": "Cancel",
+		"description": "Button that closes a confirmation without doing anything."
+	},
+	"household.action.delete": {
+		"text": "Delete",
+		"description": "Button that deletes a member type or a member that was never used."
+	},
+	"household.action.unarchive": {
+		"text": "Unarchive",
+		"description": "Button that brings back an archived member type or member."
+	},
+	"household.base_class.adult": {
+		"text": "Adult",
+		"description": "Base class of a member type: an adult member of the household. Shown in lists and in the base class selector."
+	},
+	"household.base_class.dependent": {
+		"text": "Dependent",
+		"description": "Base class of a member type: a person the household supports who is not a minor, such as an elderly relative. Shown in lists and in the base class selector."
+	},
+	"household.base_class.invalid": {
+		"text": "Choose a base class.",
+		"description": "Error under the base class field of a member type when no valid base class is chosen."
+	},
+	"household.base_class.minor": {
+		"text": "Minor",
+		"description": "Base class of a member type: a child under legal age. Shown in lists and in the base class selector."
+	},
+	"household.confirm.archive_type": {
+		"text": "Archive the member type \"{name}\"? It won't be offered for members any more; members who have it keep it.",
+		"description": "Confirmation before archiving a member type; {name} is the type's name as entered."
+	},
+	"household.confirm.delete_type": {
+		"text": "Delete the member type \"{name}\"? This can't be undone.",
+		"description": "Confirmation before deleting a member type that no member has; {name} is the type's name as entered."
+	},
+	"household.field.base_class": {
+		"text": "Base class",
+		"description": "Label of the base class selector of a member type."
+	},
+	"household.field.name": {
+		"text": "Name",
+		"description": "Label of the name field for the household, a member type or a member."
+	},
+	"household.id.conflict": {
+		"text": "Something different was already saved from this form. Reload the page and try again.",
+		"description": "Error shown when a form is submitted again with different content after it was already saved once."
+	},
+	"household.id.invalid": {
+		"text": "This form is out of date. Reload the page and try again.",
+		"description": "Error shown when a form arrives without a valid identifier, usually because the page is very old."
+	},
+	"household.member_type.base_class_in_use": {
+		"text": "Members have this type, so its base class can't change.",
+		"description": "Error shown when an administrator tries to change the base class of a member type that a member has, even an archived member."
+	},
+	"household.member_type.in_use": {
+		"text": "Members have this type, so it can't be deleted. Archive it instead.",
+		"description": "Error shown when an administrator tries to delete a member type that a member has."
+	},
+	"household.member_types.archived": {
+		"text": "Archived",
+		"description": "Label next to a member type that is archived and no longer offered for members."
+	},
+	"household.member_types.base_class_locked": {
+		"text": "Members have this type, so the base class is fixed.",
+		"description": "Note under the disabled base class selector of a member type that is in use."
+	},
+	"household.member_types.create": {
+		"text": "Create member type",
+		"description": "Button that creates a member type."
+	},
+	"household.member_types.empty": {
+		"text": "There are no member types yet. Create the first one below.",
+		"description": "Shown on the member types page while the catalog is empty."
+	},
+	"household.member_types.intro": {
+		"text": "Name the kinds of members your household has, such as \"Son\" or \"Grandmother\". Each type has a base class, which decides how its members are treated.",
+		"description": "Introduction on the member types page; the names in quotes are examples."
+	},
+	"household.member_types.member_count": {
+		"text": "{count, plural, one {# member} other {# members}}",
+		"description": "Number of active members that have a member type, shown next to the type."
+	},
+	"household.member_types.new": {
+		"text": "New member type",
+		"description": "Heading of the form that creates a member type."
+	},
+	"household.member_types.save": {
+		"text": "Save",
+		"description": "Button that saves the changes to one member type in the list."
+	},
+	"household.member_types.title": {
+		"text": "Member types",
+		"description": "Heading and page title of the member types page, and the link to it on the settings page."
+	},
+	"household.name.control_characters": {
+		"text": "Remove the invisible control characters from the name.",
+		"description": "Error under a name field when the text contains invisible control characters, usually from pasting."
+	},
+	"household.name.empty": {
+		"text": "Enter a name.",
+		"description": "Error under a household, member type or member name field when it is empty after removing spaces."
+	},
+	"household.name.taken": {
+		"text": "That name is already in use.",
+		"description": "Error shown when another member type, or another member, already has the same name, ignoring upper and lower case."
+	},
+	"household.name.too_long": {
+		"text": "Use at most 64 characters.",
+		"description": "Error under a household, member type or member name field when the name is longer than 64 characters."
+	},
+	"household.settings.intro": {
+		"text": "The name of the household, as every member sees it.",
+		"description": "Introduction on the household settings page."
+	},
+	"household.settings.save": {
+		"text": "Save name",
+		"description": "Button that saves the household name."
+	},
+	"household.settings.saved": {
+		"text": "Household name saved.",
+		"description": "Confirmation shown after the household name is saved."
+	},
+	"household.settings.title": {
+		"text": "Household",
+		"description": "Heading and page title of the household settings page, and the link to it on the settings page."
+	},
+	"household.unnamed": {
+		"text": "Unnamed household",
+		"description": "Shown instead of the household name while no administrator has named the household."
+	},
 	"offline.message": {
 		"text": "Reconnect to the internet to continue.",
 		"description": "Text under the offline heading."
@@ -54,6 +190,10 @@
 	"offline.title": {
 		"text": "You're offline",
 		"description": "Heading and page title of the page shown when the app is opened without a network connection."
+	},
+	"settings.sections": {
+		"text": "Household settings",
+		"description": "Heading of the list of links to the household settings pages on the settings page."
 	},
 	"settings.title": {
 		"text": "Settings",

@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { resolve } from '$app/paths';
 	import { getI18n } from '#lib/i18n/t.ts';
 	import type { PageProps } from './$types';
 
@@ -12,3 +13,9 @@
 
 <h1>{i18n.t('settings.title')}</h1>
 <p>{i18n.t('settings.version', { version: data.overview.version })}</p>
+
+<h2>{i18n.t('settings.sections')}</h2>
+<ul>
+	<li><a href={resolve('settings/household')}>{i18n.t('household.settings.title')}</a></li>
+	<li><a href={resolve('settings/member-types')}>{i18n.t('household.member_types.title')}</a></li>
+</ul>

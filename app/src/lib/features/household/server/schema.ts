@@ -2,8 +2,6 @@ import { sql } from 'drizzle-orm';
 import { check, index, integer, sqliteTable, text } from 'drizzle-orm/sqlite-core';
 import { users } from '../../users/server/schema.ts';
 
-export const baseClasses = ['adult', 'minor', 'dependent'] as const;
-
 // The one household (D1): created by the first rename, so a missing row means "unnamed".
 export const household = sqliteTable(
 	'household',
@@ -21,7 +19,8 @@ export const memberTypes = sqliteTable('member_types', {
 	name: text('name').notNull(),
 	/** The name trimmed, NFKC and lowercased: uniqueness ignoring case in any script (D1). */
 	nameKey: text('name_key').notNull().unique(),
-	baseClass: text('base_class', { enum: baseClasses }).notNull(),
+	// The values of base-classes.ts: schema files import only other schemas (ADR 0008).
+	baseClass: text('base_class', { enum: ['adult', 'minor', 'dependent'] }).notNull(),
 	archivedAt: integer('archived_at', { mode: 'timestamp_ms' }),
 	createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull()
 });

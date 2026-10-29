@@ -32,6 +32,11 @@ function status(appError: AppError): number {
 const isDenial = (appError: AppError) =>
 	appError instanceof Forbidden || appError instanceof NotFound;
 
+/** For pages only some actors may open: the same "not allowed" page as any denial (D6). */
+export function denyUnless(allowed: boolean): void {
+	if (!allowed) error(notAllowed.status, notAllowed.message, { key: notAllowed.key });
+}
+
 /** For page and layout loads: every app error becomes SvelteKit's error page. */
 export function throwForLoad(caught: unknown): never {
 	if (!(caught instanceof AppError)) throw caught;
