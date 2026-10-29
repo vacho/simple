@@ -50,7 +50,7 @@ const files = [
 	{ category: 'startup', pattern: 'src/lib/server/startup.ts' },
 	// hooks.server.ts and the service worker are element types of their own in D16.
 	{ category: 'hooks', pattern: 'src/hooks.server.ts' },
-	{ category: 'service-worker', pattern: 'src/service-worker.ts' }
+	{ category: 'service-worker', pattern: 'src/service-worker/**' }
 ];
 
 const policies = [

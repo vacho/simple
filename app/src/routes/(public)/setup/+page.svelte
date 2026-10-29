@@ -13,7 +13,7 @@
 	<title>{i18n.t('auth.setup.title')}</title>
 </svelte:head>
 
-<main>
+<div>
 	<h1>{i18n.t('auth.setup.title')}</h1>
 	<p>{i18n.t('auth.setup.intro')}</p>
 	<form method="POST">
@@ -48,4 +48,4 @@
 		<TimeZoneInput />
 		<button type="submit">{i18n.t('auth.setup.submit')}</button>
 	</form>
-</main>
+</div>

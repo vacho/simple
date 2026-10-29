@@ -1,8 +1,15 @@
 // The en-XA pseudo-locale exists only when the server starts with I18N_PSEUDO=1 (D14).
-import { expect, test } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
-import { appRoot, newDatabasePath, prepareDatabase, setUpAdmin, startApp } from './app.ts';
+import {
+	appRoot,
+	newDatabasePath,
+	prepareDatabase,
+	setUpAdmin,
+	startApp,
+	expect,
+	test
+} from './app.ts';
 
 async function homeInPseudoLocale(env: Record<string, string>) {
 	const databasePath = newDatabasePath();
@@ -18,7 +25,7 @@ async function homeInPseudoLocale(env: Record<string, string>) {
 }
 
 test('a production start without the flag has no en-XA', async () => {
-	const { html, output } = await homeInPseudoLocale({});
+	const { html, output } = await homeInPseudoLocale({ I18N_PSEUDO: '' });
 	expect(html).toContain('<html lang="en" dir="ltr">');
 	expect(html).toContain('<h1>Home</h1>');
 	expect(output).not.toContain('I18N_PSEUDO');

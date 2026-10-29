@@ -1,6 +1,6 @@
 // Starts the production build as its own process, on a temporary database prepared through the
 // app's own services (they are framework-free, ADR 0008), so each test controls its installation.
-import { test } from '@playwright/test';
+import { test as base, type Locator, type Page } from '@playwright/test';
 import { spawn } from 'node:child_process';
 import { mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -30,11 +30,20 @@ export interface App {
 
 let nextPort = 4300 + Number(process.env.TEST_PARALLEL_INDEX ?? 0) * 100;
 
-// Every app a test starts is stopped after it, even when the test fails.
 const running = new Set<App>();
-test.afterEach(async () => {
-	await Promise.all([...running].map((app) => app.stop()));
+
+/** Playwright's test, stopping every app a test started after it, even when the test fails. */
+export const test = base.extend<{ stopApps: void }>({
+	stopApps: [
+		// eslint-disable-next-line no-empty-pattern -- Playwright fixtures destructure their dependencies.
+		async ({}, use) => {
+			await use();
+			await Promise.all([...running].map((app) => app.stop()));
+		},
+		{ auto: true }
+	]
 });
+export { expect } from '@playwright/test';
 
 export function newDatabasePath(): string {
 	return path.join(mkdtempSync(path.join(tmpdir(), 'simple-e2e-app-')), 'app.db');
@@ -59,7 +68,8 @@ export function startApp(databasePath: string, env: Record<string, string> = {})
 		cwd: appRoot,
 		env: {
 			...process.env,
-			I18N_PSEUDO: '',
+			// npm run test:e2e:pseudo starts every app with the pseudo-locale.
+			I18N_PSEUDO: process.env.I18N_PSEUDO ?? '',
 			PORT: String(port),
 			// adapter-node assumes https unless a proxy header says otherwise: the tests act as that
 			// proxy, sending proxyHeaders, so each app can run on its own port over plain http.
@@ -143,4 +153,21 @@ export async function startSetUpApp(profile: { locale?: string | null } = {}) {
 	const app = startApp(databasePath);
 	await app.listening;
 	return { app, admin, cookie: `session=${admin.token}` };
+}
+
+/**
+ * Opens a page and waits until SvelteKit has hydrated it. WebKit reports the router's own history
+ * update during hydration as a navigation, which would interrupt a navigation started too early.
+ */
+export async function open(page: Page, url: string): Promise<void> {
+	await page.goto(url);
+	await page.waitForLoadState('networkidle');
+}
+
+/** Submits a form by clicking, and waits for the page the server answers with to load. */
+export async function submitAndWait(page: Page, button: Locator): Promise<void> {
+	const loaded = page.waitForEvent('load');
+	await button.click();
+	await loaded;
+	await page.waitForLoadState('networkidle');
 }

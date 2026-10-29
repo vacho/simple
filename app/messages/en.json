@@ -47,6 +47,14 @@
 		"text": "Something went wrong. Please try again.",
 		"description": "Heading and page title shown when an unexpected error stops a page from loading."
 	},
+	"offline.message": {
+		"text": "Reconnect to the internet to continue.",
+		"description": "Text under the offline heading."
+	},
+	"offline.title": {
+		"text": "You're offline",
+		"description": "Heading and page title of the page shown when the app is opened without a network connection."
+	},
 	"settings.title": {
 		"text": "Settings",
 		"description": "Heading and page title of the administrators' settings page."
@@ -58,6 +66,26 @@
 	"shell.home.title": {
 		"text": "Home",
 		"description": "Heading of the home page shown after signing in."
+	},
+	"shell.nav.home": {
+		"text": "Home",
+		"description": "Navigation link to the home page."
+	},
+	"shell.nav.label": {
+		"text": "Main",
+		"description": "Accessible name of the main navigation, read by screen readers as \"Main navigation\"."
+	},
+	"shell.nav.settings": {
+		"text": "Settings",
+		"description": "Navigation link to the administrators' settings page."
+	},
+	"shell.skip_to_content": {
+		"text": "Skip to content",
+		"description": "Link at the very top of every signed-in page, visible when focused with the keyboard, that jumps past the navigation."
+	},
+	"shell.user_menu.profile": {
+		"text": "Profile",
+		"description": "Link in the user menu to the user's own profile page."
 	},
 	"users.display_name.control_characters": {
 		"text": "The name contains characters that are not allowed.",
@@ -75,9 +103,17 @@
 		"text": "Display name",
 		"description": "Label of the field for the name shown to other household members."
 	},
+	"users.field.language": {
+		"text": "Language",
+		"description": "Label of the language selector on the profile page."
+	},
 	"users.field.password": {
 		"text": "Password",
 		"description": "Label of the password field."
+	},
+	"users.field.time_zone": {
+		"text": "Time zone",
+		"description": "Label of the time zone selector on the profile page."
 	},
 	"users.field.username": {
 		"text": "Username",
@@ -90,6 +126,22 @@
 	"users.password.length": {
 		"text": "Use 8 to 128 characters.",
 		"description": "Error under the password field when the password is too short or too long."
+	},
+	"users.profile.browser_default": {
+		"text": "Browser default",
+		"description": "First option of the language selector: follow the language of the browser in use."
+	},
+	"users.profile.intro": {
+		"text": "Your language and time zone apply on every device you sign in from.",
+		"description": "Explanation under the profile heading."
+	},
+	"users.profile.save": {
+		"text": "Save",
+		"description": "Button that saves the profile settings."
+	},
+	"users.profile.title": {
+		"text": "Profile",
+		"description": "Heading and page title of the user's own profile page."
 	},
 	"users.time_zone.invalid": {
 		"text": "Choose a valid time zone.",

@@ -1,7 +1,6 @@
 // Starts the production build as its own process to check the startup sequence (D3).
-import { expect, test } from '@playwright/test';
 import Database from 'better-sqlite3';
-import { newDatabasePath, startApp } from './app.ts';
+import { newDatabasePath, startApp, expect, test } from './app.ts';
 
 const reachable = (url: string) =>
 	fetch(`${url}/`, { redirect: 'manual' }).then(

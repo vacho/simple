@@ -47,6 +47,14 @@
 		"text": "Algo salió mal. Inténtalo de nuevo.",
 		"source": "3ccd9d6586ef9143"
 	},
+	"offline.message": {
+		"text": "Vuelve a conectarte a internet para continuar.",
+		"source": "09d276de6a7e07d4"
+	},
+	"offline.title": {
+		"text": "Sin conexión",
+		"source": "050be7950a638d06"
+	},
 	"settings.title": {
 		"text": "Configuración",
 		"source": "74a883a037bc227f"
@@ -58,6 +66,26 @@
 	"shell.home.title": {
 		"text": "Inicio",
 		"source": "3a78695388b38b5c"
+	},
+	"shell.nav.home": {
+		"text": "Inicio",
+		"source": "3a78695388b38b5c"
+	},
+	"shell.nav.label": {
+		"text": "Principal",
+		"source": "eb814be3ca3b78c0"
+	},
+	"shell.nav.settings": {
+		"text": "Configuración",
+		"source": "74a883a037bc227f"
+	},
+	"shell.skip_to_content": {
+		"text": "Ir al contenido",
+		"source": "ac576a66d4563e60"
+	},
+	"shell.user_menu.profile": {
+		"text": "Perfil",
+		"source": "d696a35bdd1883da"
 	},
 	"users.display_name.control_characters": {
 		"text": "El nombre contiene caracteres no permitidos.",
@@ -75,9 +103,17 @@
 		"text": "Nombre visible",
 		"source": "2b7f6a84de917e38"
 	},
+	"users.field.language": {
+		"text": "Idioma",
+		"source": "a4fe65264ef7dbb3"
+	},
 	"users.field.password": {
 		"text": "Contraseña",
 		"source": "e7cf3ef4f17c3999"
+	},
+	"users.field.time_zone": {
+		"text": "Zona horaria",
+		"source": "b9fe1464783e1c0d"
 	},
 	"users.field.username": {
 		"text": "Nombre de usuario",
@@ -90,6 +126,22 @@
 	"users.password.length": {
 		"text": "Usa de 8 a 128 caracteres.",
 		"source": "0c75aacad8e2d097"
+	},
+	"users.profile.browser_default": {
+		"text": "Idioma del navegador",
+		"source": "44f0527601f9e2d8"
+	},
+	"users.profile.intro": {
+		"text": "Tu idioma y tu zona horaria se aplican en todos los dispositivos donde inicies sesión.",
+		"source": "483ce0da7e9302d9"
+	},
+	"users.profile.save": {
+		"text": "Guardar",
+		"source": "1509f561f2416598"
+	},
+	"users.profile.title": {
+		"text": "Perfil",
+		"source": "d696a35bdd1883da"
 	},
 	"users.time_zone.invalid": {
 		"text": "Elige una zona horaria válida.",

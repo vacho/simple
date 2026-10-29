@@ -25,3 +25,18 @@
 		<p id="{id}-error" class="error">{error}</p>
 	{/if}
 </div>
+
+<style>
+	.field {
+		display: grid;
+		gap: var(--space-1);
+	}
+
+	label {
+		font-weight: 600;
+	}
+
+	.error {
+		margin: 0;
+	}
+</style>

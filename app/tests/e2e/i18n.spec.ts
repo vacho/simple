@@ -1,7 +1,7 @@
-import { expect, test, type Page } from '@playwright/test';
+import { type Page } from '@playwright/test';
 import { readdirSync, readFileSync } from 'node:fs';
 import path from 'node:path';
-import { startSetUpApp } from './app.ts';
+import { startSetUpApp, expect, test } from './app.ts';
 
 // Hydrates with the dictionary fetched from its content-hashed URL, and reports page errors.
 async function openHome(page: Page, url: string, locale: string) {

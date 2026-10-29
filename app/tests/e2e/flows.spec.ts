@@ -1,5 +1,5 @@
 // Setup, sign-in and sign-out in a real browser, against the production build.
-import { expect, test, type Page } from '@playwright/test';
+import { type Page } from '@playwright/test';
 import Database from 'better-sqlite3';
 import {
 	addMember,
@@ -8,7 +8,11 @@ import {
 	setUpAdmin,
 	startApp,
 	startSetUpApp,
-	type App
+	type App,
+	expect,
+	open,
+	submitAndWait,
+	test
 } from './app.ts';
 
 const zoneOf = (app: App, username: string) => {
@@ -21,7 +25,7 @@ const zoneOf = (app: App, username: string) => {
 async function signIn(page: Page, username: string, password: string) {
 	await page.getByLabel(/Username|Nombre de usuario/).fill(username);
 	await page.getByLabel(/Password|Contraseña/).fill(password);
-	await page.getByRole('button', { name: /Sign in|Entrar/ }).click();
+	await submitAndWait(page, page.getByRole('button', { name: /Sign in|Entrar/ }));
 }
 
 test.describe('First-run administrator setup', () => {
@@ -32,13 +36,13 @@ test.describe('First-run administrator setup', () => {
 	}) => {
 		const app = startApp(newDatabasePath());
 		await app.listening;
-		await page.goto(`${app.url}/`);
+		await open(page, `${app.url}/`);
 		await expect(page).toHaveURL(`${app.url}/setup`);
 		await expect(page.locator('h1')).toHaveText('Set up the app');
 		await page.getByLabel('Display name').fill('  María José Ñuflo ');
 		await page.getByLabel('Username').fill(' Ana.Perez ');
 		await page.getByLabel('Password').fill('correct horse battery');
-		await page.getByRole('button', { name: 'Create account' }).click();
+		await submitAndWait(page, page.getByRole('button', { name: 'Create account' }));
 		await expect(page).toHaveURL(`${app.url}/`);
 		await expect(page.locator('h1')).toHaveText('Home');
 		expect(zoneOf(app, 'ana.perez')).toBe('America/La_Paz');
@@ -47,18 +51,18 @@ test.describe('First-run administrator setup', () => {
 	test('shows why the setup details are invalid', async ({ page }) => {
 		const app = startApp(newDatabasePath());
 		await app.listening;
-		await page.goto(`${app.url}/setup`);
+		await open(page, `${app.url}/setup`);
 		await page.getByLabel('Display name').fill('Toño');
 		await page.getByLabel('Username').fill('toño');
 		await page.getByLabel('Password').fill('short');
-		await page.getByRole('button', { name: 'Create account' }).click();
+		await submitAndWait(page, page.getByRole('button', { name: 'Create account' }));
 		await expect(page.getByText('Use 3 to 32 characters: lowercase letters')).toBeVisible();
 		await expect(page.getByLabel('Display name')).toHaveValue('Toño');
 	});
 
 	test('Setup is closed once a user exists: the page leads to sign-in', async ({ page }) => {
 		const { app } = await startSetUpApp();
-		await page.goto(`${app.url}/setup`);
+		await open(page, `${app.url}/setup`);
 		await expect(page).toHaveURL(`${app.url}/login`);
 	});
 });
@@ -69,7 +73,7 @@ test.describe('First use with a Spanish browser', () => {
 	test('the setup page is shown in Spanish', async ({ page }) => {
 		const app = startApp(newDatabasePath());
 		await app.listening;
-		await page.goto(`${app.url}/setup`);
+		await open(page, `${app.url}/setup`);
 		await expect(page.locator('h1')).toHaveText('Configura la aplicación');
 		await expect(page.getByLabel('Nombre visible')).toBeVisible();
 		await expect(page).toHaveTitle('Configura la aplicación');
@@ -79,7 +83,7 @@ test.describe('First use with a Spanish browser', () => {
 test.describe('Sign-in', () => {
 	test('Successful sign-in returns to the page the user requested', async ({ page }) => {
 		const { app } = await startSetUpApp();
-		await page.goto(`${app.url}/settings`);
+		await open(page, `${app.url}/settings`);
 		await expect(page).toHaveURL(`${app.url}/login?redirectTo=%2Fsettings`);
 		await signIn(page, 'ana', 'correct horse battery');
 		await expect(page).toHaveURL(`${app.url}/settings`);
@@ -94,7 +98,7 @@ test.describe('Sign-in', () => {
 			['ana', 'wrong password'],
 			['nobody', 'wrong password']
 		]) {
-			await page.goto(`${app.url}/login`);
+			await open(page, `${app.url}/login`);
 			await signIn(page, username, password);
 			await expect(page.getByRole('alert')).toHaveText('Invalid username or password.');
 			await expect(page).toHaveURL(`${app.url}/login`);
@@ -103,7 +107,7 @@ test.describe('Sign-in', () => {
 
 	test('Too many failures: locked after 5, even with the correct password', async ({ page }) => {
 		const { app } = await startSetUpApp();
-		await page.goto(`${app.url}/login`);
+		await open(page, `${app.url}/login`);
 		for (let i = 0; i < 5; i++) await signIn(page, 'ana', 'wrong password');
 		await signIn(page, 'ana', 'correct horse battery');
 		await expect(page.getByRole('alert')).toHaveText('Too many attempts. Try again in 15 minutes.');
@@ -117,7 +121,7 @@ test.describe('Before sign-in the browser decides', () => {
 		page
 	}) => {
 		const { app } = await startSetUpApp({ locale: 'es' });
-		await page.goto(`${app.url}/login`);
+		await open(page, `${app.url}/login`);
 		await expect(page.locator('h1')).toHaveText('Sign in');
 		await signIn(page, 'ana', 'correct horse battery');
 		await expect(page.locator('h1')).toHaveText('Inicio');
@@ -137,8 +141,9 @@ test('Sign-out: the session ends and the old cookie no longer grants access', as
 	const app = startApp(databasePath);
 	await app.listening;
 	await context.addCookies([{ name: 'session', value: token, url: app.url }]);
-	await page.goto(`${app.url}/`);
-	await page.getByRole('button', { name: 'Sign out' }).click();
+	await open(page, `${app.url}/`);
+	await page.getByText('Luis').click();
+	await submitAndWait(page, page.getByRole('button', { name: 'Sign out' }));
 	await expect(page).toHaveURL(`${app.url}/login`);
 	expect(
 		(await context.cookies(app.url)).find((cookie) => cookie.name === 'session')

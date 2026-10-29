@@ -13,7 +13,7 @@
 	<title>{i18n.t('auth.sign_in.title')}</title>
 </svelte:head>
 
-<main>
+<div>
 	<h1>{i18n.t('auth.sign_in.title')}</h1>
 	<form method="POST">
 		{#if formError(i18n.t, form)}
@@ -37,4 +37,4 @@
 		<TimeZoneInput />
 		<button type="submit">{i18n.t('auth.sign_in.submit')}</button>
 	</form>
-</main>
+</div>

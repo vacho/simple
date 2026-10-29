@@ -1,5 +1,4 @@
-import { expect, test } from '@playwright/test';
-import { proxyHeaders, startSetUpApp } from './app.ts';
+import { proxyHeaders, startSetUpApp, expect, test } from './app.ts';
 
 test('Forged form submission: a POST from another origin is rejected', async () => {
 	const { app, cookie } = await startSetUpApp();

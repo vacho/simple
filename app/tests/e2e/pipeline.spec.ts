@@ -1,5 +1,4 @@
 // The request pipeline (D5) on real HTTP responses of the production build.
-import { expect, test } from '@playwright/test';
 import Database from 'better-sqlite3';
 import { readdirSync } from 'node:fs';
 import path from 'node:path';
@@ -11,7 +10,9 @@ import {
 	prepareDatabase,
 	startApp,
 	startSetUpApp,
-	type App
+	type App,
+	expect,
+	test
 } from './app.ts';
 
 const day = 24 * 60 * 60 * 1000;

@@ -1,4 +1,3 @@
-import { expect, test } from '@playwright/test';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import {
@@ -7,7 +6,9 @@ import {
 	newDatabasePath,
 	prepareDatabase,
 	setUpAdmin,
-	startApp
+	startApp,
+	expect,
+	test
 } from './app.ts';
 
 const { version } = JSON.parse(readFileSync(path.join(appRoot, 'package.json'), 'utf8'));
