@@ -92,3 +92,5 @@ The options rejected and why, one line each.
 | [0023](0023-app-in-its-own-folder.md) | The app lives in its own folder | Accepted |
 | [0024](0024-commit-convention-file-kinds-and-multi-agent-tooling.md) | Commit convention, file kinds, and multi-agent tooling | Accepted |
 | [0025](0025-git-hooks-contract-with-multi-agent-tooling.md) | Git hooks contract, with multi-agent tooling | Accepted |
+| [0026](0026-members-are-the-people-household-data-refers-to.md) | Members, not user accounts, are the people household data refers to | Proposed |
+| [0027](0027-account-states-enforced-by-sessions-and-policy.md) | Account states are enforced by session validation and the policy | Proposed |
