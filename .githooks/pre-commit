@@ -1,5 +1,5 @@
 #!/bin/sh
-# Keeps app code off main (change-flow skill, ADRs 0017, 0019 and 0022): on main,
+# Keeps app code off main (change-flow skill, ADRs 0017, 0024 and 0025): on main,
 # only the plan, project docs (docs/) and agent tooling may be committed. App
 # code (everything in app/, ADR 0023), README.md included, reaches main through a merge of a change/, fix/,
 # chore/, build/ or ci/ branch.
