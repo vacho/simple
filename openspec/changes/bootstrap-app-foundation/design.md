@@ -215,7 +215,7 @@ src/lib/server/policy/
 ### D9. PWA with SvelteKit's built-in service worker
 `@vite-pwa/sveltekit` is not used: its latest release supports only SvelteKit 1 and 2.
 - `static/manifest.webmanifest`: name, short name, icons 192, 512 and maskable (committed PNGs), theme and background colors, `display: standalone`. It's linked from `app.html`.
-- `src/service-worker.ts` (bundled as a module by Kit 3, typed through `$app/service-worker`, asset lists from `$app/manifest`, version from `$app/env`): precache the built app shell and the offline pages on install; on activate, delete old caches and call `clients.claim()`. Why: without `claim()`, the worker doesn't control the page on the very first visit, so going offline right after it would show a browser error.
+- `src/service-worker/index.ts`, beside its own `tsconfig.json` (D2) (bundled as a module by Kit 3, typed through `$app/service-worker`, asset lists from `$app/manifest`, version from `$app/env`): precache the built app shell and the offline pages on install; on activate, delete old caches and call `clients.claim()`. Why: without `claim()`, the worker doesn't control the page on the very first visit, so going offline right after it would show a browser error.
 - Fetch strategy: navigations go to the network, falling back to the offline page when offline. Other requests are served from cache only for precached build assets. Responses from pages or `/api` are never cached, so financial data never sits in the service worker cache.
 - **Offline page in every installed language:** a public route `/offline` renders one small HTML page that embeds the offline texts of every installed language, read from the database, so languages installed later are covered without a rebuild. The worker caches `/offline` on install, and re-fetches it whenever it receives a locale message, which picks up newly installed languages. On every page load, the root layout sends the resolved locale through `navigator.serviceWorker.ready`, which resolves once the worker is active even on the first visit, before it controls the page, by posting to `registration.active`. The worker stores that code (a language code only, nothing private) as the single metadata entry `/__meta/locale` in its cache. The spec explicitly allows this entry, and the cache test checks its exact content. Offline, the worker serves the cached `/offline` page, and an inline script on it shows the texts for the stored locale. Without one, it matches `navigator.languages` with the same matcher as D14, then falls back to English.
 - **HTTPS and browsers:** service workers and installation need HTTPS outside `localhost`. The README documents serving through a TLS-terminating reverse proxy, with a Caddy example (automatic certificates), and lists the supported browsers from the app-shell spec. Install prompts differ per browser: iOS Safari only offers "Add to Home Screen" from the share menu, and desktop Firefox can't install. The spec therefore requires the installability criteria, not a prompt.
@@ -240,7 +240,7 @@ Organized by feature, following D16.
 ```
 src/
   hooks.server.ts          (init: runs server/startup.ts once; handle: pipeline, D5)
-  service-worker.ts
+  service-worker/          (index.ts and its own tsconfig.json, D2)
   lib/
     domain/
       money/               (pure, no I/O, client-safe)
@@ -268,6 +268,7 @@ src/
         server/
           index.ts, service.ts (setupStatus, setup, signIn, signOut, resolveActor)
           repo.ts, schema.ts (owns tables: sessions, login_attempts)
+          queries.ts       (session validation: sessions joined with users, D16)
           password.ts, session.ts, throttle.ts, and their tests
                            (no validation.ts: sign-in input uses users/validation.ts)
     server/
@@ -340,7 +341,7 @@ Languages are app data, not build artifacts. English is the base, built into the
 - Server and client must agree on the locale, or hydration flickers. The server resolves it once per request and passes it to the client through the root layout data, and the client uses that value rather than re-detecting from `navigator.languages`.
 - `<html lang>` and `<html dir>` are set per request by replacing placeholders in `app.html` within `handle`'s `transformPageChunk`. The direction comes from `new Intl.Locale(code).getTextInfo().direction` (`rtl` for Arabic, Hebrew or Persian), so right-to-left languages work as soon as they are installed. See D10 for the CSS side.
 - **Pseudo-locale for testing:** a generated language `en-XA` is installed only when the server starts with `I18N_PSEUDO=1`. The flag works with any build, including the production build that the e2e suite runs against, so the pseudo-locale run uses exactly the same code as the normal one. It is never set by default: `.env.example`, the README's deployment instructions and the default test run don't set it, the server logs a warning at startup when it is set, and a test checks that a production start without the flag has no `en-XA`. A dedicated `npm run test:e2e:pseudo` sets it. It transforms every English text: accented letters, brackets and about 35% extra length (`[Ŝîĝñ îñ ~~~~]`). Running the e2e suite in `en-XA` reveals hard-coded text, which stays plain, and layouts that break with longer languages.
-- Formatting uses `Intl` with the active locale, through helpers in `#lib/i18n/format.ts`. The money module (D7) uses them too.
+- Formatting uses `Intl` with the active locale, through helpers in `#lib/i18n/format.ts`. The money module (D7) calls `Intl.NumberFormat` directly with an exact decimal string, since converting to a number would lose precision on large amounts.
 - **Time zones:**
   - All timestamps are stored in UTC.
   - Display uses the signed-in user's `users.time_zone`, passed to the client with the locale through the root layout data, so server and client render the same text.
