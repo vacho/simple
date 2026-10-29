@@ -8,7 +8,7 @@
 		"build": "vite build",
 		"preview": "vite preview",
 		"prepare": "svelte-kit sync || echo \"\"; git rev-parse --git-dir >/dev/null 2>&1 && git config core.hooksPath .githooks || true",
-		"check": "npm run i18n:gen && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && eslint . && prettier --check .",
+		"check": "npm run i18n:gen && npm run i18n:check && svelte-kit sync && svelte-check --tsconfig ./tsconfig.json && eslint . && prettier --check .",
 		"check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
 		"lint": "prettier --check . && eslint .",
 		"format": "prettier --write .",
@@ -17,7 +17,11 @@
 		"i18n:gen": "node --import tsx scripts/gen-messages.ts",
 		"predev": "npm run i18n:gen",
 		"prebuild": "npm run i18n:gen",
-		"db:generate": "drizzle-kit generate"
+		"db:generate": "drizzle-kit generate",
+		"i18n:check": "node --import tsx scripts/check-messages.ts",
+		"i18n:status": "node --import tsx scripts/i18n-status.ts",
+		"i18n:sort": "node --import tsx scripts/i18n-sort.ts",
+		"test:e2e:pseudo": "I18N_PSEUDO=1 playwright test"
 	},
 	"devDependencies": {
 		"@eslint/js": "^10.0.1",

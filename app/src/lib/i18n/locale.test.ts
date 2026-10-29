@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { matchLocale, parseAcceptLanguage } from './locale.ts';
+import { matchLocale, parseAcceptLanguage, resolveLocale, textDirection } from './locale.ts';
 
 const match = (header: string, installed = ['en', 'es']) =>
 	matchLocale(parseAcceptLanguage(header), installed);
@@ -37,5 +37,36 @@ describe('Accept-Language matching', () => {
 
 	it('prefers an exact regional match over the primary subtag', () => {
 		expect(match('pt-BR', ['en', 'pt', 'pt-BR'])).toBe('pt-BR');
+	});
+});
+
+describe('resolveLocale', () => {
+	const installed = ['en', 'es', 'fr'];
+
+	it('uses the saved language when it is installed', () => {
+		expect(resolveLocale('es', 'en-US,en;q=0.9', installed)).toBe('es');
+	});
+
+	it('follows the browser when no language is saved', () => {
+		expect(resolveLocale(null, 'fr-CA, en;q=0.5', installed)).toBe('fr');
+	});
+
+	it('follows the browser when the saved language is no longer installed', () => {
+		expect(resolveLocale('de', 'es-BO', installed)).toBe('es');
+	});
+
+	it('falls back to English when nothing matches', () => {
+		expect(resolveLocale(null, 'ja', installed)).toBe('en');
+		expect(resolveLocale(null, null, installed)).toBe('en');
+	});
+});
+
+describe('textDirection', () => {
+	it('is rtl for right-to-left languages and ltr otherwise', () => {
+		expect(textDirection('ar')).toBe('rtl');
+		expect(textDirection('he')).toBe('rtl');
+		expect(textDirection('fa-IR')).toBe('rtl');
+		expect(textDirection('es-BO')).toBe('ltr');
+		expect(textDirection('en')).toBe('ltr');
 	});
 });

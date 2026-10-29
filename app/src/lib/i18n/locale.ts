@@ -35,3 +35,21 @@ export function matchLocale(
 	}
 	return undefined;
 }
+
+/**
+ * The locale of a request (D14): the signed-in user's saved language when it is installed, then
+ * the browser's preferences, then English. There is no language cookie and no URL locale.
+ */
+export function resolveLocale(
+	saved: string | null,
+	acceptLanguage: string | null,
+	installed: readonly string[]
+): string {
+	if (saved && installed.includes(saved)) return saved;
+	return matchLocale(parseAcceptLanguage(acceptLanguage), installed) ?? 'en';
+}
+
+/** Writing direction of a language, from CLDR: rtl for Arabic, Hebrew, Persian... */
+export function textDirection(locale: string): 'ltr' | 'rtl' {
+	return new Intl.Locale(locale).getTextInfo().direction === 'rtl' ? 'rtl' : 'ltr';
+}

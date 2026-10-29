@@ -32,7 +32,7 @@ export default defineConfig({
 	],
 	test: {
 		// Unit and integration tests; end-to-end tests are tests/e2e/*.spec.ts, run by Playwright.
-		include: ['src/**/*.test.ts', 'tests/**/*.test.ts'],
+		include: ['src/**/*.test.ts', 'scripts/**/*.test.ts', 'tests/**/*.test.ts'],
 		exclude: ['tests/e2e/**', 'tests/lint/fixtures/**']
 	}
 });

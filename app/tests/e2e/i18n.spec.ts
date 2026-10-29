@@ -20,6 +20,7 @@ test.describe('English browser', () => {
 	}) => {
 		const html = await (await request.get('/', { headers: { 'accept-language': 'en' } })).text();
 		expect(html).toContain('<h1>Home</h1>');
+		expect(html).toContain('<html lang="en" dir="ltr">');
 		expect(await openHome(page, 'en')).toEqual([]);
 		await expect(page.locator('h1')).toHaveText('Home');
 	});
@@ -34,9 +35,21 @@ test.describe('Spanish browser', () => {
 	}) => {
 		const html = await (await request.get('/')).text();
 		expect(html).toContain('<h1>Inicio</h1>');
+		expect(html).toContain('<html lang="es" dir="ltr">');
 		expect(await openHome(page, 'es')).toEqual([]);
 		await expect(page.locator('h1')).toHaveText('Inicio');
 	});
+});
+
+test('Browser language not installed: a French-only browser gets English', async ({ request }) => {
+	const html = await (await request.get('/', { headers: { 'accept-language': 'fr' } })).text();
+	expect(html).toContain('<html lang="en" dir="ltr">');
+	expect(html).toContain('<h1>Home</h1>');
+});
+
+test('Quality values are respected', async ({ request }) => {
+	const headers = { 'accept-language': 'en;q=0.5, es;q=1' };
+	expect(await (await request.get('/', { headers })).text()).toContain('<html lang="es"');
 });
 
 test('the browser bundle does not contain the ICU message parser', () => {
