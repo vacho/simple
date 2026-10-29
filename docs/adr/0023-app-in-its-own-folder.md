@@ -10,7 +10,7 @@ The repository holds two things: the app, and the tools used to build it with AI
 
 ## Decision
 
-The app is a self-contained npm project in `app/`: `package.json`, `package-lock.json`, `node_modules/`, its tool configs, SvelteKit's `src/`, and its `messages/`, `drizzle/`, `scripts/`, `static/` and `tests/`. The repository root holds only the tooling: `.claude/`, `.githooks/`, `docs/`, `openspec/`, `CLAUDE.md` and `AGENTS.md`.
+The app is a self-contained npm project in `app/`: `package.json`, `package-lock.json`, `node_modules/`, its tool configs, SvelteKit's `src/`, and its `messages/`, `drizzle/`, `scripts/`, `static/` and `tests/`. The repository root holds only the tooling: `.claude/`, `.agents/`, `.githooks/`, `docs/`, `openspec/`, `CLAUDE.md` and `AGENTS.md`.
 
 Paths to app files in ADRs, specs, designs and tasks are relative to `app/` (`src/lib/features/`, `messages/en.json`, `package.json`), unless they say otherwise.
 
