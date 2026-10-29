@@ -24,6 +24,9 @@ function browserWithoutIcuParser(): Plugin {
 
 export default defineConfig({
 	define: { __APP_VERSION__: JSON.stringify(version) },
+	server: {
+		allowedHosts: ['.trycloudflare.com']
+	},
 	plugins: [
 		browserWithoutIcuParser(),
 		sveltekit({
