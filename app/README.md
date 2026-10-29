@@ -51,6 +51,8 @@ npm run test:e2e   # end-to-end tests against the production build (Playwright)
 
 The end-to-end tests run on Chromium, Firefox and WebKit; install the browsers once with `npx playwright install chromium firefox webkit`. Each test starts the production build on its own temporary database.
 
+To try the development server on a phone, expose it through a [Cloudflare quick tunnel](https://developers.cloudflare.com/cloudflare-one/connections/connect-networks/do-more-with-tunnels/trycloudflare/) (`cloudflared tunnel --url http://localhost:5173`): `server.allowedHosts` in `vite.config.ts` lets `*.trycloudflare.com` through, and the tunnel's HTTPS lets the phone install the app. It applies to `npm run dev` only.
+
 `npm run check` must pass before a task is done. It runs `svelte-check` (including the service worker's own tsconfig), ESLint with the feature boundaries, stylelint, Prettier, and the message catalog checks.
 
 ## Build and run
