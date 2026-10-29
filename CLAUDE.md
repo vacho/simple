@@ -13,13 +13,28 @@ A personal and family finance app for a single household, built with spec-driven
 
 ## How to work
 
-- Work through the OpenSpec workflow (`/opsx:explore`, `/opsx:propose`, `/opsx:apply`, `/opsx:verify`, `/opsx:archive`). Don't change behavior without a change that specifies it.
-- If a spec is wrong or incomplete, update it with `/opsx:update` before changing code.
+- Work through the OpenSpec workflow (`explore` → `propose` → `apply` → `verify` → `archive`). Never change behavior without an OpenSpec change that specifies it.
+- If a spec is wrong or incomplete, update the plan (`update` workflow) before changing code.
 - Write artifacts, code, comments and commit messages in English. The owner may write in Spanish; answer in the language they use.
+
+### Agent Workflow Commands
+
+Run the workflow action using your tool's syntax:
+
+| Action | Claude Code | Antigravity / Agents | CLI equivalent |
+|---|---|---|---|
+| **Explore** | `/opsx:explore` | `/opsx-explore` | `openspec explore` |
+| **Propose** | `/opsx:propose` | `/opsx-propose` | `openspec new change` |
+| **Apply** | `/opsx:apply` | `/opsx-apply` | `openspec instructions` |
+| **Update** | `/opsx:update` | `/opsx-update` | `openspec update` |
+| **Verify** | `/opsx:verify` | `/opsx-verify` | `openspec validate --strict` |
+| **Archive** | `/opsx:archive` | `/opsx-archive` | `openspec archive` |
+
+*To add support for a new AI assistant: run `openspec init --tools <tool>`, and symlink or share the project skills (`change-flow`, `adr`).*
 
 ## Git
 
-- Run `change-flow` `prepare` before `/opsx:propose` or `/opsx:update`.
+- Run `change-flow` `prepare` before proposing a change or updating a plan.
 - Every branch, commit, merge and archive goes through the `change-flow` skill, which holds the rules (branch names, commit convention with the owner's task code, merge and archive order). Read it before any Git operation. Parallel changes also use `openspec-parallel-apply`.
 - Commits follow the commit mode (`git config simple.commitMode`, default `review`): propose the commits, wait for the owner's approval, then commit. With `auto`, commit directly.
 - Git hooks in `.githooks/` check every commit; enable them once per clone with `git config core.hooksPath .githooks`, and never bypass them with `--no-verify`.
