@@ -2,9 +2,18 @@
 // uses a Spanish browser: no English text may appear. npm run test:e2e:pseudo uses en-XA: every
 // text must be pseudo-localized, so hard-coded text stands out, and long texts must not overflow.
 import Database from 'better-sqlite3';
+import { v7 } from 'uuid';
 import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { type Page } from '@playwright/test';
+import {
+	createAccountForMember,
+	createMember,
+	createMemberType,
+	renameHousehold
+} from '../../src/lib/features/household/server/index.ts';
+import { resolveActor } from '../../src/lib/features/auth/server/index.ts';
+import { testCtx } from '../../src/lib/server/core/ctx.ts';
 import {
 	addMember,
 	appRoot,
@@ -40,7 +49,17 @@ const english = (() => {
 })();
 
 // Data the user entered or that is not a translatable text.
-const notTranslatable = ['Ana Pérez', 'Luis', 'ana', 'toño', 'Toño', version];
+const notTranslatable = [
+	'Ana Pérez',
+	'Luis',
+	'ana',
+	'toño',
+	'Toño',
+	version,
+	'Familia Pérez',
+	'Lucía',
+	'Osvaldo'
+];
 
 /** Visible texts of the page, outside select options (language and time zone names). */
 const visibleTexts = (page: Page) =>
@@ -157,5 +176,57 @@ test.describe(`${pseudo ? 'No plain text in en-XA' : 'Spanish is complete'}: eve
 		await page.goto(`${app.url}/offline`);
 		await expect(page.locator('html')).toHaveAttribute('lang', pseudo ? 'en-XA' : 'es');
 		await check(page, 'offline');
+	});
+
+	test('household pages: members, a member and their account, household, member types, accounts and the password page', async ({
+		page,
+		context
+	}) => {
+		const databasePath = newDatabasePath();
+		const tokens = await prepareDatabase(databasePath, async (db) => {
+			const admin = await setUpAdmin(db);
+			const ctx = testCtx(db, { actor: resolveActor(testCtx(db), admin.token).actor });
+			renameHousehold(ctx, { name: 'Familia Pérez' });
+			const type = v7();
+			createMemberType(ctx, { id: type, name: 'Hija', baseClass: 'minor' });
+			const lucia = v7();
+			createMember(ctx, { id: lucia, name: 'Lucía', memberTypeId: type });
+			createMember(ctx, { id: v7(), name: 'Osvaldo', memberTypeId: type });
+			await createAccountForMember(ctx, lucia, {
+				displayName: 'Luis',
+				username: 'ana2',
+				role: 'member',
+				password: 'primer-dia-2026'
+			});
+			return {
+				admin: admin.token,
+				temporary: await addMember(db, 'luis', { passwordTemporary: true })
+			};
+		});
+		const app = startApp(databasePath);
+		await app.listening;
+		await context.addCookies([{ name: 'session', value: tokens.admin, url: app.url }]);
+		for (const screen of [
+			'/members',
+			'/settings/household',
+			'/settings/member-types',
+			'/settings/accounts'
+		]) {
+			await page.goto(`${app.url}${screen}`);
+			await check(page, screen);
+		}
+		await page.goto(`${app.url}/members`);
+		await page.getByRole('link', { name: 'Lucía' }).click();
+		await page.waitForLoadState('networkidle');
+		await check(page, 'member with an account');
+		await page.goto(`${app.url}/members`);
+		await page.getByRole('link', { name: 'Osvaldo' }).click();
+		await page.waitForLoadState('networkidle');
+		await check(page, 'member without an account');
+
+		await context.clearCookies();
+		await context.addCookies([{ name: 'session', value: tokens.temporary, url: app.url }]);
+		await page.goto(`${app.url}/password`);
+		await check(page, 'password');
 	});
 });

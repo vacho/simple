@@ -20,6 +20,8 @@ body {
 	background: var(--color-bg);
 	color: var(--color-text);
 	text-align: start;
+	/* Long words (some languages, pasted names) wrap instead of widening the page. */
+	overflow-wrap: break-word;
 }
 
 h1 {

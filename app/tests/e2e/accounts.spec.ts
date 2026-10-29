@@ -154,11 +154,15 @@ test('Reset a forgotten password from the accounts page: confirmed, and the own 
 
 	await open(page, `${app.url}/settings`);
 	await page.getByRole('link', { name: 'Accounts' }).click();
-	const ana = page.getByRole('listitem').filter({ hasText: 'Username: ana' });
+	const ana = page
+		.getByRole('listitem')
+		.filter({ has: page.getByRole('heading', { name: 'Ana Pérez' }) });
 	await expect(ana).toContainText('This is your account.');
 	await expect(ana.getByRole('button')).toHaveCount(0);
 
-	const lucia = page.getByRole('listitem').filter({ hasText: 'Username: lucia' });
+	const lucia = page
+		.getByRole('listitem')
+		.filter({ has: page.getByRole('heading', { name: 'Lucía' }) });
 	await expect(lucia).toContainText('Waiting for a new password');
 	await lucia.getByRole('button', { name: 'Reset password' }).click();
 	await expect(page.getByText('Set a new temporary password for lucia?')).toBeVisible();

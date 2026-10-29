@@ -41,9 +41,9 @@ Paths are relative to `app/`, and commands run there (ADR 0023). E2e tests use t
 
 ## 7. Documentation and cross-browser checks
 
-- [ ] 7.1 Update `README.md`: the household and members after setup (name the household, create member types, then members and their accounts), temporary passwords and what to do when someone forgets their password, deactivation instead of deletion, and that the household always keeps one active administrator. Verify the steps by following them on a fresh database with `npm run dev`
-- [ ] 7.2 Add the flow "administrator creates a member and their account, the member signs in, replaces the temporary password and sees the members page" to the core flows run on Firefox and WebKit in `playwright.config.ts`, and verify it passes on the three browsers
-- [ ] 7.3 Run the pseudo-locale screen checks (`npm run test:e2e:pseudo`) with the new pages added to the screens list, and verify no hard-coded text or overflow is reported
+- [x] 7.1 Update `README.md`: the household and members after setup (name the household, create member types, then members and their accounts), temporary passwords and what to do when someone forgets their password, deactivation instead of deletion, and that the household always keeps one active administrator. Verify the steps by following them on a fresh database with `npm run dev`
+- [x] 7.2 Add the flow "administrator creates a member and their account, the member signs in, replaces the temporary password and sees the members page" to the core flows run on Firefox and WebKit in `playwright.config.ts`, and verify it passes on the three browsers
+- [x] 7.3 Run the pseudo-locale screen checks (`npm run test:e2e:pseudo`) with the new pages added to the screens list, and verify no hard-coded text or overflow is reported
 
 ## 8. Final verification
 

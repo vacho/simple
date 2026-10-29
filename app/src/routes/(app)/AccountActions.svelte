@@ -25,11 +25,13 @@
 </script>
 
 <div class="account">
-	<p>
-		{i18n.t('users.account.username', { username: account.username })} ·
-		{i18n.t(roleLabel[account.role])} ·
-		{i18n.t(account.active ? 'users.account.state_active' : 'users.account.state_inactive')}
-	</p>
+	<ul class="facts">
+		<li>{i18n.t('users.account.username', { username: account.username })}</li>
+		<li>{i18n.t(roleLabel[account.role])}</li>
+		<li>
+			{i18n.t(account.active ? 'users.account.state_active' : 'users.account.state_inactive')}
+		</li>
+	</ul>
 
 	{#if own}
 		<p>{i18n.t('users.account.own')}</p>
@@ -118,6 +120,15 @@
 		flex-wrap: wrap;
 		gap: var(--space-2);
 		align-items: center;
+	}
+
+	.facts {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-1) var(--space-3);
+		margin: 0;
+		padding: 0;
+		list-style: none;
 	}
 
 	.stack {
