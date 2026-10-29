@@ -4,6 +4,7 @@ import type { Db } from '../../../server/db/client.ts';
 import { household, members, memberTypes } from './schema.ts';
 
 type NewMemberType = typeof memberTypes.$inferInsert;
+type NewMember = typeof members.$inferInsert;
 
 export function findHouseholdName(db: Db): string | null {
 	return db.select({ name: household.name }).from(household).get()?.name ?? null;
@@ -68,4 +69,30 @@ export function listMemberTypes(db: Db) {
 		.groupBy(memberTypes.id)
 		.orderBy(memberTypes.nameKey)
 		.all();
+}
+
+export function findMember(db: Db, id: string) {
+	return db.select().from(members).where(eq(members.id, id)).get();
+}
+
+export function findMemberByNameKey(db: Db, nameKey: string) {
+	return db.select().from(members).where(eq(members.nameKey, nameKey)).get();
+}
+
+export function insertMember(db: Db, row: NewMember): void {
+	db.insert(members).values(row).run();
+}
+
+export function updateMember(
+	db: Db,
+	id: string,
+	changes: Partial<
+		Pick<NewMember, 'name' | 'nameKey' | 'memberTypeId' | 'archivedAt' | 'userId' | 'firstLinkedAt'>
+	>
+): void {
+	db.update(members).set(changes).where(eq(members.id, id)).run();
+}
+
+export function deleteMember(db: Db, id: string): void {
+	db.delete(members).where(eq(members.id, id)).run();
 }

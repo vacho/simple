@@ -79,9 +79,17 @@
 		"text": "Menor",
 		"source": "5717c39b819da72b"
 	},
+	"household.confirm.archive_member": {
+		"text": "¿Archivar a \"{name}\"? Solo las personas administradoras verán a este miembro.",
+		"source": "e6e384fe0152ec1a"
+	},
 	"household.confirm.archive_type": {
 		"text": "¿Archivar el tipo de miembro \"{name}\"? Ya no se ofrecerá para los miembros; quienes lo tienen lo conservan.",
 		"source": "1c0add589878d269"
+	},
+	"household.confirm.delete_member": {
+		"text": "¿Eliminar a \"{name}\"? Esto no se puede deshacer.",
+		"source": "1dbc95d56374dc74"
 	},
 	"household.confirm.delete_type": {
 		"text": "¿Eliminar el tipo de miembro \"{name}\"? Esto no se puede deshacer.",
@@ -90,6 +98,10 @@
 	"household.field.base_class": {
 		"text": "Clase base",
 		"source": "6e4e297f5b9fa8c3"
+	},
+	"household.field.member_type": {
+		"text": "Tipo de miembro",
+		"source": "135db96d3dbb9126"
 	},
 	"household.field.name": {
 		"text": "Nombre",
@@ -102,6 +114,34 @@
 	"household.id.invalid": {
 		"text": "Este formulario está desactualizado. Vuelve a cargar la página e inténtalo de nuevo.",
 		"source": "1af9c3c63ae9b8ad"
+	},
+	"household.member.active_account": {
+		"text": "La cuenta de este miembro está activa. Desactiva o desvincula la cuenta antes de archivar al miembro.",
+		"source": "4dbcefe2317c4fc6"
+	},
+	"household.member.archived": {
+		"text": "Este miembro está archivado.",
+		"source": "43c171467167c1a0"
+	},
+	"household.member.back": {
+		"text": "Volver a los miembros",
+		"source": "ae1cfb212ff58fd0"
+	},
+	"household.member.ever_linked": {
+		"text": "Este miembro ha tenido una cuenta, así que no se puede eliminar. Archívalo en su lugar.",
+		"source": "98cfc29ba00cecfa"
+	},
+	"household.member.save": {
+		"text": "Guardar cambios",
+		"source": "dd0ae7a5cbcf2339"
+	},
+	"household.member.title": {
+		"text": "Miembro {name}",
+		"source": "df8da1e7580bde15"
+	},
+	"household.member.type_unavailable": {
+		"text": "Elige un tipo de miembro que no esté archivado.",
+		"source": "1e8f890b1a72f959"
 	},
 	"household.member_type.base_class_in_use": {
 		"text": "Hay miembros con este tipo, así que su clase base no puede cambiar.",
@@ -146,6 +186,46 @@
 	"household.member_types.title": {
 		"text": "Tipos de miembro",
 		"source": "9eceaf1219255bae"
+	},
+	"household.members.account": {
+		"text": "Cuenta: {username}",
+		"source": "687b60b38e868b5f"
+	},
+	"household.members.archived_heading": {
+		"text": "Miembros archivados",
+		"source": "557f4cbeccdaecf2"
+	},
+	"household.members.create": {
+		"text": "Agregar miembro",
+		"source": "171084156de6aca4"
+	},
+	"household.members.empty": {
+		"text": "El hogar todavía no tiene miembros.",
+		"source": "89e8109e727d11f8"
+	},
+	"household.members.go_to_types": {
+		"text": "Crear un tipo de miembro",
+		"source": "fd3ae65e4c662d3d"
+	},
+	"household.members.needs_type": {
+		"text": "Los miembros necesitan primero un tipo de miembro.",
+		"source": "829df7866f790f25"
+	},
+	"household.members.new": {
+		"text": "Nuevo miembro",
+		"source": "38db545f1d183cca"
+	},
+	"household.members.no_account": {
+		"text": "Sin cuenta",
+		"source": "79eb5c21a49f5f26"
+	},
+	"household.members.title": {
+		"text": "Miembros",
+		"source": "1044a4c056d0d685"
+	},
+	"household.members.type_and_class": {
+		"text": "{type} ({baseClass})",
+		"source": "722266cb87ffd677"
 	},
 	"household.name.control_characters": {
 		"text": "Quita los caracteres de control invisibles del nombre.",
@@ -214,6 +294,10 @@
 	"shell.nav.label": {
 		"text": "Principal",
 		"source": "eb814be3ca3b78c0"
+	},
+	"shell.nav.members": {
+		"text": "Miembros",
+		"source": "1044a4c056d0d685"
 	},
 	"shell.nav.settings": {
 		"text": "Configuración",

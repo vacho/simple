@@ -8,6 +8,7 @@
 	const i18n = getI18n();
 	const sections = {
 		home: { href: resolve(''), label: 'shell.nav.home' },
+		members: { href: resolve('members'), label: 'shell.nav.members' },
 		settings: { href: resolve('settings'), label: 'shell.nav.settings' }
 	} as const;
 </script>

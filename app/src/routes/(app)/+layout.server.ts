@@ -5,7 +5,7 @@ import { buildCtx } from '#lib/server/web/ctx.ts';
 import { throwForLoad } from '#lib/server/web/responses.ts';
 import type { LayoutServerLoad } from './$types';
 
-export type Section = 'home' | 'settings';
+export type Section = 'home' | 'members' | 'settings';
 
 export const load: LayoutServerLoad = (event) => {
 	const { actor } = event.locals;
@@ -15,6 +15,7 @@ export const load: LayoutServerLoad = (event) => {
 		const { displayName } = getProfile(buildCtx(event), actor.id);
 		// Only the sections this user may open (D10): later changes add their own entries.
 		const navigation: Section[] = ['home'];
+		if (can(actor, 'household.view')) navigation.push('members');
 		if (can(actor, 'settings.view')) navigation.push('settings');
 		return { displayName, navigation };
 	} catch (error) {

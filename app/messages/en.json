@@ -79,9 +79,17 @@
 		"text": "Minor",
 		"description": "Base class of a member type: a child under legal age. Shown in lists and in the base class selector."
 	},
+	"household.confirm.archive_member": {
+		"text": "Archive \"{name}\"? Only administrators will see this member.",
+		"description": "Confirmation before archiving a member; {name} is the member's name as entered."
+	},
 	"household.confirm.archive_type": {
 		"text": "Archive the member type \"{name}\"? It won't be offered for members any more; members who have it keep it.",
 		"description": "Confirmation before archiving a member type; {name} is the type's name as entered."
+	},
+	"household.confirm.delete_member": {
+		"text": "Delete \"{name}\"? This can't be undone.",
+		"description": "Confirmation before deleting a member that never had an account; {name} is the member's name as entered."
 	},
 	"household.confirm.delete_type": {
 		"text": "Delete the member type \"{name}\"? This can't be undone.",
@@ -90,6 +98,10 @@
 	"household.field.base_class": {
 		"text": "Base class",
 		"description": "Label of the base class selector of a member type."
+	},
+	"household.field.member_type": {
+		"text": "Member type",
+		"description": "Label of the member type selector of a member."
 	},
 	"household.field.name": {
 		"text": "Name",
@@ -102,6 +114,34 @@
 	"household.id.invalid": {
 		"text": "This form is out of date. Reload the page and try again.",
 		"description": "Error shown when a form arrives without a valid identifier, usually because the page is very old."
+	},
+	"household.member.active_account": {
+		"text": "This member's account is active. Deactivate or unlink the account before archiving the member.",
+		"description": "Error shown when an administrator tries to archive a member linked to an active user account."
+	},
+	"household.member.archived": {
+		"text": "This member is archived.",
+		"description": "Notice on an archived member's page."
+	},
+	"household.member.back": {
+		"text": "Back to members",
+		"description": "Link from a member's page back to the members list."
+	},
+	"household.member.ever_linked": {
+		"text": "This member has had an account, so it can't be deleted. Archive it instead.",
+		"description": "Error shown when an administrator tries to delete a member that has been linked to a user account at some time."
+	},
+	"household.member.save": {
+		"text": "Save changes",
+		"description": "Button that saves a member's name and type."
+	},
+	"household.member.title": {
+		"text": "Member {name}",
+		"description": "Heading and page title of an administrator's page for one member; {name} is the member's name as entered."
+	},
+	"household.member.type_unavailable": {
+		"text": "Choose a member type that isn't archived.",
+		"description": "Error under the member type field when the chosen type is archived or no longer exists."
 	},
 	"household.member_type.base_class_in_use": {
 		"text": "Members have this type, so its base class can't change.",
@@ -146,6 +186,46 @@
 	"household.member_types.title": {
 		"text": "Member types",
 		"description": "Heading and page title of the member types page, and the link to it on the settings page."
+	},
+	"household.members.account": {
+		"text": "Account: {username}",
+		"description": "Shown next to a member in the administrators' list when the member has a user account; {username} is the account's username."
+	},
+	"household.members.archived_heading": {
+		"text": "Archived members",
+		"description": "Heading of the list of archived members, shown only to administrators."
+	},
+	"household.members.create": {
+		"text": "Add member",
+		"description": "Button that adds a member to the household."
+	},
+	"household.members.empty": {
+		"text": "The household has no members yet.",
+		"description": "Shown on the members page while the household has no active members."
+	},
+	"household.members.go_to_types": {
+		"text": "Create a member type",
+		"description": "Link from the members page to the member types page, when no member type exists yet."
+	},
+	"household.members.needs_type": {
+		"text": "Members need a member type first.",
+		"description": "Shown instead of the new member form when no member type that isn't archived exists; followed by a link to the member types page."
+	},
+	"household.members.new": {
+		"text": "New member",
+		"description": "Heading of the form that adds a member to the household."
+	},
+	"household.members.no_account": {
+		"text": "No account",
+		"description": "Shown next to a member in the administrators' list when the member has no user account."
+	},
+	"household.members.title": {
+		"text": "Members",
+		"description": "Heading and page title of the household members page."
+	},
+	"household.members.type_and_class": {
+		"text": "{type} ({baseClass})",
+		"description": "A member's type followed by its base class in parentheses, in the members list; {type} is the type's name as entered and {baseClass} is the translated base class."
 	},
 	"household.name.control_characters": {
 		"text": "Remove the invisible control characters from the name.",
@@ -214,6 +294,10 @@
 	"shell.nav.label": {
 		"text": "Main",
 		"description": "Accessible name of the main navigation, read by screen readers as \"Main navigation\"."
+	},
+	"shell.nav.members": {
+		"text": "Members",
+		"description": "Navigation link to the household members page, shown to every signed-in user."
 	},
 	"shell.nav.settings": {
 		"text": "Settings",

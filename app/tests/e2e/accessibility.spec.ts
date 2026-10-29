@@ -23,16 +23,17 @@ test('Keyboard navigation: the frame is reachable in order, with a visible focus
 			};
 		});
 	const order: (string | undefined)[] = [];
-	for (let i = 0; i < 4; i++) {
+	for (let i = 0; i < 5; i++) {
 		await page.keyboard.press('Tab');
 		const element = await focused();
 		expect(element.outline, `focus indicator on ${element.text}`).toBe('solid');
 		expect(element.width).toBe('3px');
 		order.push(element.text);
 	}
-	expect(order).toEqual(['Skip to content', 'Ana Pérez', 'Home', 'Settings']);
+	expect(order).toEqual(['Skip to content', 'Ana Pérez', 'Home', 'Members', 'Settings']);
 
 	// The user menu opens with Enter, and its links are next in the order.
+	await page.keyboard.press('Shift+Tab');
 	await page.keyboard.press('Shift+Tab');
 	await page.keyboard.press('Shift+Tab');
 	await page.keyboard.press('Enter');
