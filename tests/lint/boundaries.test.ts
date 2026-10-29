@@ -46,7 +46,12 @@ describe('feature boundaries (ADR 0008)', () => {
 			'src/routes/forbidden-system/+page.server.ts',
 			'boundaries/dependencies'
 		],
-		['systemActor in hooks.server.ts', 'src/hooks.server.ts', 'boundaries/dependencies']
+		['systemActor in hooks.server.ts', 'src/hooks.server.ts', 'boundaries/dependencies'],
+		[
+			'the message parser outside languages and scripts/',
+			'src/lib/features/notes/server/compile.ts',
+			'no-restricted-imports'
+		]
 	])('rejects %s', async (_case, file, rule) => {
 		expect(await ruleIds(file)).toEqual([rule]);
 	});
@@ -61,7 +66,9 @@ describe('feature boundaries (ADR 0008)', () => {
 			'a feature with only server/index.ts and server/service.ts',
 			'src/lib/features/notes/server/index.ts'
 		],
-		['the service of that feature', 'src/lib/features/notes/server/service.ts']
+		['the service of that feature', 'src/lib/features/notes/server/service.ts'],
+		['the message parser in the languages feature', 'src/lib/features/languages/server/compile.ts'],
+		['the message parser in scripts/', 'scripts/parse-messages.ts']
 	])('allows %s', async (_case, file) => {
 		expect(await ruleIds(file)).toEqual([]);
 	});

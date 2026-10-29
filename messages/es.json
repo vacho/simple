@@ -1,0 +1,10 @@
+{
+	"auth.sign_in.locked": {
+		"text": "Demasiados intentos. Vuelve a intentarlo en {minutes, plural, one {# minuto} other {# minutos}}.",
+		"source": "5e2f171e7594bd5c"
+	},
+	"shell.home.title": {
+		"text": "Inicio",
+		"source": "3a78695388b38b5c"
+	}
+}

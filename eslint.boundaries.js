@@ -177,7 +177,7 @@ export const icuParser = {
 	paths: [
 		{
 			name: '@formatjs/icu-messageformat-parser',
-			message: 'Only the languages feature parses messages (D14).'
+			message: 'Only the languages feature and scripts/ parse messages (D14).'
 		}
 	]
 };
@@ -192,6 +192,9 @@ export const frameworkFree = [
 ];
 
 export const languagesServer = ['src/lib/features/languages/server/**'];
+
+// Message generation and checks; they read messages/*.json from disk.
+export const scripts = ['scripts/**'];
 
 export default [
 	{

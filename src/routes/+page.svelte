@@ -1,2 +1,7 @@
-<h1>Welcome to SvelteKit</h1>
-<p>Visit <a href="https://svelte.dev/docs/kit">svelte.dev/docs/kit</a> to read the documentation</p>
+<script lang="ts">
+	import { getI18n } from '#lib/i18n/t.ts';
+
+	const i18n = getI18n();
+</script>
+
+<h1>{i18n.t('shell.home.title')}</h1>

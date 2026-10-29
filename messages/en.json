@@ -1,0 +1,10 @@
+{
+	"auth.sign_in.locked": {
+		"text": "Too many attempts. Try again in {minutes, plural, one {# minute} other {# minutes}}.",
+		"description": "Error shown on the sign-in page while the account or device is locked after repeated failed attempts. {minutes} is the whole number of minutes until the lock ends."
+	},
+	"shell.home.title": {
+		"text": "Home",
+		"description": "Heading of the home page shown after signing in."
+	}
+}

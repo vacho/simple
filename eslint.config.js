@@ -9,6 +9,7 @@ import boundaries, {
 	frameworkFree,
 	icuParser,
 	languagesServer,
+	scripts,
 	sveltekitModules
 } from './eslint.boundaries.js';
 
@@ -84,6 +85,10 @@ export default defineConfig(
 	{
 		files: languagesServer,
 		rules: { 'no-restricted-imports': restrict(restrictedImports, sveltekitModules) }
+	},
+	{
+		files: scripts,
+		rules: { 'no-restricted-imports': restrict(restrictedImports) }
 	},
 	{
 		// Boundary fixtures break the rules on purpose; tests/lint/boundaries.test.ts lints them.
