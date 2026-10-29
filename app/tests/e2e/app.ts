@@ -54,7 +54,11 @@ export async function prepareDatabase<T>(
 	databasePath: string,
 	prepare: (db: Db) => Promise<T> | T
 ) {
-	const db = startup({ databasePath });
+	const db = startup({
+		databasePath,
+		backupDir: path.join(path.dirname(databasePath), 'backups'),
+		version: '0.0.0-test'
+	});
 	try {
 		return await prepare(db);
 	} finally {

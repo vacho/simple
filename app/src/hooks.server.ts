@@ -1,6 +1,6 @@
 // The request pipeline (D5): session, locale, setup gate, route guard. SvelteKit's own CSRF
 // check runs before all of them.
-import { DATABASE_PATH, I18N_PSEUDO } from '$app/env/private';
+import { BACKUP_DIR, DATABASE_PATH, I18N_PSEUDO } from '$app/env/private';
 import { redirect } from '@sveltejs/kit';
 import { sequence, type Handle, type ServerInit } from '@sveltejs/kit/hooks';
 import { resolveActor, setupStatus } from '#lib/features/auth/server/index.ts';
@@ -15,7 +15,12 @@ import { applySessionResult, readSessionToken } from '#lib/server/web/session-co
 let db: App.Locals['db'];
 
 export const init: ServerInit = () => {
-	db = startup({ databasePath: DATABASE_PATH, pseudoLocale: I18N_PSEUDO });
+	db = startup({
+		databasePath: DATABASE_PATH,
+		backupDir: BACKUP_DIR,
+		version: __APP_VERSION__,
+		pseudoLocale: I18N_PSEUDO
+	});
 };
 
 // Served to everyone: what setup and sign-in need to render and the app needs to install.

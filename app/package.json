@@ -23,7 +23,8 @@
 		"i18n:sort": "node --import tsx scripts/i18n-sort.ts",
 		"test:e2e:pseudo": "I18N_PSEUDO=1 playwright test --grep @screens",
 		"lint:css": "stylelint \"src/**/*.{css,svelte}\"",
-		"icons": "node --import tsx scripts/gen-icons.ts"
+		"icons": "node --import tsx scripts/gen-icons.ts",
+		"backup": "node --import tsx scripts/backup.ts"
 	},
 	"devDependencies": {
 		"@axe-core/playwright": "^4.14.0",
@@ -47,7 +48,6 @@
 		"stylelint": "^17.16.0",
 		"svelte": "^5.57.1",
 		"svelte-check": "^4.6.0",
-		"tsx": "^4.23.15",
 		"typescript": "^6.0.0",
 		"typescript-eslint": "^8.72.1",
 		"vite": "^8.3.0",
@@ -67,6 +67,7 @@
 		"better-sqlite3": "^13.0.3",
 		"drizzle-orm": "^0.45.4",
 		"intl-messageformat": "^12.1.4",
+		"tsx": "^4.23.15",
 		"valibot": "^1.5.0"
 	}
 }
