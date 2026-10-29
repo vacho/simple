@@ -1,4 +1,4 @@
-# CLAUDE.md
+# CLAUDE.md and AGENTS.md
 
 A personal and family finance app for a single household, built with spec-driven development using OpenSpec.
 

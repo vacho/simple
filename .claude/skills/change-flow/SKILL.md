@@ -32,7 +32,7 @@ commit: docs(<id>): ...         docs(<id>): update specs ...           merge --n
 - Propose on `main`; update a change's plan on `main` until its branch exists, then on the branch; apply and verify on `change/<id>`; merge, then archive, on `main` ([ADR 0017](../../../docs/adr/0017-plan-updates-where-the-change-lives.md)).
 - Merge with `--no-ff`, one change at a time, re-verified on top of `main` ([ADR 0010](../../../docs/adr/0010-merge-no-ff-one-change-at-a-time.md)).
 - A change runs alone unless it meets the parallel conditions in `openspec-parallel-apply` ([ADR 0020](../../../docs/adr/0020-parallel-changes-in-worktrees.md)).
-- Commits follow the convention below ([ADR 0022](../../../docs/adr/0022-commit-convention-and-contents.md)), checked by the Git hooks in `.githooks/` ([ADR 0019](../../../docs/adr/0019-git-hooks-contract.md)).
+- Commits follow the convention below ([ADR 0024](../../../docs/adr/0024-commit-convention-file-kinds-and-multi-agent-tooling.md)), checked by the Git hooks in `.githooks/` ([ADR 0019](../../../docs/adr/0019-git-hooks-contract.md)).
 - Each change, and each branch that changes what runs, ends in a version and a tag, released only after the owner approves the merge; a failed close is never undone without the owner's yes ([ADR 0018](../../../docs/adr/0018-versions-release-after-approval-and-rollback.md)).
 - Commits are proposed for review before they are made, unless the commit mode is `auto` ([ADR 0015](../../../docs/adr/0015-commits-reviewed-before-they-are-made.md)).
 
@@ -88,7 +88,7 @@ One purpose per commit. Every file belongs to one kind, and a commit holds one k
 |---|---|---|
 | **Plan** | `openspec/changes/<id>/` (proposal, specs, design, `adr.md`, the text of tasks); `openspec/specs/` and `openspec/changes/archive/`, which only archive writes, except filling a `TBD` Purpose by hand after archive | `main` while proposing, and for updates while `change/<id>` doesn't exist; once it exists, every update and spec fix goes on `change/<id>`, before the code that relies on it. `openspec/specs/` and the archive: `main` only |
 | **Project docs** | everything in `docs/` (ADRs, roadmap, documents the owner adds) | `main`; the roadmap and the owner's documents may also use a `docs/<topic>` branch, ADRs never do |
-| **Agent tooling** | `.claude/`, `.githooks/`, `openspec/schemas/`, `openspec/config.yaml`, `CLAUDE.md`, `AGENTS.md` | `main` or a `chore/` branch, never `change/<id>` |
+| **Agent tooling** | `.claude/`, `.agents/`, `.githooks/`, `openspec/schemas/`, `openspec/config.yaml`, `CLAUDE.md`, `AGENTS.md` | `main` or a `chore/` branch, never `change/<id>` |
 | **App** | everything in `app/`, the app's own npm project ([ADR 0023](../../../docs/adr/0023-app-in-its-own-folder.md)): its `src/`, `tests/`, `scripts/`, `messages/`, `drizzle/`, `static/`, `package*.json`, tool configs (`.gitignore`, `.env.example`, `vite.config.ts` and the like), and `app/README.md` (the one document that describes the code, kept up to date by the tasks) | `change/<id>`, `fix/`, `chore/`, `build/` or `ci/` branches only |
 
 Exceptions:

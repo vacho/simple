@@ -13,7 +13,7 @@ branch=$(git symbolic-ref --short -q HEAD)
 # Ask Git for staged paths outside the allowlist with exclude pathspecs, so
 # no file name (accents, spaces, newlines) is ever parsed here.
 blocked=$(git diff --cached --name-only --diff-filter=ACDMRT -- . \
-  ':(exclude)openspec/' ':(exclude)docs/' ':(exclude).claude/' \
+  ':(exclude)openspec/' ':(exclude)docs/' ':(exclude).claude/' ':(exclude).agents/' \
   ':(exclude).githooks/' ':(exclude,top)CLAUDE.md' ':(exclude,top)AGENTS.md')
 
 if [ -n "$blocked" ]; then
