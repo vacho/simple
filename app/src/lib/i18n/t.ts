@@ -34,3 +34,16 @@ export interface I18n {
 }
 
 export const [getI18n, setI18n] = createContext<I18n>();
+
+/**
+ * Translates a message key that arrives as data, such as a validation issue from the server.
+ * A key the dictionary doesn't know shows the generic validation text, never the key itself.
+ */
+export function translateKey(
+	t: Translate,
+	key: string,
+	params: Record<string, string | number> = {}
+): string {
+	const text = (t as (key: string, params: object) => string)(key, params);
+	return text === key ? t('validation.invalid') : text;
+}

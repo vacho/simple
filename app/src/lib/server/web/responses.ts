@@ -16,6 +16,8 @@ export interface FailureData {
 	issues?: Issue[];
 	/** The form-level error. */
 	error?: { key: string; params: Record<string, string | number> };
+	/** What the user entered, to fill the form again (never passwords). */
+	values?: Record<string, string>;
 }
 
 const notAllowed = { status: 403, message: 'Not allowed', key: 'errors.not_allowed' } as const;
@@ -37,12 +39,18 @@ export function throwForLoad(caught: unknown): never {
 	error(status(caught), caught.message, { key: caught.key });
 }
 
-/** For form actions: input and state problems become a form failure; denials, the error page. */
-export function failForAction(caught: unknown): ActionFailure<FailureData> {
+/**
+ * For form actions: input and state problems become a form failure, with the values to fill the
+ * form again; denials, the error page.
+ */
+export function failForAction(
+	caught: unknown,
+	values?: Record<string, string>
+): ActionFailure<FailureData> {
 	if (!(caught instanceof AppError)) throw caught;
 	if (isDenial(caught)) error(notAllowed.status, notAllowed.message, { key: notAllowed.key });
-	if (caught instanceof Invalid) return fail(400, { issues: caught.issues });
-	return fail(status(caught), { error: { key: caught.key, params: caught.params } });
+	if (caught instanceof Invalid) return fail(400, { issues: caught.issues, values });
+	return fail(status(caught), { error: { key: caught.key, params: caught.params }, values });
 }
 
 /** For endpoints: a JSON body with the stable code and the message key, never protected data. */

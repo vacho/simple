@@ -63,6 +63,16 @@ describe('First-run administrator setup', () => {
 		expect(db.select().from(users).all()).toHaveLength(1);
 	});
 
+	it('Concurrent setup attempts: exactly one administrator, the other is rejected', async () => {
+		const other = createTestDatabase();
+		const attempt = (username: string) =>
+			caught(setup(testCtx(other), { displayName: username, username, password: 'long enough' }));
+		const results = await Promise.all([attempt('first'), attempt('second')]);
+		expect(results.filter((error) => error === undefined)).toHaveLength(1);
+		expect(results.filter((error) => error instanceof Conflict)).toHaveLength(1);
+		expect(other.select().from(users).all()).toHaveLength(1);
+	});
+
 	it('creates no administrator when creating the session fails', async () => {
 		const other = createTestDatabase();
 		other.$client.exec('DROP TABLE sessions');

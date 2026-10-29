@@ -1,7 +1,39 @@
 {
+	"auth.setup.closed": {
+		"text": "The app is already set up. Sign in instead.",
+		"description": "Error shown when setup is submitted after an account already exists, for example by two people at once."
+	},
+	"auth.setup.intro": {
+		"text": "Create the first account. It will be the administrator of the app.",
+		"description": "Explanation under the setup heading."
+	},
+	"auth.setup.submit": {
+		"text": "Create account",
+		"description": "Button that submits the setup form and creates the administrator account."
+	},
+	"auth.setup.title": {
+		"text": "Set up the app",
+		"description": "Heading and page title of the first-run setup page, where the first administrator account is created."
+	},
+	"auth.sign_in.invalid": {
+		"text": "Invalid username or password.",
+		"description": "Error shown on the sign-in page when the username or the password is wrong; it never says which."
+	},
 	"auth.sign_in.locked": {
 		"text": "Too many attempts. Try again in {minutes, plural, one {# minute} other {# minutes}}.",
 		"description": "Error shown on the sign-in page while the account or device is locked after repeated failed attempts. {minutes} is the whole number of minutes until the lock ends."
+	},
+	"auth.sign_in.submit": {
+		"text": "Sign in",
+		"description": "Button that submits the sign-in form."
+	},
+	"auth.sign_in.title": {
+		"text": "Sign in",
+		"description": "Heading and page title of the sign-in page."
+	},
+	"auth.sign_out": {
+		"text": "Sign out",
+		"description": "Button that ends the current session."
 	},
 	"errors.not_allowed": {
 		"text": "You're not allowed to see this page.",
@@ -26,5 +58,53 @@
 	"shell.home.title": {
 		"text": "Home",
 		"description": "Heading of the home page shown after signing in."
+	},
+	"users.display_name.control_characters": {
+		"text": "The name contains characters that are not allowed.",
+		"description": "Error under the display name field when it contains invisible control characters."
+	},
+	"users.display_name.empty": {
+		"text": "Enter a name.",
+		"description": "Error under the display name field when it is empty."
+	},
+	"users.display_name.too_long": {
+		"text": "Use at most 64 characters.",
+		"description": "Error under the display name field when it is longer than 64 characters."
+	},
+	"users.field.display_name": {
+		"text": "Display name",
+		"description": "Label of the field for the name shown to other household members."
+	},
+	"users.field.password": {
+		"text": "Password",
+		"description": "Label of the password field."
+	},
+	"users.field.username": {
+		"text": "Username",
+		"description": "Label of the username field, used to sign in."
+	},
+	"users.locale.not_installed": {
+		"text": "Choose one of the available languages.",
+		"description": "Error under the language field when the chosen language is not installed."
+	},
+	"users.password.length": {
+		"text": "Use 8 to 128 characters.",
+		"description": "Error under the password field when the password is too short or too long."
+	},
+	"users.time_zone.invalid": {
+		"text": "Choose a valid time zone.",
+		"description": "Error under the time zone field when the value is not a known time zone."
+	},
+	"users.username.invalid": {
+		"text": "Use 3 to 32 characters: lowercase letters a-z, digits, dots, underscores or hyphens.",
+		"description": "Error under the username field when it breaks the username rules."
+	},
+	"users.username.taken": {
+		"text": "That username is already in use.",
+		"description": "Error under the username field when another account already has it."
+	},
+	"validation.invalid": {
+		"text": "Check this value.",
+		"description": "Generic error under a form field whose value is not valid."
 	}
 }
