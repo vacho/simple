@@ -187,7 +187,7 @@ Data written after the upgrade is lost by the rollback.
 
 ## Git hooks
 
-The repository's hooks in `.githooks/` check every commit ([ADR 0019](../docs/adr/0019-git-hooks-contract.md)): commit titles follow the convention, and app code never goes straight to `main`. `npm ci` and `npm install` enable them through the `prepare` script; to enable them by hand: `git config core.hooksPath .githooks`. Never bypass them with `--no-verify`.
+The repository's hooks in `.githooks/` check every commit ([ADR 0025](../docs/adr/0025-git-hooks-contract-with-multi-agent-tooling.md)): commit titles follow the convention, and app code never goes straight to `main`. `npm ci` and `npm install` enable them through the `prepare` script; to enable them by hand: `git config core.hooksPath .githooks`. Never bypass them with `--no-verify`.
 
 ## For contributors
 
