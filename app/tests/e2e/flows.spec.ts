@@ -83,7 +83,7 @@ test.describe('Core flows on each supported browser', () => {
 	});
 
 	test.describe('Sign-in', () => {
-		test('Sign-in is public, and Successful sign-in returns to the page the user requested', async ({
+		test('Sign-in is public, and Successful sign-in: returns to the page the user requested', async ({
 			page
 		}) => {
 			const { app } = await startSetUpApp();

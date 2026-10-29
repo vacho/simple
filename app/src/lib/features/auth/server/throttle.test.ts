@@ -43,7 +43,7 @@ describe('Sign-in throttling', () => {
 		expect(attempt('luis', '10.0.2.1', true, trigger + lockDuration)).toBe('ok');
 	});
 
-	it('Success resets the counter of the username, not of the address', () => {
+	it('Success resets the counter: of the username, not of the address', () => {
 		fresh();
 		for (let i = 0; i < 4; i++) attempt('eva', '10.0.3.1', false);
 		expect(attempt('eva', '10.0.3.1', true)).toBe('ok');

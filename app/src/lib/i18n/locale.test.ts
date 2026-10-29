@@ -35,7 +35,7 @@ describe('Accept-Language matching', () => {
 		expect(match('es-BO')).toBe('es');
 	});
 
-	it('Exact regional language wins over the primary subtag', () => {
+	it('Exact regional language wins: over the primary subtag', () => {
 		expect(match('pt-BR', ['en', 'pt', 'pt-BR'])).toBe('pt-BR');
 	});
 });

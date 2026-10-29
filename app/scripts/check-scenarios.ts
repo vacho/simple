@@ -1,8 +1,10 @@
 // Strict traceability (D11): every scenario of the specs has a test whose name quotes it.
 // npm run check:scenarios -- <change-id> reads that change's specs; without an id, the main
-// specs in openspec/specs/. Fails, naming each scenario without a test.
+// specs in openspec/specs/. Fails, naming each scenario without a test, or when there are no
+// scenarios to check.
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import path from 'node:path';
+import { missingScenarios, scenariosOf } from './scenarios.ts';
 
 const appRoot = path.resolve(import.meta.dirname, '..');
 const openspec = path.resolve(appRoot, '../openspec');
@@ -26,13 +28,17 @@ const tests = ['src', 'scripts', 'tests']
 	.map((file) => readFileSync(file, 'utf8'))
 	.join('\n');
 
-const missing = files(specsDir, (file) => path.basename(file) === 'spec.md').flatMap((spec) => {
-	const capability = path.relative(specsDir, path.dirname(spec));
-	return [...readFileSync(spec, 'utf8').matchAll(/^#### Scenario: (.+)$/gm)]
-		.map((match) => match[1].trim())
-		.filter((scenario) => !tests.includes(scenario))
-		.map((scenario) => `${capability}: ${scenario}`);
-});
+const specs = files(specsDir, (file) => path.basename(file) === 'spec.md').map((spec) => ({
+	capability: path.relative(specsDir, path.dirname(spec)),
+	text: readFileSync(spec, 'utf8')
+}));
+// An empty or mistyped folder has nothing to check: that is not a pass.
+if (!specs.some(({ text }) => scenariosOf(text).length > 0)) {
+	console.error(`No scenarios found in ${path.relative(process.cwd(), specsDir)}.`);
+	process.exit(1);
+}
+
+const missing = missingScenarios(specs, tests);
 
 if (missing.length > 0) {
 	console.error(`${missing.length} scenario(s) without a test quoting them:`);

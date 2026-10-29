@@ -78,7 +78,7 @@ describe('Run by a scheduler', () => {
 describe('Bounded retention', () => {
 	const old = (n: number) => `app-202601${String(n).padStart(2, '0')}T000000Z.db`;
 
-	it('Old backups are pruned to BACKUP_KEEP, oldest first; Other files are left alone', () => {
+	it('Old backups are pruned: to BACKUP_KEEP, oldest first; Other files are left alone', () => {
 		const dir = testApp(env);
 		const out = path.join(dir, 'out');
 		mkdirSync(out);

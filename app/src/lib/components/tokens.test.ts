@@ -44,7 +44,7 @@ const pairs: [string, string, number][] = [
 describe.each([
 	['light', colors(light)],
 	['dark', colors(dark)]
-])('Contrast in the %s theme', (_theme, palette) => {
+])('Contrast: the %s theme', (_theme, palette) => {
 	it.each(pairs)('%s on %s reaches %s:1', (foreground, background, minimum) => {
 		expect(palette[foreground], foreground).toBeDefined();
 		expect(contrast(palette[foreground], palette[background])).toBeGreaterThanOrEqual(minimum);

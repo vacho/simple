@@ -57,7 +57,7 @@ describe('First-run administrator setup', () => {
 		expect(setupStatus(anonymousCtx)).toEqual({ open: false });
 	});
 
-	it('Setup after the first account is refused', async () => {
+	it('Setup after the first account: refused', async () => {
 		const input = { displayName: 'Eve', username: 'eve', password: 'long enough' };
 		expect(await caught(setup(anonymousCtx, input))).toBeInstanceOf(Conflict);
 		expect(db.select().from(users).all()).toHaveLength(1);
@@ -258,7 +258,7 @@ describe('Sessions and sign-out', () => {
 	const start = () =>
 		signIn(anonymousCtx, { username: 'luis', password: memberPassword, address: address() });
 
-	it('Own sign-out ends only that session', async () => {
+	it('Own sign-out: ends only that session', async () => {
 		db.delete(sessions).run();
 		db.delete(loginAttempts).run();
 		const first = await start();

@@ -54,6 +54,21 @@ test('Installed app opens standalone: at the start URL, without the address bar'
 test.describe('with an English browser', () => {
 	test.use({ locale: 'en-US' });
 
+	test('Offline page: reconnect to continue, and nothing of the signed-in app', async ({
+		page,
+		context
+	}) => {
+		const { app, admin } = await startSetUpApp();
+		await signInWith(context, app, admin.token);
+		await page.goto(`${app.url}/settings`);
+		await controlled(page);
+		await expect(page.locator('nav')).toBeVisible();
+		await expect(await offlineHeading(page, context)).toHaveText("You're offline");
+		await expect(page.getByText('Reconnect to the internet to continue.')).toBeVisible();
+		await expect(page.locator('nav')).toHaveCount(0);
+		await expect(page.getByText('Ana Pérez')).toHaveCount(0);
+	});
+
 	test("Offline page keeps the user's language: Spanish profile, network cut later", async ({
 		page,
 		context

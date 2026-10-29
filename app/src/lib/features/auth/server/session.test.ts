@@ -93,7 +93,7 @@ describe('Sessions', () => {
 		expect(validateSession(db, token, t0 + 30 * day - 1).session).toEqual({ action: 'clear' });
 	});
 
-	it('Daily use keeps the session alive for 60 days, renewing the cookie', () => {
+	it('Daily use keeps the session alive: for 60 days, renewing the cookie', () => {
 		const { token } = start();
 		let renewals = 0;
 		for (let n = 1; n <= 60; n++) {
