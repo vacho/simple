@@ -1,5 +1,5 @@
 // All access to the sessions and login_attempts tables.
-import { and, eq } from 'drizzle-orm';
+import { and, eq, ne } from 'drizzle-orm';
 import type { Db } from '../../../server/db/client.ts';
 import { loginAttempts, sessions } from './schema.ts';
 
@@ -16,6 +16,17 @@ export function setSessionExpiry(db: Db, id: string, expiresAt: Date): void {
 
 export function deleteSession(db: Db, id: string): void {
 	db.delete(sessions).where(eq(sessions.id, id)).run();
+}
+
+/** Every session of the user, except the one with this ID when given. */
+export function deleteSessionsOf(db: Db, userId: number, exceptId?: string): void {
+	db.delete(sessions)
+		.where(
+			exceptId === undefined
+				? eq(sessions.userId, userId)
+				: and(eq(sessions.userId, userId), ne(sessions.id, exceptId))
+		)
+		.run();
 }
 
 const attemptKey = (kind: AttemptKind, key: string) =>

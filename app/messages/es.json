@@ -47,6 +47,10 @@
 		"text": "Algo salió mal. Inténtalo de nuevo.",
 		"source": "3ccd9d6586ef9143"
 	},
+	"household.account.linked": {
+		"text": "Esa cuenta ya pertenece a otro miembro.",
+		"source": "3e0ee940dc928bae"
+	},
 	"household.action.archive": {
 		"text": "Archivar",
 		"source": "66f4804ee23ddc09"
@@ -130,6 +134,10 @@
 	"household.member.ever_linked": {
 		"text": "Este miembro ha tenido una cuenta, así que no se puede eliminar. Archívalo en su lugar.",
 		"source": "98cfc29ba00cecfa"
+	},
+	"household.member.has_account": {
+		"text": "Este miembro ya tiene una cuenta.",
+		"source": "ec9a8ef912927615"
 	},
 	"household.member.save": {
 		"text": "Guardar cambios",
@@ -311,6 +319,98 @@
 		"text": "Perfil",
 		"source": "d696a35bdd1883da"
 	},
+	"users.account.change_role": {
+		"text": "Cambiar rol",
+		"source": "a43a8d8cfd29b9b8"
+	},
+	"users.account.create": {
+		"text": "Crear cuenta",
+		"source": "798ca2ce18bf2038"
+	},
+	"users.account.create_heading": {
+		"text": "Crear una cuenta",
+		"source": "86033f75a4c0876a"
+	},
+	"users.account.create_hint": {
+		"text": "Comunica a la persona su nombre de usuario y su contraseña temporal. Elegirá su propia contraseña al iniciar sesión por primera vez.",
+		"source": "31dc7eb525d6babb"
+	},
+	"users.account.deactivate": {
+		"text": "Desactivar",
+		"source": "fb1e6fa55327160e"
+	},
+	"users.account.link": {
+		"text": "Vincular cuenta",
+		"source": "040ec364eebaaaf1"
+	},
+	"users.account.link_field": {
+		"text": "Cuenta",
+		"source": "7e1b0d5641f2640c"
+	},
+	"users.account.link_heading": {
+		"text": "Vincular una cuenta existente",
+		"source": "5dfe7b2bb38d5f0a"
+	},
+	"users.account.none": {
+		"text": "Este miembro no tiene cuenta, así que no puede iniciar sesión.",
+		"source": "9f98f36e0f504eb0"
+	},
+	"users.account.own": {
+		"text": "Esta es tu cuenta. Cambia tu contraseña en tu perfil.",
+		"source": "37c81c7441463c10"
+	},
+	"users.account.reactivate": {
+		"text": "Reactivar",
+		"source": "2dc7478fbd4239bc"
+	},
+	"users.account.reset_password": {
+		"text": "Restablecer contraseña",
+		"source": "e0edfeb3a71a1002"
+	},
+	"users.account.section": {
+		"text": "Cuenta",
+		"source": "7e1b0d5641f2640c"
+	},
+	"users.account.state_active": {
+		"text": "Activa",
+		"source": "92340695899bd2d8"
+	},
+	"users.account.state_inactive": {
+		"text": "Desactivada",
+		"source": "4840a57222fc401c"
+	},
+	"users.account.state_temporary": {
+		"text": "Esperando una nueva contraseña",
+		"source": "92bfa018e5dc29a5"
+	},
+	"users.account.unlink": {
+		"text": "Desvincular cuenta",
+		"source": "f3f145c6a98e7d6f"
+	},
+	"users.account.username": {
+		"text": "Nombre de usuario: {username}",
+		"source": "56a744fa89679285"
+	},
+	"users.accounts.done": {
+		"text": "Cuenta actualizada.",
+		"source": "72b78a48527ec93e"
+	},
+	"users.accounts.intro": {
+		"text": "Todas las cuentas que pueden iniciar sesión, incluidas las que no están vinculadas a un miembro.",
+		"source": "a716e6e96d51bafe"
+	},
+	"users.accounts.title": {
+		"text": "Cuentas",
+		"source": "8a7c8b67fe8bde8b"
+	},
+	"users.confirm.deactivate": {
+		"text": "¿Desactivar a {username}? Se cerrarán todas sus sesiones y no podrá iniciar sesión hasta que se reactive la cuenta.",
+		"source": "6e5c86cb1d39fec2"
+	},
+	"users.confirm.reset": {
+		"text": "¿Poner una nueva contraseña temporal a {username}? Sus sesiones terminan y deberá elegir una nueva contraseña al iniciar sesión.",
+		"source": "fb26ac795dfc5c5d"
+	},
 	"users.display_name.control_characters": {
 		"text": "El nombre contiene caracteres no permitidos.",
 		"source": "b0ef3c0d05b4d1e3"
@@ -335,6 +435,14 @@
 		"text": "Contraseña",
 		"source": "e7cf3ef4f17c3999"
 	},
+	"users.field.role": {
+		"text": "Rol",
+		"source": "14736a2eb9f4159f"
+	},
+	"users.field.temporary_password": {
+		"text": "Contraseña temporal",
+		"source": "b20862a1a9375848"
+	},
 	"users.field.time_zone": {
 		"text": "Zona horaria",
 		"source": "b9fe1464783e1c0d"
@@ -342,6 +450,10 @@
 	"users.field.username": {
 		"text": "Nombre de usuario",
 		"source": "e3b89e9d33f88e52"
+	},
+	"users.last_admin": {
+		"text": "El hogar necesita al menos una persona administradora activa.",
+		"source": "faa487980ac8d945"
 	},
 	"users.locale.not_installed": {
 		"text": "Elige uno de los idiomas disponibles.",
@@ -366,6 +478,18 @@
 	"users.profile.title": {
 		"text": "Perfil",
 		"source": "d696a35bdd1883da"
+	},
+	"users.role.admin": {
+		"text": "Administración",
+		"source": "e7d3e769f3f593da"
+	},
+	"users.role.invalid": {
+		"text": "Elige un rol.",
+		"source": "484d8393d86eb75b"
+	},
+	"users.role.member": {
+		"text": "Miembro",
+		"source": "7c968fb71f50e335"
 	},
 	"users.time_zone.invalid": {
 		"text": "Elige una zona horaria válida.",

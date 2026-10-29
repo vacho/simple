@@ -1,5 +1,6 @@
 // Setup, sign-in, sign-out and session resolution (D4, D5). Use cases do their async work first
 // (hashing, token generation), then short synchronous transactions, and see no HTTP types.
+import * as v from 'valibot';
 import type { Ctx } from '../../../server/core/ctx.ts';
 import {
 	anonymous,
@@ -16,12 +17,20 @@ import {
 	createAdmin,
 	getCredentialsForSignIn,
 	hasAnyUser,
+	setActive,
+	setTemporaryPassword,
 	updateProfile
 } from '../../users/server/index.ts';
-import { canonicalTimeZone, newAccount, normalizeUsername } from '../../users/validation.ts';
+import {
+	canonicalTimeZone,
+	newAccount,
+	normalizeUsername,
+	password as passwordRule
+} from '../../users/validation.ts';
 import { dummyHash, hashPassword, verifyPassword } from './password.ts';
 import {
 	createSession,
+	endSessionsOf,
 	generateSessionToken,
 	invalidateSession,
 	sessionOwner,
@@ -176,4 +185,35 @@ export function resolveActor(
 		validateSession(tx.db, token, Date.now())
 	);
 	return { actor: user ?? anonymous, session };
+}
+
+const newPassword = v.object({ password: passwordRule });
+
+/**
+ * Checks a new password against the password rules and hashes it, outside any transaction
+ * (ADR 0002). For the household feature's account creation, too.
+ */
+export async function hashNewPassword(input: unknown): Promise<string> {
+	return hashPassword(parseInput(newPassword, input).password);
+}
+
+/** An administrator's reset: a new temporary password, and every session of that user ends. */
+export async function resetPassword(ctx: Ctx, userId: number, input: unknown): Promise<void> {
+	authorize(ctx.actor, 'accounts.manage', { userId });
+	const passwordHash = await hashNewPassword(input);
+	withTransaction(ctx, (tx) => {
+		setTemporaryPassword(tx, userId, passwordHash);
+		endSessionsOf(tx.db, userId);
+	});
+}
+
+/**
+ * A deactivated account can't sign in, and its sessions end now (ADR 0027). Reactivating needs
+ * no session work, so it is the users feature's `setActive` alone.
+ */
+export function deactivate(ctx: Ctx, userId: number): void {
+	withTransaction(ctx, (tx) => {
+		setActive(tx, userId, false);
+		endSessionsOf(tx.db, userId);
+	});
 }

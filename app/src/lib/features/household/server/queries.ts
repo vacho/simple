@@ -1,6 +1,6 @@
 // The members list (spec household): members with their type, and for administrators their
 // linked account. Reading `users` here is the one cross-feature read path ADR 0008 allows.
-import { asc, eq, isNull } from 'drizzle-orm';
+import { asc, eq, isNull, notExists } from 'drizzle-orm';
 import type { Db } from '../../../server/db/client.ts';
 import { users } from '../../users/server/schema.ts';
 import { members, memberTypes } from './schema.ts';
@@ -49,4 +49,22 @@ export function listMembersWithAccounts(db: Db) {
 /** One member with their linked account, for the administrators' member page. */
 export function findMemberWithAccount(db: Db, id: string) {
 	return withAccounts(db).where(eq(members.id, id)).get();
+}
+
+/** Accounts linked to no member, which an administrator may link to one. */
+export function listUnlinkedAccounts(db: Db) {
+	return db
+		.select({ userId: users.id, username: users.username, displayName: users.displayName })
+		.from(users)
+		.where(notExists(db.select().from(members).where(eq(members.userId, users.id))))
+		.orderBy(asc(users.username))
+		.all();
+}
+
+export function accountExists(db: Db, userId: number): boolean {
+	return db.select({ id: users.id }).from(users).where(eq(users.id, userId)).get() !== undefined;
+}
+
+export function memberOfAccount(db: Db, userId: number) {
+	return db.select({ id: members.id }).from(members).where(eq(members.userId, userId)).get();
 }

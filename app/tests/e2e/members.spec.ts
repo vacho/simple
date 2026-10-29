@@ -114,7 +114,7 @@ test.describe('in English', () => {
 		await page.getByRole('link', { name: 'Osvaldo' }).click();
 		await expect(page.locator('h1')).toHaveText('Member Osvaldo');
 
-		await page.getByLabel('Name').fill('Osvaldo V.');
+		await page.getByLabel('Name', { exact: true }).fill('Osvaldo V.');
 		await submitAndWait(page, page.getByRole('button', { name: 'Save changes' }));
 		await expect(page.locator('h1')).toHaveText('Member Osvaldo V.');
 

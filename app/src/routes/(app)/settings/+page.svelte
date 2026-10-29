@@ -18,4 +18,5 @@
 <ul>
 	<li><a href={resolve('settings/household')}>{i18n.t('household.settings.title')}</a></li>
 	<li><a href={resolve('settings/member-types')}>{i18n.t('household.member_types.title')}</a></li>
+	<li><a href={resolve('settings/accounts')}>{i18n.t('users.accounts.title')}</a></li>
 </ul>

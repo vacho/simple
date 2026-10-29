@@ -5,6 +5,9 @@ import { Conflict, Invalid, NotFound } from '../../../server/core/errors.ts';
 import { withTransaction } from '../../../server/core/transaction.ts';
 import { parseInput } from '../../../server/core/validation.ts';
 import { authorize, can } from '../../../server/policy/policy.ts';
+import { hashNewPassword } from '../../auth/server/index.ts';
+import { createAccount } from '../../users/server/index.ts';
+import { newMemberAccount } from '../../users/validation.ts';
 import {
 	householdName,
 	memberChanges,
@@ -19,6 +22,7 @@ import * as repo from './repo.ts';
 export type MemberType = ReturnType<typeof repo.listMemberTypes>[number];
 export type Member = ReturnType<typeof queries.listActiveMembers>[number];
 export type MemberWithAccount = ReturnType<typeof queries.listMembersWithAccounts>[number];
+export type UnlinkedAccount = ReturnType<typeof queries.listUnlinkedAccounts>[number];
 
 /** The household name; null while nobody has named it. */
 export function getHousehold(ctx: Ctx): { name: string | null } {
@@ -198,5 +202,63 @@ export function deleteMember(ctx: Ctx, id: string): void {
 		if (!member) throw new NotFound();
 		if (member.firstLinkedAt) throw new Conflict('household.member.ever_linked');
 		repo.deleteMember(tx.db, id);
+	});
+}
+
+/** Accounts an administrator may link to a member. */
+export function listUnlinkedAccounts(ctx: Ctx): UnlinkedAccount[] {
+	authorize(ctx.actor, 'accounts.view');
+	return queries.listUnlinkedAccounts(ctx.db);
+}
+
+function link(ctx: Ctx, memberId: string, userId: number): void {
+	const member = repo.findMember(ctx.db, memberId);
+	if (!member) throw new NotFound();
+	if (member.userId !== null) throw new Conflict('household.member.has_account');
+	if (queries.memberOfAccount(ctx.db, userId)) throw new Conflict('household.account.linked');
+	repo.updateMember(ctx.db, memberId, {
+		userId,
+		// Never cleared: a member ever linked is archived, not deleted.
+		firstLinkedAt: member.firstLinkedAt ?? new Date()
+	});
+}
+
+/**
+ * An account for a member that has none (ADR 0026): created and linked together, or not at all.
+ * The password is hashed first, outside the transaction (ADR 0002).
+ */
+export async function createAccountForMember(
+	ctx: Ctx,
+	memberId: string,
+	input: unknown
+): Promise<void> {
+	authorize(ctx.actor, 'accounts.create');
+	authorize(ctx.actor, 'members.manage');
+	const account = parseInput(newMemberAccount, input);
+	const passwordHash = await hashNewPassword({ password: account.password });
+	withTransaction(ctx, (tx) => {
+		const member = repo.findMember(tx.db, memberId);
+		if (!member) throw new NotFound();
+		if (member.userId !== null) throw new Conflict('household.member.has_account');
+		const userId = createAccount(tx, { ...account, passwordHash });
+		link(tx, memberId, userId);
+	});
+}
+
+/** Links an account with no member to a member with no account. */
+export function linkAccount(ctx: Ctx, memberId: string, userId: number): void {
+	authorize(ctx.actor, 'members.manage');
+	withTransaction(ctx, (tx) => {
+		if (!queries.accountExists(tx.db, userId)) throw new NotFound();
+		link(tx, memberId, userId);
+	});
+}
+
+/** The account keeps existing and signing in; it can be linked again. */
+export function unlinkAccount(ctx: Ctx, memberId: string): void {
+	authorize(ctx.actor, 'members.manage');
+	withTransaction(ctx, (tx) => {
+		if (!repo.findMember(tx.db, memberId)) throw new NotFound();
+		repo.updateMember(tx.db, memberId, { userId: null });
 	});
 }
