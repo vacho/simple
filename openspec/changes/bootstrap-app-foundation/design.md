@@ -42,7 +42,7 @@ Constraints already agreed for the whole product:
 | `@node-rs/argon2` | 2.2.x | |
 | `@oslojs/crypto`, `@oslojs/encoding` | 1.x | Session token hashing and encoding |
 | `intl-messageformat` | 12.1.x | ICU message rendering for runtime dictionaries (D14); the browser uses the `no-parser` build |
-| `@formatjs/icu-messageformat-parser` | 3.x | Server-side precompilation of messages (D14) |
+| `@formatjs/icu-messageformat-parser` | 3.x | Server-side precompilation of messages (D14), and message generation and checks in `scripts/` |
 | `stylelint` | 17.x | Forbids physical CSS properties (D10) |
 | `vitest` | 5.x | |
 | `@playwright/test` | 1.64.x | |
@@ -380,7 +380,7 @@ Each feature lives in `src/lib/features/<f>/`. Files directly in that folder are
 |---|---|---|---|
 | `src/routes/` | always | HTTP adapter: read input, call one service function, map the result through `server/web/` to page data, a form failure or a redirect; render screens | feature `server/index.ts`, feature client-safe files, `server/web/`, `server/policy/` (only `can`, for navigation filtering in the root layout load, D10), `components/`, `i18n/`, `domain/`, `validation/`, SvelteKit |
 | `src/hooks.server.ts` | always | `init`: runs the startup sequence once; `handle`: request pipeline (D5) | `server/startup.ts`, `server/web/`, feature `server/index.ts`, `i18n/`, SvelteKit |
-| `features/languages/server/` | always | The languages feature (D14), plus the dependencies only it needs | as any feature, plus `@formatjs/icu-messageformat-parser` and `messages/*.json` |
+| `features/languages/server/` | always | The languages feature (D14) | as any feature, plus `@formatjs/icu-messageformat-parser` and `messages/*.json` |
 | `features/<f>/server/index.ts` | always | The feature's public server API: re-exports its service and query functions; the only server file other code may import | its own feature files |
 | `features/<f>/server/service.ts` | always | Use cases: authorize, validate, apply rules, write through the repository, inside `withTransaction` | its own feature files; `server/core/`, `server/policy/`, `domain/`; other features' `server/index.ts` and client-safe files |
 | `features/<f>/server/schema.ts` and `repo.ts` | when the feature owns tables | `schema.ts`: Drizzle tables owned by the feature. `repo.ts`: all data access to those tables, writes and simple lookups alike | `schema.ts`: Drizzle, and other features' `schema.ts` for foreign keys only (`sessions.user_id` -> `users.id`). `repo.ts`: its `schema.ts`, `server/db/`, `server/core/` |
@@ -397,7 +397,7 @@ Each feature lives in `src/lib/features/<f>/`. Files directly in that folder are
 | `i18n/` | always | Client-safe `t()`, generated keys, locale matcher, formatting helpers | `intl-messageformat`, `Intl` |
 | `server/db/` | always | Connection, migrations and the shared backup function | Drizzle, better-sqlite3, all features' `schema.ts` (to build the schema object) |
 | `server/startup.ts` | always | Startup sequence (D3): pre-migration backup, migrations, language seed | `server/db/`, `server/core/` (including `systemActor`), feature `server/index.ts` |
-| `scripts/` | always | Operational commands (backup, message generation and check, scenario check) | `server/db/`, `server/core/` (including `systemActor`), `i18n/` |
+| `scripts/` | always | Operational commands (backup, message generation and check, scenario check) | `server/db/`, `server/core/` (including `systemActor`), `i18n/`, `@formatjs/icu-messageformat-parser` (message generation and checks); `messages/*.json` is read from disk, not imported |
 
 **No empty structure:** don't create empty files, and don't write functions that only forward a call to another layer without adding anything (authorization, validation, mapping, a transaction). An optional file appears when its criterion above is met, and not before. A simple lookup belongs in `repo.ts` and is exposed through `service.ts`, where the policy check happens. The service function is never skipped, because it carries the authorization.
 
