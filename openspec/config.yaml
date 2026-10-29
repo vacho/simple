@@ -14,7 +14,8 @@ context: |
   How it is built: the code is written and maintained by AI agents following
   spec-driven development with OpenSpec, and reviewed by the human owner.
   Specs are the contract: when behavior must change during implementation,
-  update the spec first (/opsx:update), then the code and tests.
+  update the spec first (the update workflow, skill
+  openspec-update-change), then the code and tests.
 
   Delivery: one small change per capability area, in the order of
   docs/roadmap.md, which also holds decisions already taken for later
@@ -86,7 +87,7 @@ operations:
   apply:
     guidance:
       - Run npm run check and the relevant tests, in app/, before marking a task done.
-      - If a spec turns out to be wrong or incomplete, stop and update it with /opsx:update before changing code.
+      - If a spec turns out to be wrong or incomplete, stop and update it with the update workflow (skill openspec-update-change) before changing code.
       - Never weaken a lint rule, a permission or a test to make a task pass; report the conflict instead.
   archive:
     guidance:

@@ -19,20 +19,22 @@ A personal and family finance app for a single household, built with spec-driven
 
 ### Agent Workflow Commands
 
-Run the workflow action using your tool's syntax:
+Each action is a skill in `.claude/skills/` and `.agents/skills/`. When the user invokes a command, asks for an action, or `change-flow` calls for one, read and follow the matching skill's `SKILL.md`. The commands below are user-facing shortcuts, not shell commands for agents to run.
 
-| Action | Claude Code | Antigravity / Agents |
-|---|---|---|
-| **Explore** | `/opsx:explore` | `/opsx-explore` |
-| **Propose** | `/opsx:propose` | `/opsx-propose` |
-| **Apply** | `/opsx:apply` | `/opsx-apply` |
-| **Update** | `/opsx:update` | `/opsx-update` |
-| **Verify** | `/opsx:verify` | `/opsx-verify` |
-| **Archive** | `/opsx:archive` | `/opsx-archive` |
+| Action | Skill | Claude Code command | Antigravity CLI command | Antigravity IDE workflow | Codex CLI or IDE |
+|---|---|---|---|---|---|
+| **Explore** | `openspec-explore` | `/opsx:explore` | `/openspec-explore` | `/opsx-explore` | `$openspec-explore` |
+| **Propose** | `openspec-propose` | `/opsx:propose` | `/openspec-propose` | `/opsx-propose` | `$openspec-propose` |
+| **Apply** | `openspec-apply-change` | `/opsx:apply` | `/openspec-apply-change` | `/opsx-apply` | `$openspec-apply-change` |
+| **Update** | `openspec-update-change` | `/opsx:update` | `/openspec-update-change` | `/opsx-update` | `$openspec-update-change` |
+| **Verify** | `openspec-verify-change` | `/opsx:verify` | `/openspec-verify-change` | `/opsx-verify` | `$openspec-verify-change` |
+| **Archive** | `openspec-archive-change` | `/opsx:archive` | `/openspec-archive-change` | `/opsx-archive` | `$openspec-archive-change` |
 
-The workflows call the `openspec` CLI themselves (`status`, `instructions`, `validate`, `archive`); never run those commands as a substitute for a workflow. In particular, `openspec update` refreshes the generated tool files, not a change's plan, and archiving happens only inside `change-flow` `close`.
+The skills use the `openspec` CLI (`status`, `instructions`, `validate`, `archive`) as needed; never run those commands as a substitute for following a skill. In particular, `openspec update` refreshes the generated tool files, not a change's plan, and archiving happens only inside `change-flow` `close`.
 
-*To add support for a new AI assistant: run `openspec init --tools <tool>`, and symlink or share the project skills (`change-flow`, `adr`).*
+Codex uses the OpenSpec skills in `.agents/skills/` alongside Antigravity. In the Codex desktop app, select the matching skill from the Skills sidebar. To refresh both integrations, run `openspec init --tools antigravity,codex`; the CLI keeps one shared skill tree and Antigravity's workflows.
+
+*To add support for another AI assistant: run `openspec init --tools <tool>`, and symlink or share the project skills (`change-flow`, `adr`).*
 
 ## Git
 
