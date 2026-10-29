@@ -1,6 +1,6 @@
 # 0019. Git hooks contract
 
-- Status: Accepted
+- Status: Superseded by 0025
 - Date: 2026-10-23
 - Change: none (process decision taken with the owner while defining the workflow)
 - Supersedes: 0013
