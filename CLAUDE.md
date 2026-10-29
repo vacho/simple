@@ -4,6 +4,7 @@ A personal and family finance app for a single household, built with spec-driven
 
 ## Where things are
 
+- `app/`: the app, its own npm project (ADR 0023). Run npm commands there. Everything else at the root is tooling for building it.
 - `openspec/config.yaml`: project context and the rules every change must follow. Read it before planning or implementing.
 - `openspec/specs/`: what the system does today. `openspec/changes/`: work in progress.
 - `docs/roadmap.md`: the planned changes, decisions already taken, catalog rules and rules for AI inside the app.

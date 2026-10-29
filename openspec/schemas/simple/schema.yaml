@@ -293,7 +293,7 @@ artifacts:
         when it checks broader integration or system behavior that spans
         multiple implementation tasks.
       - Each task group MUST land the tests and documentation its own work
-        calls for. The documentation a task writes goes in README.md; tasks
+        calls for. The documentation a task writes goes in app/README.md; tasks
         never write in docs/, which holds project documents only (ADRs,
         roadmap, the owner's documents). Do NOT collect testing or documentation into a final group -
         when a late group first exercises work from an early one, the failures

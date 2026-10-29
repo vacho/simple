@@ -33,6 +33,10 @@ context: |
   (https://svelte.dev/docs/kit) before writing Kit or Svelte code. Verify
   library versions and APIs against npm and official docs, not memory.
 
+  Layout: the app is its own npm project in app/ (ADR 0023); the repository
+  root holds only the tooling. Paths to app files in specs, designs and tasks
+  are relative to app/, and npm commands run there.
+
   Cross-cutting rules every change must respect:
   - Architecture: a modular monolith organized by feature
     (src/lib/features/<feature>/, with a server/ part), as recorded in
@@ -81,7 +85,7 @@ rules:
 operations:
   apply:
     guidance:
-      - Run npm run check and the relevant tests before marking a task done.
+      - Run npm run check and the relevant tests, in app/, before marking a task done.
       - If a spec turns out to be wrong or incomplete, stop and update it with /opsx:update before changing code.
       - Never weaken a lint rule, a permission or a test to make a task pass; report the conflict instead.
   archive:

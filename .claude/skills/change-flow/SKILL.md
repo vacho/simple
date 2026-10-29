@@ -89,7 +89,7 @@ One purpose per commit. Every file belongs to one kind, and a commit holds one k
 | **Plan** | `openspec/changes/<id>/` (proposal, specs, design, `adr.md`, the text of tasks); `openspec/specs/` and `openspec/changes/archive/`, which only archive writes, except filling a `TBD` Purpose by hand after archive | `main` while proposing, and for updates while `change/<id>` doesn't exist; once it exists, every update and spec fix goes on `change/<id>`, before the code that relies on it. `openspec/specs/` and the archive: `main` only |
 | **Project docs** | everything in `docs/` (ADRs, roadmap, documents the owner adds) | `main`; the roadmap and the owner's documents may also use a `docs/<topic>` branch, ADRs never do |
 | **Agent tooling** | `.claude/`, `.githooks/`, `openspec/schemas/`, `openspec/config.yaml`, `CLAUDE.md`, `AGENTS.md` | `main` or a `chore/` branch, never `change/<id>` |
-| **App** | everything else: `src/`, `tests/`, `scripts/`, `messages/`, `drizzle/`, `static/`, `package*.json`, tool configs (`.gitignore`, `.env.example`, `vite.config.ts` and the like), and `README.md` (the one document that describes the code, kept up to date by the tasks) | `change/<id>`, `fix/`, `chore/`, `build/` or `ci/` branches only |
+| **App** | everything in `app/`, the app's own npm project ([ADR 0023](../../../docs/adr/0023-app-in-its-own-folder.md)): its `src/`, `tests/`, `scripts/`, `messages/`, `drizzle/`, `static/`, `package*.json`, tool configs (`.gitignore`, `.env.example`, `vite.config.ts` and the like), and `app/README.md` (the one document that describes the code, kept up to date by the tasks) | `change/<id>`, `fix/`, `chore/`, `build/` or `ci/` branches only |
 
 Exceptions:
 
@@ -97,7 +97,7 @@ Exceptions:
 - A fix and the test proving it go together.
 - The archive commit holds what archiving writes (synced `openspec/specs/`, the archived change folder, accepted ADRs, the roadmap status) and no app code.
 
-`docs/` is a source of truth that changes only through defined steps: ADRs through the `adr` skill; the roadmap's Status column through `prepare` (Proposed), the archive guidance in `openspec/config.yaml` (Archived) and "Abandoning a change" below (back to Planned); the rest of the roadmap only when the owner asks. Anything else in `docs/` was added by the owner: read it when a prompt, a skill, the schema or the config points to it, and never edit or delete it unless the owner asks. Tasks never write in `docs/`: the documentation a task writes goes in `README.md`. There is no separate architecture document: the code organization is ADR 0008, enforced by lint.
+`docs/` is a source of truth that changes only through defined steps: ADRs through the `adr` skill; the roadmap's Status column through `prepare` (Proposed), the archive guidance in `openspec/config.yaml` (Archived) and "Abandoning a change" below (back to Planned); the rest of the roadmap only when the owner asks. Anything else in `docs/` was added by the owner: read it when a prompt, a skill, the schema or the config points to it, and never edit or delete it unless the owner asks. Tasks never write in `docs/`: the documentation a task writes goes in `app/README.md`. There is no separate architecture document: the code organization is ADR 0008, enforced by lint.
 
 **Merge commits** keep the message Git writes (`Merge branch 'change/<id>'`, `Merge branch 'main' into change/<id>`). They don't follow the title convention and the hook lets them through; the change id is already in the branch name.
 
@@ -139,7 +139,7 @@ They run only when enabled in the clone: `git config core.hooksPath .githooks`. 
 
 ## Versions
 
-The version is `package.json` `version`, in Semantic Versioning. Pick the level when closing:
+The version is `app/package.json` `version`, in Semantic Versioning. Pick the level when closing:
 
 | Work closed | Before 1.0.0 | From 1.0.0 |
 |---|---|---|
@@ -147,12 +147,12 @@ The version is `package.json` `version`, in Semantic Versioning. Pick the level 
 | An OpenSpec change with `skip_specs: true` (a refactor of app code, no behavior change) | patch | patch |
 | Any other OpenSpec change | minor | minor |
 | A `fix/`, `chore/` or `build/` branch that changes what runs in production (app code, dependencies, packaging) | patch | patch |
-| Anything that doesn't change what runs: documentation, OpenSpec artifacts, agent tooling, CI, tests only, dev-only tool configs, `README.md` only | no release | no release |
+| Anything that doesn't change what runs: documentation, OpenSpec artifacts, agent tooling, CI, tests only, dev-only tool configs, `app/README.md` only | no release | no release |
 
 - OpenSpec changes are for app code. Agent tooling and project documentation are never OpenSpec changes: they go on `main`, or a `chore/` or `docs/` branch.
 - Work that requires manual action from the operator on upgrade is always an OpenSpec change, never a `fix/`, `chore/`, `build/` or `ci/` branch. If such a branch turns out to need it, stop and propose a change instead.
 - 1.0.0 is set only when the owner says the household uses the app for real: the next `close` releases with level `major`, which turns `0.x.y` into `1.0.0`.
-- Until `package.json` exists, nothing is released.
+- Until `app/package.json` exists, nothing is released.
 - The version is bumped only after the owner approves the merge, in the same run (`close` steps 4 and 5).
 
 ## Checks by stage
@@ -163,11 +163,11 @@ Run the checks that exist; never skip one that exists. A task-group commit check
 |---|---|---|
 | Hooks enabled (`git config core.hooksPath` prints `.githooks`) | yes | yes |
 | `openspec validate <id> --strict` (OpenSpec changes) | when the group changed the plan | yes |
-| `npm run check` (once `package.json` exists) | yes | yes |
+| `npm run check` in `app/` (once `app/package.json` exists) | yes | yes |
 | Tests | the tests the group's tasks name | the full suite |
 | `/opsx:verify <id>` (OpenSpec changes) | no: it checks the whole change | yes |
-| Migration regeneration (when both `main` and the branch added migrations under `drizzle/` since they split) | no | yes |
-| `npm run i18n:sort` (once `messages/` exists and both sides added keys) | no | yes |
+| Migration regeneration (when both `main` and the branch added migrations under `app/drizzle/` since they split) | no | yes |
+| `npm run i18n:sort` in `app/` (once `app/messages/` exists and both sides added keys) | no | yes |
 
 ## Actions
 
@@ -216,11 +216,11 @@ Brings a finished change into `main`. Only with the owner's explicit approval, g
    1. `close.sh sync change/<id>`. On conflicts, resolve them (hot spots below), then `close.sh conclude-sync change/<id>`; or `close.sh abort-sync change/<id>` and report. The sync merge is concluded **before** anything else is committed.
    2. Hot spots, each as its own commit after the sync merge is concluded:
       - **Database migrations**, only when both sides added migrations since they split: regenerate the branch's migrations so they follow `main`'s latest one. Keep a copy of hand-written SQL (data conversions, backfills, custom statements) and put it back; regeneration from the schema doesn't recreate it. Test upgrading a database at the last released schema. Commit as `chore(<id>): regenerate migrations - <task-code>`. The exact drizzle-kit commands are defined on first use.
-      - **Message catalogs** (`messages/*.json`): keep both sides' keys and run `npm run i18n:sort`; commit as `chore(<id>): sort message catalogs - <task-code>`.
-      - **Policy matrix and shared modules** (`server/policy/`, `server/core/`): resolve by hand and re-run the policy tests.
+      - **Message catalogs** (`app/messages/*.json`): keep both sides' keys and run `npm run i18n:sort` in `app/`; commit as `chore(<id>): sort message catalogs - <task-code>`.
+      - **Policy matrix and shared modules** (`app/src/lib/server/policy/`, `app/src/lib/server/core/`): resolve by hand and re-run the policy tests.
    3. Run the `close` checks (see "Checks by stage"), including `/opsx:verify <id>`. Stop on any failure and report.
 4. **Ask the owner**, in this run: show what will be merged (`git log main..change/<id> --oneline`) and the version it will become (level from "Versions", or "no release"). Their yes covers the release, merge and archive commits. If the answer is no, stop.
-5. **Release** (when there is one and `package.json` exists): `close.sh release change/<id> <level> <task-code>`. It bumps, commits `chore(<id>): release vX.Y.Z - <task-code>`, and refuses if that version's tag already exists.
+5. **Release** (when there is one and `app/package.json` exists): `close.sh release change/<id> <level> <task-code>`. It bumps, commits `chore(<id>): release vX.Y.Z - <task-code>`, and refuses if that version's tag already exists.
 6. **Merge:** `close.sh merge change/<id>`. It switches the main checkout to `main` when there is no worktree, and merges with `--no-ff` and Git's message.
 7. **Archive**, in the main checkout: `/opsx:archive <id>`. The archive is complete only when all four of its outputs are written: the delta specs synced, the change folder moved, the change's ADRs accepted and the roadmap status set; `status` lists what is missing. Archiving runs the `adr` skill's `accept`; if it had to change a Proposed ADR to match the shipped code, it shows the owner that change and waits for their yes before accepting it (the one exception to the approval in step 4). `status` also checks every step of `accept`: status, `Change` path, index row, superseded ADRs. Then `close.sh archive-commit change/<id> <task-code>`. If `status` reports it complete but not committed, only run `archive-commit`. If it reports it partly written: `close.sh show-archive change/<id>` to show the owner what was written (new files included, without touching the index), then, after the owner's yes, `close.sh undo-archive change/<id> --run`, which discards only that output and keeps the merge and release; then run this step again.
 8. **Tag** (when a release was made): `close.sh tag change/<id> <task-code>`. It tags the archive commit and checks it.

@@ -25,6 +25,9 @@
 
 set -u
 
+# The app is its own npm project in this folder (ADR 0023); its package.json holds the version.
+app=app
+
 die()  { echo "close.sh: $*" >&2; exit 1; }
 usage() { sed -n '2,26p' "$0" | sed 's/^# \{0,1\}//' >&2; exit 2; }
 
@@ -100,18 +103,18 @@ version_of_commit() { git log -1 --format=%s "$1" | sed -E 's/.*release v([0-9.]
 
 json_version() { node -e 'process.stdout.write(JSON.parse(require("fs").readFileSync(0,"utf8")).version||"")'; }
 
-# An uncommitted version bump in the branch's checkout: only package.json
-# (and package-lock.json) changed, and the version differs from HEAD's.
+# An uncommitted version bump in the branch's checkout: only $app/package.json
+# (and $app/package-lock.json) changed, and the version differs from HEAD's.
 release_written() {
   [ -n "$branch_co" ] || return 1
   local files other head_v work_v
   files=$(git -C "$branch_co" status --porcelain=v1 --untracked-files=all | cut -c4-)
   [ -n "$files" ] || return 1
-  other=$(printf '%s\n' "$files" | grep -Ev '^(package\.json|package-lock\.json)$')
+  other=$(printf '%s\n' "$files" | grep -Ev "^$app/(package\\.json|package-lock\\.json)\$")
   [ -z "$other" ] || return 1
-  printf '%s\n' "$files" | grep -qx 'package.json' || return 1
-  head_v=$(git -C "$branch_co" show HEAD:package.json 2>/dev/null | json_version)
-  work_v=$(json_version < "$branch_co/package.json")
+  printf '%s\n' "$files" | grep -qx "$app/package.json" || return 1
+  head_v=$(git -C "$branch_co" show "HEAD:$app/package.json" 2>/dev/null | json_version)
+  work_v=$(json_version < "$branch_co/$app/package.json")
   [ -n "$work_v" ] && [ "$work_v" != "$head_v" ]
 }
 
@@ -316,8 +319,8 @@ case "$cmd" in
     collect
     [ -z "$merge" ] || die "already merged: undo the merge first (undo)"
     if [ "$rel_written" = yes ]; then
-      paths=package.json
-      git -C "$branch_co" ls-files --error-unmatch package-lock.json >/dev/null 2>&1 && paths="$paths package-lock.json"
+      paths=$app/package.json
+      git -C "$branch_co" ls-files --error-unmatch "$app/package-lock.json" >/dev/null 2>&1 && paths="$paths $app/package-lock.json"
       # shellcheck disable=SC2086
       git -C "$branch_co" restore --source=HEAD --staged --worktree -- $paths || die "restore failed"
       echo "dropped the uncommitted release"
@@ -380,16 +383,16 @@ case "$cmd" in
     collect
     [ -z "$merge" ] || die "already merged"
     [ -z "$release" ] && [ "$rel_written" = no ] || die "a release already exists; drop-release first"
-    [ -f "$branch_co/package.json" ] || die "no package.json: nothing to release"
+    [ -f "$branch_co/$app/package.json" ] || die "no $app/package.json: nothing to release"
     need_clean "$branch_co" "the branch checkout"
-    new=$(cd "$branch_co" && npm version "$level" --no-git-tag-version 2>/dev/null | tail -1) || die "npm version failed"
+    new=$(cd "$branch_co/$app" && npm version "$level" --no-git-tag-version 2>/dev/null | tail -1) || die "npm version failed"
     v=${new#v}
     if git rev-parse -q --verify "refs/tags/v$v" >/dev/null; then
       "$0" drop-release "$branch" >/dev/null
       die "tag v$v already exists; release not made"
     fi
-    paths=package.json
-    [ -f "$branch_co/package-lock.json" ] && paths="$paths package-lock.json"
+    paths=$app/package.json
+    [ -f "$branch_co/$app/package-lock.json" ] && paths="$paths $app/package-lock.json"
     # shellcheck disable=SC2086
     git -C "$branch_co" add -- $paths && \
       git -C "$branch_co" commit -q -m "chore($scope): release v$v - $code" || die "release commit failed (the bump is left written; drop-release undoes it)"
