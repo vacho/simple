@@ -1,8 +1,8 @@
 # 0007. Device-generated UUIDv7 IDs and idempotent creates for household data
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-10-22
-- Change: bootstrap-app-foundation (`openspec/changes/bootstrap-app-foundation/design.md`, decision D15)
+- Change: bootstrap-app-foundation (`openspec/changes/archive/2026-10-29-bootstrap-app-foundation/design.md`, decision D15)
 
 ## Context
 

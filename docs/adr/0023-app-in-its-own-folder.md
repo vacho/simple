@@ -1,8 +1,8 @@
 # 0023. The app lives in its own folder
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-10-29
-- Change: bootstrap-app-foundation (`openspec/changes/bootstrap-app-foundation/design.md`, decision D12)
+- Change: bootstrap-app-foundation (`openspec/changes/archive/2026-10-29-bootstrap-app-foundation/design.md`, decision D12)
 
 ## Context
 

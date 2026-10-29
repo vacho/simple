@@ -67,14 +67,14 @@ The options rejected and why, one line each.
 
 | ADR | Title | Status |
 |---|---|---|
-| [0001](0001-sveltekit-with-node-adapter.md) | SvelteKit 3 with the Node adapter as the application framework | Proposed |
-| [0002](0002-sqlite-with-drizzle.md) | SQLite through better-sqlite3 and Drizzle ORM | Proposed |
-| [0003](0003-own-session-authentication.md) | Own session authentication following the Lucia/Oslo pattern | Proposed |
-| [0004](0004-deny-by-default-policy-layer.md) | Single policy layer that denies by default | Proposed |
-| [0005](0005-money-as-integer-minor-units.md) | Money as integer minor units | Proposed |
-| [0006](0006-runtime-translation-dictionaries.md) | Runtime translation dictionaries with typed English keys | Proposed |
-| [0007](0007-device-generated-ids-and-idempotent-creates.md) | Device-generated UUIDv7 IDs and idempotent creates for household data | Proposed |
-| [0008](0008-modular-monolith-by-feature.md) | Modular monolith organized by feature | Proposed |
+| [0001](0001-sveltekit-with-node-adapter.md) | SvelteKit 3 with the Node adapter as the application framework | Accepted |
+| [0002](0002-sqlite-with-drizzle.md) | SQLite through better-sqlite3 and Drizzle ORM | Accepted |
+| [0003](0003-own-session-authentication.md) | Own session authentication following the Lucia/Oslo pattern | Accepted |
+| [0004](0004-deny-by-default-policy-layer.md) | Single policy layer that denies by default | Accepted |
+| [0005](0005-money-as-integer-minor-units.md) | Money as integer minor units | Accepted |
+| [0006](0006-runtime-translation-dictionaries.md) | Runtime translation dictionaries with typed English keys | Accepted |
+| [0007](0007-device-generated-ids-and-idempotent-creates.md) | Device-generated UUIDv7 IDs and idempotent creates for household data | Accepted |
+| [0008](0008-modular-monolith-by-feature.md) | Modular monolith organized by feature | Accepted |
 | [0009](0009-propose-and-archive-on-main.md) | Propose and archive on main, apply on a branch per change | Superseded by 0017 |
 | [0010](0010-merge-no-ff-one-change-at-a-time.md) | Merge with --no-ff, one change at a time, re-verified on top of main | Accepted |
 | [0011](0011-parallel-changes-in-worktrees.md) | Parallel changes only under conditions, in worktrees outside the repository | Superseded by 0020 |
@@ -87,8 +87,8 @@ The options rejected and why, one line each.
 | [0018](0018-versions-release-after-approval-and-rollback.md) | Versions, release after approval, and recovery of a failed close | Accepted |
 | [0019](0019-git-hooks-contract.md) | Git hooks contract | Superseded by 0025 |
 | [0020](0020-parallel-changes-in-worktrees.md) | Parallel changes only under conditions, in worktrees outside the repository | Accepted |
-| [0021](0021-dates-time-zones-and-timestamps.md) | Calendar dates, UTC timestamps and canonical time zones | Proposed |
+| [0021](0021-dates-time-zones-and-timestamps.md) | Calendar dates, UTC timestamps and canonical time zones | Accepted |
 | [0022](0022-commit-convention-and-contents.md) | Commit convention and what each commit contains | Superseded by 0024 |
-| [0023](0023-app-in-its-own-folder.md) | The app lives in its own folder | Proposed |
+| [0023](0023-app-in-its-own-folder.md) | The app lives in its own folder | Accepted |
 | [0024](0024-commit-convention-file-kinds-and-multi-agent-tooling.md) | Commit convention, file kinds, and multi-agent tooling | Accepted |
 | [0025](0025-git-hooks-contract-with-multi-agent-tooling.md) | Git hooks contract, with multi-agent tooling | Accepted |

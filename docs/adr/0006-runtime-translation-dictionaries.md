@@ -1,8 +1,8 @@
 # 0006. Runtime translation dictionaries with typed English keys
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-10-22
-- Change: bootstrap-app-foundation (`openspec/changes/bootstrap-app-foundation/design.md`, decision D14)
+- Change: bootstrap-app-foundation (`openspec/changes/archive/2026-10-29-bootstrap-app-foundation/design.md`, decision D14)
 
 ## Context
 

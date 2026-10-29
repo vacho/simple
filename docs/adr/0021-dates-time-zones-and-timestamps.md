@@ -1,8 +1,8 @@
 # 0021. Calendar dates, UTC timestamps and canonical time zones
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-10-23
-- Change: bootstrap-app-foundation (`openspec/changes/bootstrap-app-foundation/design.md`, decision D14)
+- Change: bootstrap-app-foundation (`openspec/changes/archive/2026-10-29-bootstrap-app-foundation/design.md`, decision D14)
 
 ## Context
 

@@ -1,8 +1,8 @@
 # 0001. SvelteKit 3 with the Node adapter as the application framework
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-10-22
-- Change: bootstrap-app-foundation (`openspec/changes/bootstrap-app-foundation/design.md`, decision D1)
+- Change: bootstrap-app-foundation (`openspec/changes/archive/2026-10-29-bootstrap-app-foundation/design.md`, decision D1)
 
 ## Context
 

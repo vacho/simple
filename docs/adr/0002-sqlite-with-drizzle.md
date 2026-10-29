@@ -1,8 +1,8 @@
 # 0002. SQLite through better-sqlite3 and Drizzle ORM
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-10-22
-- Change: bootstrap-app-foundation (`openspec/changes/bootstrap-app-foundation/design.md`, decision D3)
+- Change: bootstrap-app-foundation (`openspec/changes/archive/2026-10-29-bootstrap-app-foundation/design.md`, decision D3)
 
 ## Context
 

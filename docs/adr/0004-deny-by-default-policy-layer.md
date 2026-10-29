@@ -1,8 +1,8 @@
 # 0004. Single policy layer that denies by default
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-10-22
-- Change: bootstrap-app-foundation (`openspec/changes/bootstrap-app-foundation/design.md`, decision D6)
+- Change: bootstrap-app-foundation (`openspec/changes/archive/2026-10-29-bootstrap-app-foundation/design.md`, decision D6)
 
 ## Context
 
