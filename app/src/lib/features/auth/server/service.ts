@@ -118,16 +118,25 @@ export async function signIn(ctx: Ctx, input: SignInInput): Promise<NewSession> 
 		// Concurrent attempts may have locked the username while the hash was being checked.
 		const until = lockedUntil(tx.db, username, input.address, now);
 		if (until) return { status: 'throttled', until };
-		if (!credentials || !matches) {
+		// A deactivated account is refused exactly like a wrong password (ADR 0027).
+		if (!credentials || !credentials.active || !matches) {
 			recordFailure(tx.db, username, input.address, now);
 			return { status: 'invalid' };
 		}
 		recordSuccess(tx.db, username);
 		const expiresAt = createSession(tx.db, token, credentials.id, now);
 		const timeZone = browserZone(input.timeZone);
-		if (credentials.timeZone === null && timeZone) {
+		// With a temporary password the profile waits (ADR 0027): a later sign-in stores it.
+		if (credentials.timeZone === null && timeZone && !credentials.passwordTemporary) {
 			// The user has just proven who they are: they update their own profile.
-			const user: UserActor = { kind: 'user', ...credentials };
+			const user: UserActor = {
+				kind: 'user',
+				id: credentials.id,
+				role: credentials.role,
+				locale: credentials.locale,
+				timeZone: credentials.timeZone,
+				passwordTemporary: credentials.passwordTemporary
+			};
 			updateProfile({ ...tx, actor: user }, credentials.id, { timeZone });
 		}
 		return { status: 'ok', session: { token, expiresAt } };

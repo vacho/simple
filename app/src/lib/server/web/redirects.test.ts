@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest';
-import { safeRedirect, signInUrl } from './redirects.ts';
+import { passwordChangeUrl, safeRedirect, signInUrl } from './redirects.ts';
 
 describe('safeRedirect', () => {
 	it('keeps paths on this site', () => {
@@ -26,5 +26,14 @@ describe('signInUrl', () => {
 			'/login?redirectTo=%2Fsettings%3Fa%3D1'
 		);
 		expect(signInUrl(new URL('http://x/'))).toBe('/login');
+	});
+});
+
+describe('passwordChangeUrl', () => {
+	it('remembers the requested page', () => {
+		expect(passwordChangeUrl(new URL('http://x/members?a=1'))).toBe(
+			'/password?redirectTo=%2Fmembers%3Fa%3D1'
+		);
+		expect(passwordChangeUrl(new URL('http://x/'))).toBe('/password');
 	});
 });

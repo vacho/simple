@@ -8,40 +8,104 @@ import { authorize, can } from './policy.ts';
 
 const actors = {
 	anonymous,
-	user: { kind: 'user', id: 1, role: 'member', locale: null, timeZone: null },
-	admin: { kind: 'user', id: 2, role: 'admin', locale: null, timeZone: null },
-	system: systemActor('policy test')
+	user: {
+		kind: 'user',
+		id: 1,
+		role: 'member',
+		locale: null,
+		timeZone: null,
+		passwordTemporary: false
+	},
+	admin: {
+		kind: 'user',
+		id: 2,
+		role: 'admin',
+		locale: null,
+		timeZone: null,
+		passwordTemporary: false
+	},
+	system: systemActor('policy test'),
+	// The gate applies to administrators too (ADR 0027).
+	'admin with a temporary password': {
+		kind: 'user',
+		id: 3,
+		role: 'admin',
+		locale: null,
+		timeZone: null,
+		passwordTemporary: true
+	}
 } satisfies Record<string, Actor>;
 
 type Cell = 'allow' | 'deny';
-type Row = [label: string, check: (actor: Actor) => boolean, cells: [Cell, Cell, Cell, Cell]];
+type Row = [label: string, check: (actor: Actor) => boolean, cells: [Cell, Cell, Cell, Cell, Cell]];
 
-const own = (action: 'profile.view' | 'profile.update') => (actor: Actor) =>
+type Targeted = 'profile.view' | 'profile.update' | 'accounts.manage';
+const own = (action: Targeted) => (actor: Actor) =>
 	can(actor, action, { userId: actor.kind === 'user' ? actor.id : 0 });
-const other = (action: 'profile.view' | 'profile.update') => (actor: Actor) =>
-	can(actor, action, { userId: 99 });
+const other = (action: Targeted) => (actor: Actor) => can(actor, action, { userId: 99 });
 const plain = (action: Action) => (actor: Actor) =>
 	(can as (a: Actor, x: Action) => boolean)(actor, action);
 
-//                                                          anonymous user     admin    system
+// Columns: anonymous, user, admin, system, admin with a temporary password.
 const matrix: Row[] = [
-	['auth.setupStatus', plain('auth.setupStatus'), ['allow', 'allow', 'allow', 'allow']],
-	['auth.setup', plain('auth.setup'), ['allow', 'deny', 'deny', 'deny']],
-	['auth.signIn', plain('auth.signIn'), ['allow', 'allow', 'allow', 'deny']],
-	['auth.signOut (own session)', plain('auth.signOut'), ['deny', 'allow', 'allow', 'deny']],
-	['languages.read', plain('languages.read'), ['allow', 'allow', 'allow', 'allow']],
-	['profile.view (own)', own('profile.view'), ['deny', 'allow', 'allow', 'deny']],
-	['profile.update (own)', own('profile.update'), ['deny', 'allow', 'allow', 'deny']],
-	['profile.view (other user)', other('profile.view'), ['deny', 'deny', 'allow', 'deny']],
-	['profile.update (other user)', other('profile.update'), ['deny', 'deny', 'allow', 'deny']],
-	['settings.view', plain('settings.view'), ['deny', 'deny', 'allow', 'deny']],
-	['users.create', plain('users.create'), ['deny', 'deny', 'deny', 'allow']],
-	['users.readCredentials', plain('users.readCredentials'), ['deny', 'deny', 'deny', 'allow']],
-	['users.hasAny', plain('users.hasAny'), ['deny', 'deny', 'deny', 'allow']],
-	['auth.validateSession', plain('auth.validateSession'), ['deny', 'deny', 'deny', 'allow']],
-	['languages.seed', plain('languages.seed'), ['deny', 'deny', 'deny', 'allow']],
-	['any action not listed', plain('ledger.delete' as Action), ['deny', 'deny', 'deny', 'deny']],
-	['a name inherited from Object', plain('toString' as Action), ['deny', 'deny', 'deny', 'deny']]
+	['auth.setupStatus', plain('auth.setupStatus'), ['allow', 'allow', 'allow', 'allow', 'allow']],
+	['auth.setup', plain('auth.setup'), ['allow', 'deny', 'deny', 'deny', 'deny']],
+	['auth.signIn', plain('auth.signIn'), ['allow', 'allow', 'allow', 'deny', 'allow']],
+	[
+		'auth.signOut (own session)',
+		plain('auth.signOut'),
+		['deny', 'allow', 'allow', 'deny', 'allow']
+	],
+	['languages.read', plain('languages.read'), ['allow', 'allow', 'allow', 'allow', 'allow']],
+	['profile.view (own)', own('profile.view'), ['deny', 'allow', 'allow', 'deny', 'deny']],
+	['profile.update (own)', own('profile.update'), ['deny', 'allow', 'allow', 'deny', 'deny']],
+	['profile.view (other user)', other('profile.view'), ['deny', 'deny', 'allow', 'deny', 'deny']],
+	[
+		'profile.update (other user)',
+		other('profile.update'),
+		['deny', 'deny', 'allow', 'deny', 'deny']
+	],
+	['settings.view', plain('settings.view'), ['deny', 'deny', 'allow', 'deny', 'deny']],
+	['password.changeOwn', plain('password.changeOwn'), ['deny', 'allow', 'allow', 'deny', 'allow']],
+	['household.view', plain('household.view'), ['deny', 'allow', 'allow', 'deny', 'deny']],
+	['household.update', plain('household.update'), ['deny', 'deny', 'allow', 'deny', 'deny']],
+	['memberTypes.manage', plain('memberTypes.manage'), ['deny', 'deny', 'allow', 'deny', 'deny']],
+	['members.manage', plain('members.manage'), ['deny', 'deny', 'allow', 'deny', 'deny']],
+	['accounts.view', plain('accounts.view'), ['deny', 'deny', 'allow', 'deny', 'deny']],
+	['accounts.create', plain('accounts.create'), ['deny', 'deny', 'allow', 'deny', 'deny']],
+	[
+		'accounts.manage (other user)',
+		other('accounts.manage'),
+		['deny', 'deny', 'allow', 'deny', 'deny']
+	],
+	[
+		'accounts.manage (own account)',
+		own('accounts.manage'),
+		['deny', 'deny', 'deny', 'deny', 'deny']
+	],
+	['users.create', plain('users.create'), ['deny', 'deny', 'deny', 'allow', 'deny']],
+	[
+		'users.readCredentials',
+		plain('users.readCredentials'),
+		['deny', 'deny', 'deny', 'allow', 'deny']
+	],
+	['users.hasAny', plain('users.hasAny'), ['deny', 'deny', 'deny', 'allow', 'deny']],
+	[
+		'auth.validateSession',
+		plain('auth.validateSession'),
+		['deny', 'deny', 'deny', 'allow', 'deny']
+	],
+	['languages.seed', plain('languages.seed'), ['deny', 'deny', 'deny', 'allow', 'deny']],
+	[
+		'any action not listed',
+		plain('ledger.delete' as Action),
+		['deny', 'deny', 'deny', 'deny', 'deny']
+	],
+	[
+		'a name inherited from Object',
+		plain('toString' as Action),
+		['deny', 'deny', 'deny', 'deny', 'deny']
+	]
 ];
 
 const cells = matrix.flatMap(([label, check, expected]) =>
@@ -50,7 +114,7 @@ const cells = matrix.flatMap(([label, check, expected]) =>
 	)
 );
 
-describe('policy matrix (D6)', () => {
+describe('policy matrix (D6, add-household-members D5)', () => {
 	it.each(cells)('%s, %s: %s', (_label, name, check, expected) => {
 		expect(check(actors[name])).toBe(expected === 'allow');
 	});

@@ -10,7 +10,9 @@ import { getOverview } from './service.ts';
 const db = createTestDatabase();
 seed(testCtx(db, { actor: systemActor('test seed') }));
 const user = (role: UserActor['role']) =>
-	testCtx(db, { actor: { kind: 'user', id: 1, role, locale: null, timeZone: null } });
+	testCtx(db, {
+		actor: { kind: 'user', id: 1, role, locale: null, timeZone: null, passwordTemporary: false }
+	});
 const { version } = JSON.parse(
 	readFileSync(new URL('../../../../../package.json', import.meta.url), 'utf8')
 );

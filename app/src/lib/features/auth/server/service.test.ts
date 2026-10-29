@@ -1,3 +1,4 @@
+import { eq } from 'drizzle-orm';
 import { beforeAll, beforeEach, describe, expect, it, vi } from 'vitest';
 import { systemActor, type UserActor } from '../../../server/core/actor.ts';
 import { testCtx } from '../../../server/core/ctx.ts';
@@ -231,7 +232,16 @@ describe('Time zone from the browser', () => {
 		const id = await fresh(username);
 		await signIn(anonymousCtx, { username, password: 'long enough', address: address(), timeZone });
 		return getProfile(
-			testCtx(db, { actor: { kind: 'user', id, role: 'member', locale: null, timeZone: null } }),
+			testCtx(db, {
+				actor: {
+					kind: 'user',
+					id,
+					role: 'member',
+					locale: null,
+					timeZone: null,
+					passwordTemporary: false
+				}
+			}),
 			id
 		).timeZone;
 	};
@@ -253,7 +263,8 @@ describe('Sessions and sign-out', () => {
 		id: memberId,
 		role: 'member',
 		locale: null,
-		timeZone: null
+		timeZone: null,
+		passwordTemporary: false
 	});
 	const start = () =>
 		signIn(anonymousCtx, { username: 'luis', password: memberPassword, address: address() });
@@ -307,5 +318,79 @@ describe('Sessions and sign-out', () => {
 		expect(resolveActor(testCtx(db, { actor: systemActor('test') }), 'x').actor.kind).not.toBe(
 			'system'
 		);
+	});
+});
+
+describe('Account states (ADR 0027)', () => {
+	const failuresOf = (username: string) =>
+		db
+			.select()
+			.from(loginAttempts)
+			.all()
+			.find((row) => row.kind === 'username' && row.key === username)?.failures;
+	const addUser = async (username: string, values: Partial<typeof users.$inferInsert>) =>
+		db
+			.insert(users)
+			.values({
+				username,
+				displayName: username,
+				passwordHash: await hashPassword(memberPassword),
+				role: 'member',
+				createdAt: new Date(),
+				...values
+			})
+			.returning()
+			.get().id;
+
+	it('Deactivated account looks like wrong credentials: same error, status and failure count, one verification', async () => {
+		await addUser('inactive.user', { active: false });
+		await addUser('active.user', {});
+		verify.mockClear();
+		const deactivated = await caught(
+			signIn(anonymousCtx, {
+				username: 'inactive.user',
+				password: memberPassword,
+				address: address()
+			})
+		);
+		const wrong = await caught(
+			signIn(anonymousCtx, { username: 'active.user', password: 'wrong pass', address: address() })
+		);
+		expect(deactivated).toBeInstanceOf(Invalid);
+		expect(deactivated).toEqual(wrong);
+		expect(verify).toHaveBeenCalledTimes(2);
+		expect(failuresOf('inactive.user')).toBe(1);
+		expect(failuresOf('active.user')).toBe(1);
+	});
+
+	it('a session of a deactivated account resolves to anonymous and clears the cookie', async () => {
+		const id = await addUser('soon.inactive', {});
+		const { token } = await signIn(anonymousCtx, {
+			username: 'soon.inactive',
+			password: memberPassword,
+			address: address()
+		});
+		db.update(users).set({ active: false }).where(eq(users.id, id)).run();
+		expect(resolveActor(anonymousCtx, token)).toEqual({
+			actor: { kind: 'anonymous' },
+			session: { action: 'clear' }
+		});
+		expect(db.select().from(sessions).where(eq(sessions.userId, id)).all()).toEqual([]);
+	});
+
+	it('a temporary password reaches the actor, and the profile waits for the new password', async () => {
+		const id = await addUser('first.day', { passwordTemporary: true });
+		const { token } = await signIn(anonymousCtx, {
+			username: 'first.day',
+			password: memberPassword,
+			address: address(),
+			timeZone: 'America/La_Paz'
+		});
+		expect(resolveActor(anonymousCtx, token).actor).toMatchObject({
+			kind: 'user',
+			id,
+			passwordTemporary: true
+		});
+		expect(db.select().from(users).where(eq(users.id, id)).get()?.timeZone).toBeNull();
 	});
 });

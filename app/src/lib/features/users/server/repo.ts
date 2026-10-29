@@ -26,7 +26,12 @@ export function usernameExists(db: Db, username: string): boolean {
 
 export function findCredentials(db: Db, username: string) {
 	return db
-		.select({ ...profileColumns, passwordHash: users.passwordHash })
+		.select({
+			...profileColumns,
+			passwordHash: users.passwordHash,
+			active: users.active,
+			passwordTemporary: users.passwordTemporary
+		})
 		.from(users)
 		.where(eq(users.username, username))
 		.get();

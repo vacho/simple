@@ -131,18 +131,25 @@ export async function setUpAdmin(db: Db, profile: { locale?: string | null } = {
 	return { token, userId: actor.id };
 }
 
+export const memberPassword = 'member password';
+
 /**
- * A member account, signed in. Admins can't create members until a later change, so the row is
- * written directly; the session comes from the real sign-in.
+ * A member account, signed in. The row is written directly, so tests of other features don't
+ * depend on the account pages; the session comes from the real sign-in.
  */
-export async function addMember(db: Db, username = 'luis'): Promise<string> {
-	const password = 'member password';
+export async function addMember(
+	db: Db,
+	username = 'luis',
+	{ passwordTemporary = false } = {}
+): Promise<string> {
+	const password = memberPassword;
 	db.insert(users)
 		.values({
 			username,
 			displayName: 'Luis',
 			passwordHash: await hashPassword(password),
 			role: 'member',
+			passwordTemporary,
 			createdAt: new Date()
 		})
 		.run();
