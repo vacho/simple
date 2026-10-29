@@ -1,6 +1,7 @@
 export {
 	createAccount,
 	createAdmin,
+	getCredentialsById,
 	getCredentialsForSignIn,
 	getProfile,
 	hasAnyUser,

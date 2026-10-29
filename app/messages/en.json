@@ -1,4 +1,52 @@
 {
+	"auth.password.changed": {
+		"text": "Password changed.",
+		"description": "Confirmation shown on the profile page after the password is changed."
+	},
+	"auth.password.confirm": {
+		"text": "Repeat the new password",
+		"description": "Label of the field where the user types the new password a second time."
+	},
+	"auth.password.current": {
+		"text": "Current password",
+		"description": "Label of the current password field on the profile page."
+	},
+	"auth.password.current_wrong": {
+		"text": "The current password is wrong.",
+		"description": "Error under the current password field when the user types a password that isn't theirs."
+	},
+	"auth.password.intro": {
+		"text": "An administrator gave you a temporary password. Choose your own to continue; only you will know it.",
+		"description": "Introduction on the page that asks for a new password at the first sign-in after an account is created or its password reset."
+	},
+	"auth.password.mismatch": {
+		"text": "The two new passwords don't match.",
+		"description": "Error under the second new password field when it differs from the first."
+	},
+	"auth.password.new": {
+		"text": "New password",
+		"description": "Label of the new password field."
+	},
+	"auth.password.same_as_temporary": {
+		"text": "Choose a password different from the temporary one.",
+		"description": "Error when a user replacing a temporary password types the same temporary password again."
+	},
+	"auth.password.save": {
+		"text": "Save password",
+		"description": "Button that saves the new password."
+	},
+	"auth.password.section": {
+		"text": "Change password",
+		"description": "Heading of the password change form on the profile page."
+	},
+	"auth.password.section_hint": {
+		"text": "You stay signed in on this device; your other devices are signed out.",
+		"description": "Help text above the password change form on the profile page."
+	},
+	"auth.password.title": {
+		"text": "Choose your password",
+		"description": "Heading and page title of the page where a user replaces the temporary password an administrator gave them."
+	},
 	"auth.setup.closed": {
 		"text": "The app is already set up. Sign in instead.",
 		"description": "Error shown when setup is submitted after an account already exists, for example by two people at once."

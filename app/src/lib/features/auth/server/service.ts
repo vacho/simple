@@ -15,9 +15,11 @@ import { parseInput } from '../../../server/core/validation.ts';
 import { authorize } from '../../../server/policy/policy.ts';
 import {
 	createAdmin,
+	getCredentialsById,
 	getCredentialsForSignIn,
 	hasAnyUser,
 	setActive,
+	setOwnPassword,
 	setTemporaryPassword,
 	updateProfile
 } from '../../users/server/index.ts';
@@ -216,4 +218,83 @@ export function deactivate(ctx: Ctx, userId: number): void {
 		setActive(tx, userId, false);
 		endSessionsOf(tx.db, userId);
 	});
+}
+
+export interface PasswordChange {
+	/** Required unless the password is temporary: the user has just signed in with it. */
+	current?: string;
+	password: string;
+	confirm: string;
+	/** The client address, for the per-address counter. */
+	address: string;
+}
+
+type ChangeOutcome = 'ok' | 'wrong' | { until: Date };
+
+/**
+ * The user changes their own password (design D3): two transactions around the async hashing,
+ * like sign-in. A wrong current password counts as a failed sign-in, recorded before throwing.
+ * The other sessions end; the current one (`token`) stays.
+ */
+export async function changeOwnPassword(
+	ctx: Ctx,
+	token: string,
+	input: PasswordChange
+): Promise<void> {
+	authorize(ctx.actor, 'password.changeOwn');
+	const { actor } = ctx;
+	if (actor.kind !== 'user') throw new Forbidden();
+	const password = parseInput(newPassword, { password: input.password }).password;
+	if (input.confirm.normalize('NFKC') !== password) {
+		throw new Invalid([{ field: 'confirm', key: 'auth.password.mismatch', params: {} }]);
+	}
+	const system = asSystem(ctx, 'password change');
+
+	const first = withTransaction(system, (tx) => {
+		const credentials = getCredentialsById(tx, actor.id);
+		if (!credentials) throw new Forbidden();
+		return {
+			credentials,
+			until: lockedUntil(tx.db, credentials.username, input.address, Date.now())
+		};
+	});
+	const { credentials } = first;
+	if (first.until) {
+		throw new Throttled('auth.sign_in.locked', { minutes: minutesUntil(first.until) });
+	}
+
+	// Outside any transaction: Argon2 is slow and async. One verification either way.
+	let wrongCurrent = false;
+	if (credentials.passwordTemporary) {
+		if (await verifyPassword(credentials.passwordHash, password)) {
+			throw new Invalid([
+				{ field: 'password', key: 'auth.password.same_as_temporary', params: {} }
+			]);
+		}
+	} else {
+		const current = (input.current ?? '').normalize('NFKC');
+		wrongCurrent = !(await verifyPassword(credentials.passwordHash, current));
+	}
+	const passwordHash = wrongCurrent ? '' : await hashPassword(password);
+
+	const outcome = withTransaction(system, (tx): ChangeOutcome => {
+		const now = Date.now();
+		// Other attempts may have locked the username while the hash was being checked.
+		const until = lockedUntil(tx.db, credentials.username, input.address, now);
+		if (until) return { until };
+		if (wrongCurrent) {
+			recordFailure(tx.db, credentials.username, input.address, now);
+			return 'wrong';
+		}
+		setOwnPassword({ ...tx, actor }, passwordHash);
+		endSessionsOf(tx.db, actor.id, token);
+		return 'ok';
+	});
+
+	if (outcome === 'wrong') {
+		throw new Invalid([{ field: 'current', key: 'auth.password.current_wrong', params: {} }]);
+	}
+	if (outcome !== 'ok') {
+		throw new Throttled('auth.sign_in.locked', { minutes: minutesUntil(outcome.until) });
+	}
 }

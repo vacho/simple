@@ -65,6 +65,12 @@ export function getCredentialsForSignIn(ctx: Ctx, name: string): Credentials | u
 	return repo.findCredentials(ctx.db, normalizeUsername(name));
 }
 
+/** Password changes only: the stored hash never leaves the auth feature. */
+export function getCredentialsById(ctx: Ctx, userId: number): Credentials | undefined {
+	authorize(ctx.actor, 'users.readCredentials');
+	return repo.findCredentialsById(ctx.db, userId);
+}
+
 export function hasAnyUser(ctx: Ctx): boolean {
 	authorize(ctx.actor, 'users.hasAny');
 	return repo.anyUser(ctx.db);

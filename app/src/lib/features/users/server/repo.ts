@@ -24,17 +24,19 @@ export function usernameExists(db: Db, username: string): boolean {
 	);
 }
 
+const credentialColumns = {
+	...profileColumns,
+	passwordHash: users.passwordHash,
+	active: users.active,
+	passwordTemporary: users.passwordTemporary
+};
+
 export function findCredentials(db: Db, username: string) {
-	return db
-		.select({
-			...profileColumns,
-			passwordHash: users.passwordHash,
-			active: users.active,
-			passwordTemporary: users.passwordTemporary
-		})
-		.from(users)
-		.where(eq(users.username, username))
-		.get();
+	return db.select(credentialColumns).from(users).where(eq(users.username, username)).get();
+}
+
+export function findCredentialsById(db: Db, id: number) {
+	return db.select(credentialColumns).from(users).where(eq(users.id, id)).get();
 }
 
 export function findProfile(db: Db, id: number) {

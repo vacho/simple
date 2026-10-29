@@ -108,7 +108,7 @@ test.describe('with an English browser', () => {
 			await page.getByLabel('Time zone').evaluate((select: HTMLSelectElement, zone) => {
 				select.add(new Option(zone, zone, true, true));
 			}, value);
-			await submitAndWait(page, page.getByRole('button', { name: 'Save' }));
+			await submitAndWait(page, page.getByRole('button', { name: 'Save', exact: true }));
 			await expect(page.getByText('Choose a valid time zone.')).toBeVisible();
 			await open(page, `${app.url}/profile`);
 			await expect(page.getByLabel('Time zone')).toHaveValue('America/La_Paz');

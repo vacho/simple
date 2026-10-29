@@ -138,7 +138,7 @@ test.describe(`${pseudo ? 'No plain text in en-XA' : 'Spanish is complete'}: eve
 		await page.locator('select[name="timeZone"]').evaluate((select: HTMLSelectElement) => {
 			select.add(new Option('+02:00', '+02:00', true, true));
 		});
-		await page.locator('main button[type="submit"]').click();
+		await page.locator('form[action="?/save"] button[type="submit"]').click();
 		await expect(page.locator('.error')).toBeVisible();
 		await check(page, 'profile, invalid zone');
 	});

@@ -1,4 +1,52 @@
 {
+	"auth.password.changed": {
+		"text": "Contraseña cambiada.",
+		"source": "a768c77be9ddf3bd"
+	},
+	"auth.password.confirm": {
+		"text": "Repite la contraseña nueva",
+		"source": "f97c59839f781774"
+	},
+	"auth.password.current": {
+		"text": "Contraseña actual",
+		"source": "72ed2bd767cef627"
+	},
+	"auth.password.current_wrong": {
+		"text": "La contraseña actual es incorrecta.",
+		"source": "055bc05cf859a64e"
+	},
+	"auth.password.intro": {
+		"text": "Una persona administradora te dio una contraseña temporal. Elige la tuya para continuar; solo tú la conocerás.",
+		"source": "343f123384bfae45"
+	},
+	"auth.password.mismatch": {
+		"text": "Las dos contraseñas nuevas no coinciden.",
+		"source": "0a2c64191ad27a95"
+	},
+	"auth.password.new": {
+		"text": "Contraseña nueva",
+		"source": "3dd9df4441fb348f"
+	},
+	"auth.password.same_as_temporary": {
+		"text": "Elige una contraseña distinta de la temporal.",
+		"source": "ac76d89bc294bd33"
+	},
+	"auth.password.save": {
+		"text": "Guardar contraseña",
+		"source": "e86cf7b88cde4602"
+	},
+	"auth.password.section": {
+		"text": "Cambiar contraseña",
+		"source": "3f9c991f63a9a376"
+	},
+	"auth.password.section_hint": {
+		"text": "Sigues con la sesión iniciada en este dispositivo; en tus otros dispositivos se cerrará la sesión.",
+		"source": "4acbc57c892f4f94"
+	},
+	"auth.password.title": {
+		"text": "Elige tu contraseña",
+		"source": "6a97c8601a0aa71f"
+	},
 	"auth.setup.closed": {
 		"text": "La aplicación ya está configurada. Inicia sesión.",
 		"source": "a6bd8e13c16f305a"
