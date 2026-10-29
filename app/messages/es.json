@@ -1,0 +1,162 @@
+{
+	"auth.setup.closed": {
+		"text": "La aplicación ya está configurada. Inicia sesión.",
+		"source": "a6bd8e13c16f305a"
+	},
+	"auth.setup.intro": {
+		"text": "Crea la primera cuenta. Será la cuenta de administración de la aplicación.",
+		"source": "c0b4cdfbcb9111bc"
+	},
+	"auth.setup.submit": {
+		"text": "Crear cuenta",
+		"source": "798ca2ce18bf2038"
+	},
+	"auth.setup.title": {
+		"text": "Configura la aplicación",
+		"source": "b429927a8ab85ce5"
+	},
+	"auth.sign_in.invalid": {
+		"text": "Usuario o contraseña incorrectos.",
+		"source": "45b71fe98efe5f53"
+	},
+	"auth.sign_in.locked": {
+		"text": "Demasiados intentos. Vuelve a intentarlo en {minutes, plural, one {# minuto} other {# minutos}}.",
+		"source": "5e2f171e7594bd5c"
+	},
+	"auth.sign_in.submit": {
+		"text": "Entrar",
+		"source": "bfd402b2f6f38125"
+	},
+	"auth.sign_in.title": {
+		"text": "Iniciar sesión",
+		"source": "bfd402b2f6f38125"
+	},
+	"auth.sign_out": {
+		"text": "Cerrar sesión",
+		"source": "48f0d3d397d49f13"
+	},
+	"errors.not_allowed": {
+		"text": "No tienes permiso para ver esta página.",
+		"source": "ec99c9df85e386dc"
+	},
+	"errors.page_not_found": {
+		"text": "Esta página no existe.",
+		"source": "fc5f05beb0a4ccaa"
+	},
+	"errors.unexpected": {
+		"text": "Algo salió mal. Inténtalo de nuevo.",
+		"source": "3ccd9d6586ef9143"
+	},
+	"offline.message": {
+		"text": "Vuelve a conectarte a internet para continuar.",
+		"source": "09d276de6a7e07d4"
+	},
+	"offline.title": {
+		"text": "Sin conexión",
+		"source": "050be7950a638d06"
+	},
+	"settings.title": {
+		"text": "Configuración",
+		"source": "74a883a037bc227f"
+	},
+	"settings.version": {
+		"text": "Versión de la aplicación {version}",
+		"source": "72d8d877ecb8d5a9"
+	},
+	"shell.home.title": {
+		"text": "Inicio",
+		"source": "3a78695388b38b5c"
+	},
+	"shell.nav.home": {
+		"text": "Inicio",
+		"source": "3a78695388b38b5c"
+	},
+	"shell.nav.label": {
+		"text": "Principal",
+		"source": "eb814be3ca3b78c0"
+	},
+	"shell.nav.settings": {
+		"text": "Configuración",
+		"source": "74a883a037bc227f"
+	},
+	"shell.skip_to_content": {
+		"text": "Ir al contenido",
+		"source": "ac576a66d4563e60"
+	},
+	"shell.user_menu.profile": {
+		"text": "Perfil",
+		"source": "d696a35bdd1883da"
+	},
+	"users.display_name.control_characters": {
+		"text": "El nombre contiene caracteres no permitidos.",
+		"source": "b0ef3c0d05b4d1e3"
+	},
+	"users.display_name.empty": {
+		"text": "Escribe un nombre.",
+		"source": "099f9079ba79b851"
+	},
+	"users.display_name.too_long": {
+		"text": "Usa como máximo 64 caracteres.",
+		"source": "7962a4764eb168a0"
+	},
+	"users.field.display_name": {
+		"text": "Nombre visible",
+		"source": "2b7f6a84de917e38"
+	},
+	"users.field.language": {
+		"text": "Idioma",
+		"source": "a4fe65264ef7dbb3"
+	},
+	"users.field.password": {
+		"text": "Contraseña",
+		"source": "e7cf3ef4f17c3999"
+	},
+	"users.field.time_zone": {
+		"text": "Zona horaria",
+		"source": "b9fe1464783e1c0d"
+	},
+	"users.field.username": {
+		"text": "Nombre de usuario",
+		"source": "e3b89e9d33f88e52"
+	},
+	"users.locale.not_installed": {
+		"text": "Elige uno de los idiomas disponibles.",
+		"source": "7f6e7acbac3b5bb3"
+	},
+	"users.password.length": {
+		"text": "Usa de 8 a 128 caracteres.",
+		"source": "0c75aacad8e2d097"
+	},
+	"users.profile.browser_default": {
+		"text": "Idioma del navegador",
+		"source": "44f0527601f9e2d8"
+	},
+	"users.profile.intro": {
+		"text": "Tu idioma y tu zona horaria se aplican en todos los dispositivos donde inicies sesión.",
+		"source": "483ce0da7e9302d9"
+	},
+	"users.profile.save": {
+		"text": "Guardar",
+		"source": "1509f561f2416598"
+	},
+	"users.profile.title": {
+		"text": "Perfil",
+		"source": "d696a35bdd1883da"
+	},
+	"users.time_zone.invalid": {
+		"text": "Elige una zona horaria válida.",
+		"source": "e1919e36d015641e"
+	},
+	"users.username.invalid": {
+		"text": "Usa de 3 a 32 caracteres: letras minúsculas a-z, dígitos, puntos, guiones bajos o guiones.",
+		"source": "c4b1ee3ba2178f57"
+	},
+	"users.username.taken": {
+		"text": "Ese nombre de usuario ya está en uso.",
+		"source": "22ce3fb0bdab3c51"
+	},
+	"validation.invalid": {
+		"text": "Revisa este valor.",
+		"source": "378a04e78b066493"
+	}
+}

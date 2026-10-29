@@ -22,6 +22,7 @@ The design follows all of them; none is superseded.
 - [0007 Device-generated UUIDv7 IDs and idempotent creates for household data](../../../docs/adr/0007-device-generated-ids-and-idempotent-creates.md), from D15
 - [0008 Modular monolith organized by feature](../../../docs/adr/0008-modular-monolith-by-feature.md), from D16
 - [0021 Calendar dates, UTC timestamps and canonical time zones](../../../docs/adr/0021-dates-time-zones-and-timestamps.md), from D14 (its time-zone and date rules; 0006 covers its translation rules). Added on 2026-10-23 after a review found these durable rules had no ADR
+- [0023 The app lives in its own folder](../../../docs/adr/0023-app-in-its-own-folder.md), from D12 (the `app/` folder). Added on 2026-10-29 during apply, at the owner's request, through a detour to `main`
 
 ## ADRs to supersede
 
@@ -36,5 +37,5 @@ None.
 - D9 PWA with the built-in service worker: the behavior is fixed by the `app-shell` spec; the tooling can be swapped.
 - D10 UI foundation: plain CSS and own primitives are reversible; the right-to-left rule is enforced by lint and covered by 0006.
 - D11 Testing: tooling and process.
-- D12 Project layout: the concrete layout of 0008, which records its rules; the folder tree itself stays in this design.
+- D12 Project layout: the concrete layout of 0008, which records its rules; the folder tree itself stays in this design. Only the app's own folder is recorded, as 0023.
 - D13 Configuration: environment variables, a one-off detail.

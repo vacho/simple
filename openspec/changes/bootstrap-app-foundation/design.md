@@ -42,7 +42,7 @@ Constraints already agreed for the whole product:
 | `@node-rs/argon2` | 2.2.x | |
 | `@oslojs/crypto`, `@oslojs/encoding` | 1.x | Session token hashing and encoding |
 | `intl-messageformat` | 12.1.x | ICU message rendering for runtime dictionaries (D14); the browser uses the `no-parser` build |
-| `@formatjs/icu-messageformat-parser` | 3.x | Server-side precompilation of messages (D14) |
+| `@formatjs/icu-messageformat-parser` | 3.x | Server-side precompilation of messages (D14), and message generation and checks in `scripts/` |
 | `stylelint` | 17.x | Forbids physical CSS properties (D10) |
 | `vitest` | 5.x | |
 | `@playwright/test` | 1.64.x | |
@@ -71,7 +71,7 @@ How agents stay current: before writing Kit or Svelte code, consult the official
 - *Alternative: React SPA plus a separate API (Hono or Fastify).* Two apps, two builds and duplicated validation for a single-household tool.
 
 ### D2. TypeScript strict, npm, ESLint, Prettier
-TypeScript 6 in `strict` mode everywhere. The tsconfig extends `$app/tsconfig` with explicit `include`/`exclude`, and the service worker gets its own tsconfig extending `$app/tsconfig/service-worker`. npm is the package manager because it is already installed. `package.json` has a `prepare` script that enables the project's Git hooks (ADR 0019) in every clone and worktree that is a Git checkout: `git rev-parse --git-dir >/dev/null 2>&1 && git config core.hooksPath .githooks || true`. The guard keeps `npm ci` working on a deploy target without `.git`. `npm run check` runs `svelte-check`, ESLint, stylelint, Prettier, message generation and the translation checks (D14), and must pass before a task is considered done. Lint also bans the removed Kit 2 modules (`$app/stores`, `$env/*`, `$lib`, `$service-worker`), so outdated patterns fail fast.
+TypeScript 6 in `strict` mode everywhere. The tsconfig extends `$app/tsconfig` with explicit `include`/`exclude`, and the service worker gets its own tsconfig extending `$app/tsconfig/service-worker`. npm is the package manager because it is already installed. `package.json` has a `prepare` script that enables the project's Git hooks (ADR 0019) in every clone and worktree that is a Git checkout: `git rev-parse --git-dir >/dev/null 2>&1 && git config core.hooksPath .githooks || true`. The guard keeps `npm ci` working on a deploy target without `.git`. The script runs in `app/` (D12); a relative `core.hooksPath` is resolved from the repository root, so it still enables `.githooks/`. `npm run check` runs `svelte-check`, ESLint, stylelint, Prettier, message generation and the translation checks (D14), and must pass before a task is considered done. Lint also bans the removed Kit 2 modules (`$app/stores`, `$env/*`, `$lib`, `$service-worker`), so outdated patterns fail fast.
 
 ### D3. SQLite through better-sqlite3 and Drizzle ORM
 - `better-sqlite3`: synchronous, fast and mature; synchronous transactions keep D16's transaction rules simple. Backups use plain SQL (`VACUUM INTO`, D8), so they don't depend on driver-specific APIs.
@@ -215,7 +215,7 @@ src/lib/server/policy/
 ### D9. PWA with SvelteKit's built-in service worker
 `@vite-pwa/sveltekit` is not used: its latest release supports only SvelteKit 1 and 2.
 - `static/manifest.webmanifest`: name, short name, icons 192, 512 and maskable (committed PNGs), theme and background colors, `display: standalone`. It's linked from `app.html`.
-- `src/service-worker.ts` (bundled as a module by Kit 3, typed through `$app/service-worker`, asset lists from `$app/manifest`, version from `$app/env`): precache the built app shell and the offline pages on install; on activate, delete old caches and call `clients.claim()`. Why: without `claim()`, the worker doesn't control the page on the very first visit, so going offline right after it would show a browser error.
+- `src/service-worker/index.ts`, beside its own `tsconfig.json` (D2) (bundled as a module by Kit 3, typed through `$app/service-worker`, asset lists from `$app/manifest`, version from `$app/env`): precache the built app shell and the offline pages on install; on activate, delete old caches and call `clients.claim()`. Why: without `claim()`, the worker doesn't control the page on the very first visit, so going offline right after it would show a browser error.
 - Fetch strategy: navigations go to the network, falling back to the offline page when offline. Other requests are served from cache only for precached build assets. Responses from pages or `/api` are never cached, so financial data never sits in the service worker cache.
 - **Offline page in every installed language:** a public route `/offline` renders one small HTML page that embeds the offline texts of every installed language, read from the database, so languages installed later are covered without a rebuild. The worker caches `/offline` on install, and re-fetches it whenever it receives a locale message, which picks up newly installed languages. On every page load, the root layout sends the resolved locale through `navigator.serviceWorker.ready`, which resolves once the worker is active even on the first visit, before it controls the page, by posting to `registration.active`. The worker stores that code (a language code only, nothing private) as the single metadata entry `/__meta/locale` in its cache. The spec explicitly allows this entry, and the cache test checks its exact content. Offline, the worker serves the cached `/offline` page, and an inline script on it shows the texts for the stored locale. Without one, it matches `navigator.languages` with the same matcher as D14, then falls back to English.
 - **HTTPS and browsers:** service workers and installation need HTTPS outside `localhost`. The README documents serving through a TLS-terminating reverse proxy, with a Caddy example (automatic certificates), and lists the supported browsers from the app-shell spec. Install prompts differ per browser: iOS Safari only offers "Add to Home Screen" from the share menu, and desktop Firefox can't install. The spec therefore requires the installability criteria, not a prompt.
@@ -234,11 +234,13 @@ src/lib/server/policy/
   - Why: while implementing and testing, specs are expected to change. When they do, the spec is updated first (`/opsx:update`) and the tests follow. Requiring exact scenario names from day one would only create churn. Writing all tests at the end instead would let early bugs surface late and cascade through later tasks.
 
 ### D12. Project layout
+The app is its own npm project in `app/` (ADR 0023): `package.json`, `node_modules/`, tool configs and everything below. The repository root holds only the tooling used to build it (`.claude/`, `.agents/`, `.githooks/`, `docs/`, `openspec/`, `CLAUDE.md`, `AGENTS.md`). The tree below is inside `app/`, and every path to an app file in this design and in `tasks.md` is relative to `app/`; npm commands run there.
+
 Organized by feature, following D16.
 ```
 src/
   hooks.server.ts          (init: runs server/startup.ts once; handle: pipeline, D5)
-  service-worker.ts
+  service-worker/          (index.ts and its own tsconfig.json, D2)
   lib/
     domain/
       money/               (pure, no I/O, client-safe)
@@ -266,6 +268,7 @@ src/
         server/
           index.ts, service.ts (setupStatus, setup, signIn, signOut, resolveActor)
           repo.ts, schema.ts (owns tables: sessions, login_attempts)
+          queries.ts       (session validation: sessions joined with users, D16)
           password.ts, session.ts, throttle.ts, and their tests
                            (no validation.ts: sign-in input uses users/validation.ts)
     server/
@@ -338,7 +341,7 @@ Languages are app data, not build artifacts. English is the base, built into the
 - Server and client must agree on the locale, or hydration flickers. The server resolves it once per request and passes it to the client through the root layout data, and the client uses that value rather than re-detecting from `navigator.languages`.
 - `<html lang>` and `<html dir>` are set per request by replacing placeholders in `app.html` within `handle`'s `transformPageChunk`. The direction comes from `new Intl.Locale(code).getTextInfo().direction` (`rtl` for Arabic, Hebrew or Persian), so right-to-left languages work as soon as they are installed. See D10 for the CSS side.
 - **Pseudo-locale for testing:** a generated language `en-XA` is installed only when the server starts with `I18N_PSEUDO=1`. The flag works with any build, including the production build that the e2e suite runs against, so the pseudo-locale run uses exactly the same code as the normal one. It is never set by default: `.env.example`, the README's deployment instructions and the default test run don't set it, the server logs a warning at startup when it is set, and a test checks that a production start without the flag has no `en-XA`. A dedicated `npm run test:e2e:pseudo` sets it. It transforms every English text: accented letters, brackets and about 35% extra length (`[Ŝîĝñ îñ ~~~~]`). Running the e2e suite in `en-XA` reveals hard-coded text, which stays plain, and layouts that break with longer languages.
-- Formatting uses `Intl` with the active locale, through helpers in `#lib/i18n/format.ts`. The money module (D7) uses them too.
+- Formatting uses `Intl` with the active locale, through helpers in `#lib/i18n/format.ts`. The money module (D7) calls `Intl.NumberFormat` directly with an exact decimal string, since converting to a number would lose precision on large amounts.
 - **Time zones:**
   - All timestamps are stored in UTC.
   - Display uses the signed-in user's `users.time_zone`, passed to the client with the locale through the root layout data, so server and client render the same text.
@@ -380,7 +383,7 @@ Each feature lives in `src/lib/features/<f>/`. Files directly in that folder are
 |---|---|---|---|
 | `src/routes/` | always | HTTP adapter: read input, call one service function, map the result through `server/web/` to page data, a form failure or a redirect; render screens | feature `server/index.ts`, feature client-safe files, `server/web/`, `server/policy/` (only `can`, for navigation filtering in the root layout load, D10), `components/`, `i18n/`, `domain/`, `validation/`, SvelteKit |
 | `src/hooks.server.ts` | always | `init`: runs the startup sequence once; `handle`: request pipeline (D5) | `server/startup.ts`, `server/web/`, feature `server/index.ts`, `i18n/`, SvelteKit |
-| `features/languages/server/` | always | The languages feature (D14), plus the dependencies only it needs | as any feature, plus `@formatjs/icu-messageformat-parser` and `messages/*.json` |
+| `features/languages/server/` | always | The languages feature (D14) | as any feature, plus `@formatjs/icu-messageformat-parser` and `messages/*.json` |
 | `features/<f>/server/index.ts` | always | The feature's public server API: re-exports its service and query functions; the only server file other code may import | its own feature files |
 | `features/<f>/server/service.ts` | always | Use cases: authorize, validate, apply rules, write through the repository, inside `withTransaction` | its own feature files; `server/core/`, `server/policy/`, `domain/`; other features' `server/index.ts` and client-safe files |
 | `features/<f>/server/schema.ts` and `repo.ts` | when the feature owns tables | `schema.ts`: Drizzle tables owned by the feature. `repo.ts`: all data access to those tables, writes and simple lookups alike | `schema.ts`: Drizzle, and other features' `schema.ts` for foreign keys only (`sessions.user_id` -> `users.id`). `repo.ts`: its `schema.ts`, `server/db/`, `server/core/` |
@@ -397,7 +400,7 @@ Each feature lives in `src/lib/features/<f>/`. Files directly in that folder are
 | `i18n/` | always | Client-safe `t()`, generated keys, locale matcher, formatting helpers | `intl-messageformat`, `Intl` |
 | `server/db/` | always | Connection, migrations and the shared backup function | Drizzle, better-sqlite3, all features' `schema.ts` (to build the schema object) |
 | `server/startup.ts` | always | Startup sequence (D3): pre-migration backup, migrations, language seed | `server/db/`, `server/core/` (including `systemActor`), feature `server/index.ts` |
-| `scripts/` | always | Operational commands (backup, message generation and check, scenario check) | `server/db/`, `server/core/` (including `systemActor`), `i18n/` |
+| `scripts/` | always | Operational commands (backup, message generation and check, scenario check) | `server/db/`, `server/core/` (including `systemActor`), `i18n/`, `@formatjs/icu-messageformat-parser` (message generation and checks); `messages/*.json` is read from disk, not imported |
 
 **No empty structure:** don't create empty files, and don't write functions that only forward a call to another layer without adding anything (authorization, validation, mapping, a transaction). An optional file appears when its criterion above is met, and not before. A simple lookup belongs in `repo.ts` and is exposed through `service.ts`, where the policy check happens. The service function is never skipped, because it carries the authorization.
 
