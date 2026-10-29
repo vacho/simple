@@ -3,6 +3,26 @@
 		"text": "Too many attempts. Try again in {minutes, plural, one {# minute} other {# minutes}}.",
 		"description": "Error shown on the sign-in page while the account or device is locked after repeated failed attempts. {minutes} is the whole number of minutes until the lock ends."
 	},
+	"errors.not_allowed": {
+		"text": "You're not allowed to see this page.",
+		"description": "Heading and page title shown when the user may not open a page or the record doesn't exist; it never says which."
+	},
+	"errors.page_not_found": {
+		"text": "This page doesn't exist.",
+		"description": "Heading and page title shown when the address doesn't match any page of the app."
+	},
+	"errors.unexpected": {
+		"text": "Something went wrong. Please try again.",
+		"description": "Heading and page title shown when an unexpected error stops a page from loading."
+	},
+	"settings.title": {
+		"text": "Settings",
+		"description": "Heading and page title of the administrators' settings page."
+	},
+	"settings.version": {
+		"text": "App version {version}",
+		"description": "Line on the settings page showing the installed app version; {version} is a version number such as 0.1.0."
+	},
 	"shell.home.title": {
 		"text": "Home",
 		"description": "Heading of the home page shown after signing in."

@@ -3,6 +3,26 @@
 		"text": "Demasiados intentos. Vuelve a intentarlo en {minutes, plural, one {# minuto} other {# minutos}}.",
 		"source": "5e2f171e7594bd5c"
 	},
+	"errors.not_allowed": {
+		"text": "No tienes permiso para ver esta página.",
+		"source": "ec99c9df85e386dc"
+	},
+	"errors.page_not_found": {
+		"text": "Esta página no existe.",
+		"source": "fc5f05beb0a4ccaa"
+	},
+	"errors.unexpected": {
+		"text": "Algo salió mal. Inténtalo de nuevo.",
+		"source": "3ccd9d6586ef9143"
+	},
+	"settings.title": {
+		"text": "Configuración",
+		"source": "74a883a037bc227f"
+	},
+	"settings.version": {
+		"text": "Versión de la aplicación {version}",
+		"source": "72d8d877ecb8d5a9"
+	},
 	"shell.home.title": {
 		"text": "Inicio",
 		"source": "3a78695388b38b5c"

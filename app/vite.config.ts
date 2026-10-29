@@ -1,7 +1,11 @@
 import adapter from '@sveltejs/adapter-node';
 import { sveltekit } from '@sveltejs/kit/vite';
+import { readFileSync } from 'node:fs';
 import type { Plugin } from 'vite';
 import { defineConfig } from 'vitest/config';
+
+// The app version (ADR 0018), shown to administrators on the settings page (D13).
+const { version } = JSON.parse(readFileSync(new URL('package.json', import.meta.url), 'utf8'));
 
 const icuParser = '@formatjs/icu-messageformat-parser';
 
@@ -19,6 +23,7 @@ function browserWithoutIcuParser(): Plugin {
 }
 
 export default defineConfig({
+	define: { __APP_VERSION__: JSON.stringify(version) },
 	plugins: [
 		browserWithoutIcuParser(),
 		sveltekit({
@@ -27,7 +32,11 @@ export default defineConfig({
 				runes: ({ filename }) =>
 					filename.split(/[/\\]/).includes('node_modules') ? undefined : true
 			},
-			adapter: adapter()
+			adapter: adapter(),
+			// SvelteKit 3 always checks the origin of form submissions in production (D5). No other
+			// origin is trusted; behind a proxy that hides the host, APP_ORIGIN names the app's own.
+			csrf: { trustedOrigins: [] },
+			...(process.env.APP_ORIGIN && { paths: { origin: process.env.APP_ORIGIN } })
 		})
 	],
 	test: {

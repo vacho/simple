@@ -14,7 +14,12 @@ export default defineConfig({
 	testMatch: '**/*.spec.ts',
 	use: {
 		baseURL: `http://localhost:${port}`,
-		...(pseudo && { locale: 'en-XA', extraHTTPHeaders: { 'accept-language': 'en-XA' } })
+		// The apps the tests start trust this proxy header (tests/e2e/app.ts).
+		extraHTTPHeaders: { 'x-forwarded-proto': 'http' },
+		...(pseudo && {
+			locale: 'en-XA',
+			extraHTTPHeaders: { 'x-forwarded-proto': 'http', 'accept-language': 'en-XA' }
+		})
 	},
 	webServer: {
 		command: 'npm run build && node build',
