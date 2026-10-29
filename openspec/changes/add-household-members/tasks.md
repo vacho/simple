@@ -6,8 +6,8 @@ Paths are relative to `app/`, and commands run there (ADR 0023). E2e tests use t
 
 ## 1. Data model and dependencies
 
-- [ ] 1.1 Add `uuid` 14.0.3 to the dependencies (D4) and verify `npm ci` and `npm run check` pass
-- [ ] 1.2 Add the `household` feature's `schema.ts` (`household`, `member_types`, `members` with the D1 columns, `name_key` unique indexes, the unique `members.user_id` and the foreign keys) and the `active` and `password_temporary` columns on `users` (D2), point nothing new at drizzle-kit (it already globs feature schemas), and generate `drizzle/0001_*.sql` with `npm run db:generate`. Verify an integration test that migrates a database at the v0.1.0 schema holding the setup administrator: the administrator is active with a non-temporary password, the new tables exist, a second member with the same `user_id` is rejected by the database, and a pre-migration backup was taken (D8)
+- [x] 1.1 Add `uuid` 14.0.3 to the dependencies (D4) and verify `npm ci` and `npm run check` pass
+- [x] 1.2 Add the `household` feature's `schema.ts` (`household`, `member_types`, `members` with the D1 columns, `name_key` unique indexes, the unique `members.user_id` and the foreign keys) and the `active` and `password_temporary` columns on `users` (D2), point nothing new at drizzle-kit (it already globs feature schemas), and generate `drizzle/0001_*.sql` with `npm run db:generate`. Verify an integration test that migrates a database at the v0.1.0 schema holding the setup administrator: the administrator is active with a non-temporary password, the new tables exist, a second member with the same `user_id` is rejected by the database, and a pre-migration backup was taken (D8)
 
 ## 2. Policy and account states
 

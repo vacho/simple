@@ -18,7 +18,16 @@ describe('migrations', () => {
 			)
 			.pluck()
 			.all();
-		expect(tables).toEqual(['languages', 'login_attempts', 'sessions', 'translations', 'users']);
+		expect(tables).toEqual([
+			'household',
+			'languages',
+			'login_attempts',
+			'member_types',
+			'members',
+			'sessions',
+			'translations',
+			'users'
+		]);
 		db.$client.close();
 	});
 });

@@ -12,5 +12,9 @@ export const users = sqliteTable('users', {
 	locale: text('locale'),
 	/** Canonical IANA zone; NULL means UTC (ADR 0021). */
 	timeZone: text('time_zone'),
+	/** A deactivated account can't sign in and has no sessions (ADR 0027). */
+	active: integer('active', { mode: 'boolean' }).notNull().default(true),
+	/** Set by an administrator; replaced by the user at their next sign-in (ADR 0027). */
+	passwordTemporary: integer('password_temporary', { mode: 'boolean' }).notNull().default(false),
 	createdAt: integer('created_at', { mode: 'timestamp_ms' }).notNull()
 });
