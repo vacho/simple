@@ -42,9 +42,13 @@ export default defineConfig({
 			...(process.env.APP_ORIGIN && { paths: { origin: process.env.APP_ORIGIN } })
 		})
 	],
-	test: {
-		// Unit and integration tests; end-to-end tests are tests/e2e/*.spec.ts, run by Playwright.
-		include: ['src/**/*.test.ts', 'scripts/**/*.test.ts', 'tests/**/*.test.ts'],
-		exclude: ['tests/e2e/**', 'tests/lint/fixtures/**']
-	}
+	// Unit and integration tests; end-to-end tests are tests/e2e/*.spec.ts, run by Playwright.
+	// Timing tests (*.timing.test.ts) measure speed, so they run in a pass of their own, one file
+	// at a time, after the others: VITEST_TIMING=1, as npm run test:unit does.
+	test: process.env.VITEST_TIMING
+		? { include: ['src/**/*.timing.test.ts'], fileParallelism: false }
+		: {
+				include: ['src/**/*.test.ts', 'scripts/**/*.test.ts', 'tests/**/*.test.ts'],
+				exclude: ['tests/e2e/**', 'tests/lint/fixtures/**', '**/*.timing.test.ts']
+			}
 });

@@ -1,11 +1,9 @@
 import { IntlMessageFormat } from 'intl-messageformat';
-import { performance } from 'node:perf_hooks';
 import { gzipSync } from 'node:zlib';
 import { describe, expect, it } from 'vitest';
 import { systemActor } from '../../../server/core/actor.ts';
 import { testCtx } from '../../../server/core/ctx.ts';
 import { createTestDatabase } from '../../../server/db/test-database.ts';
-import { createTranslator } from '../../../i18n/t.ts';
 import en from '../../../../../messages/en.json' with { type: 'json' };
 import { getDictionary, listInstalled, seed } from './service.ts';
 
@@ -43,19 +41,5 @@ describe('dictionary cost (D14)', () => {
 		const size = gzipSync(getDictionary(ctx, 'es').body).length;
 		console.info(`Spanish dictionary: ${size} bytes gzip-compressed`);
 		expect(size).toBeLessThanOrEqual(10 * 1024);
-	});
-
-	it('takes under 5 microseconds on average for a server-side lookup', () => {
-		const t = createTranslator('es', getDictionary(ctx, 'es').messages);
-		const lookups = 100_000;
-		for (let i = 0; i < 1000; i++) t('auth.sign_in.locked', { minutes: i });
-		const start = performance.now();
-		for (let i = 0; i < lookups; i++) {
-			t('shell.home.title');
-			t('auth.sign_in.locked', { minutes: i % 60 });
-		}
-		const microseconds = ((performance.now() - start) * 1000) / (lookups * 2);
-		console.info(`Server-side lookup: ${microseconds.toFixed(2)} µs on average`);
-		expect(microseconds).toBeLessThan(5);
 	});
 });
