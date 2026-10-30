@@ -1,5 +1,6 @@
 <script lang="ts">
-	import { resolve } from '$app/paths';
+	import ConfirmDialog from '#lib/components/ConfirmDialog.svelte';
+	import Form from '#lib/components/Form.svelte';
 	import Field from '#lib/components/Field.svelte';
 	import { fieldError, formError } from '#lib/components/form-errors.ts';
 	import { baseClassLabel, baseClasses } from '#lib/features/household/base-classes.ts';
@@ -8,7 +9,6 @@
 
 	let { data, form }: PageProps = $props();
 	const i18n = getI18n();
-	const here = resolve('settings/member-types');
 	// Errors belong to the form that was submitted: the new type, or one row of the list.
 	const isNew = $derived(form?.values?.form === 'create');
 	const failedId = $derived(isNew ? undefined : form?.values?.id);
@@ -20,24 +20,6 @@
 
 <h1>{i18n.t('household.member_types.title')}</h1>
 <p>{i18n.t('household.member_types.intro')}</p>
-
-{#if data.confirm}
-	{@const { action, type } = data.confirm}
-	<section class="confirm" aria-live="polite">
-		<p>
-			{action === 'archive'
-				? i18n.t('household.confirm.archive_type', { name: type.name })
-				: i18n.t('household.confirm.delete_type', { name: type.name })}
-		</p>
-		<form method="POST" action="?/{action}" class="row">
-			<input type="hidden" name="id" value={type.id} />
-			<button type="submit">
-				{i18n.t(action === 'archive' ? 'household.action.archive' : 'household.action.delete')}
-			</button>
-			<a href={here}>{i18n.t('household.action.cancel')}</a>
-		</form>
-	</section>
-{/if}
 
 {#if data.types.length === 0}
 	<p>{i18n.t('household.member_types.empty')}</p>
@@ -91,10 +73,44 @@
 							<button type="submit">{i18n.t('household.action.unarchive')}</button>
 						</form>
 					{:else}
-						<a href="{here}?confirm=archive&id={type.id}">{i18n.t('household.action.archive')}</a>
+						<ConfirmDialog
+							triggerLabel={i18n.t('household.action.archive')}
+							title={i18n.t('household.dialog.archive_type.title', { name: type.name })}
+							description={i18n.t('household.confirm.archive_type', { name: type.name })}
+							cancelLabel={i18n.t('household.action.cancel')}
+						>
+							{#snippet action(close)}
+								<Form
+									action="?/archive"
+									success="household.changes.saved"
+									submitLabel={i18n.t('household.action.archive')}
+									variant="danger"
+									onResult={close}
+								>
+									<input type="hidden" name="id" value={type.id} />
+								</Form>
+							{/snippet}
+						</ConfirmDialog>
 					{/if}
 					{#if !type.inUse}
-						<a href="{here}?confirm=delete&id={type.id}">{i18n.t('household.action.delete')}</a>
+						<ConfirmDialog
+							triggerLabel={i18n.t('household.action.delete')}
+							title={i18n.t('household.dialog.delete_type.title', { name: type.name })}
+							description={i18n.t('household.confirm.delete_type', { name: type.name })}
+							cancelLabel={i18n.t('household.action.cancel')}
+						>
+							{#snippet action(close)}
+								<Form
+									action="?/delete"
+									success="household.changes.saved"
+									submitLabel={i18n.t('household.action.delete')}
+									variant="danger"
+									onResult={close}
+								>
+									<input type="hidden" name="id" value={type.id} />
+								</Form>
+							{/snippet}
+						</ConfirmDialog>
 					{/if}
 				</div>
 			</li>
@@ -169,10 +185,5 @@
 	.meta,
 	.error {
 		margin: 0;
-	}
-
-	.confirm {
-		padding: var(--space-3);
-		border: 1px solid var(--color-border);
 	}
 </style>

@@ -118,9 +118,14 @@ test.describe('in English', () => {
 		await row(page, 'Abuela').getByRole('textbox').fill('Abuelita');
 		await submitAndWait(page, row(page, 'Abuela').getByRole('button', { name: 'Save' }));
 		await expect(row(page, 'Abuelita')).toBeVisible();
-		await row(page, 'Abuelita').getByRole('link', { name: 'Delete' }).click();
-		await expect(page.getByText('Delete the member type "Abuelita"?')).toBeVisible();
-		await submitAndWait(page, page.getByRole('button', { name: 'Delete', exact: true }));
+		await row(page, 'Abuelita').getByRole('button', { name: 'Delete' }).click();
+		const dialog = page.getByRole('alertdialog', { name: 'Delete member type "Abuelita"?' });
+		await expect(dialog).toBeVisible();
+		await dialog.getByRole('button', { name: 'Cancel' }).click();
+		await expect(dialog).toBeHidden();
+		await expect(row(page, 'Abuelita')).toBeVisible();
+		await row(page, 'Abuelita').getByRole('button', { name: 'Delete' }).click();
+		await dialog.getByRole('button', { name: 'Delete', exact: true }).click();
 		await expect(page.getByText('There are no member types yet.')).toBeVisible();
 	});
 
@@ -144,10 +149,13 @@ test.describe('in English', () => {
 		await expect(row(page, 'Hijo')).toContainText('1 member');
 		await expect(row(page, 'Abuela')).toContainText('3 members');
 		await expect(row(page, 'Hijo').getByLabel('Base class')).toBeDisabled();
-		await expect(row(page, 'Hijo').getByRole('link', { name: 'Delete' })).toHaveCount(0);
+		await expect(row(page, 'Hijo').getByRole('button', { name: 'Delete' })).toHaveCount(0);
 
-		await row(page, 'Hijo').getByRole('link', { name: 'Archive' }).click();
-		await submitAndWait(page, page.getByRole('button', { name: 'Archive', exact: true }));
+		await row(page, 'Hijo').getByRole('button', { name: 'Archive' }).click();
+		await page
+			.getByRole('alertdialog')
+			.getByRole('button', { name: 'Archive', exact: true })
+			.click();
 		await expect(row(page, 'Hijo')).toContainText('Archived');
 		await submitAndWait(page, row(page, 'Hijo').getByRole('button', { name: 'Unarchive' }));
 		await expect(row(page, 'Hijo')).not.toContainText('Archived');
@@ -188,7 +196,9 @@ test.describe('in Spanish', () => {
 		await signInWith(context, app, tokens.admin);
 		await open(page, `${app.url}/settings/household`);
 		await page.getByLabel('Nombre').fill('Familia Pérez');
-		await submitAndWait(page, page.getByRole('button', { name: 'Guardar nombre' }));
-		await expect(page.getByRole('status')).toHaveText('Nombre del hogar guardado.');
+		await page.getByRole('button', { name: 'Guardar nombre' }).click();
+		await expect(page.locator('[data-scope="toast"][data-part="group"]')).toContainText(
+			'Nombre del hogar guardado.'
+		);
 	});
 });

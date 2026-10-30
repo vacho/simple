@@ -127,8 +127,11 @@ test.describe('in English', () => {
 		await submitAndWait(page, page.getByRole('button', { name: 'Save changes' }));
 		await expect(page.locator('h1')).toHaveText('Member Osvaldo V.');
 
-		await page.getByRole('link', { name: 'Archive' }).click();
-		await submitAndWait(page, page.getByRole('button', { name: 'Archive' }));
+		await page.getByRole('button', { name: 'Archive', exact: true }).click();
+		await page
+			.getByRole('alertdialog')
+			.getByRole('button', { name: 'Archive', exact: true })
+			.click();
 		await expect(
 			page.getByRole('status').filter({ hasText: 'This member is archived.' })
 		).toBeVisible();
@@ -140,13 +143,17 @@ test.describe('in English', () => {
 		await open(memberPage, `${app.url}/members`);
 		await expect(memberPage.getByText('Osvaldo V.')).toHaveCount(0);
 
-		await submitAndWait(page, page.getByRole('button', { name: 'Unarchive' }));
+		await page.getByRole('button', { name: 'Unarchive' }).click();
+		await expect(page.getByRole('button', { name: 'Archive', exact: true })).toBeVisible();
 		await open(memberPage, `${app.url}/members`);
 		await expect(memberPage.getByText('Osvaldo V.')).toBeVisible();
 		await other.close();
 
-		await page.getByRole('link', { name: 'Delete' }).click();
-		await submitAndWait(page, page.getByRole('button', { name: 'Delete' }));
+		await page.getByRole('button', { name: 'Delete', exact: true }).click();
+		await page
+			.getByRole('alertdialog')
+			.getByRole('button', { name: 'Delete', exact: true })
+			.click();
 		await expect(page.locator('h1')).toHaveText('Members');
 		await expect(page.getByText('Osvaldo V.')).toHaveCount(0);
 	});

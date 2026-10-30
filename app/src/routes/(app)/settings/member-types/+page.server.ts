@@ -18,13 +18,8 @@ export const load: PageServerLoad = (event) => {
 	denyUnless(can(ctx.actor, 'memberTypes.manage'));
 	try {
 		const types = listMemberTypes(ctx);
-		// A destructive action is confirmed on the page, as a second step (design D6).
-		const action = event.url.searchParams.get('confirm');
-		const target = types.find((type) => type.id === event.url.searchParams.get('id'));
-		const confirm =
-			target && (action === 'archive' || action === 'delete') ? { action, type: target } : null;
 		// The ID of the next type, so submitting the form twice creates it once (ADR 0007).
-		return { types, confirm, newId: v7() };
+		return { types, newId: v7() };
 	} catch (error) {
 		throwForLoad(error);
 	}

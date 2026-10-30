@@ -139,6 +139,10 @@
 		"text": "Minor",
 		"description": "Base class of a member type: a child under legal age. Shown in lists and in the base class selector."
 	},
+	"household.changes.saved": {
+		"text": "Changes saved.",
+		"description": "Confirmation after a household or member change."
+	},
 	"household.confirm.archive_member": {
 		"text": "Archive \"{name}\"? Only administrators will see this member.",
 		"description": "Confirmation before archiving a member; {name} is the member's name as entered."
@@ -155,9 +159,33 @@
 		"text": "Delete the member type \"{name}\"? This can't be undone.",
 		"description": "Confirmation before deleting a member type that no member has; {name} is the type's name as entered."
 	},
+	"household.confirm.unlink": {
+		"text": "Unlink the account from {name}? The account keeps its current access status and can be linked to another member.",
+		"description": "Consequence of unlinking the named member from an account."
+	},
+	"household.danger_zone": {
+		"text": "Danger zone",
+		"description": "Heading above destructive member actions."
+	},
+	"household.dialog.archive_member.title": {
+		"text": "Archive {name}?",
+		"description": "Title confirming that the named member will be archived."
+	},
+	"household.dialog.archive_type.title": {
+		"text": "Archive the member type \"{name}\"?",
+		"description": "Title confirming that the named member type will be archived."
+	},
+	"household.dialog.delete_member.title": {
+		"text": "Delete {name}?",
+		"description": "Title confirming that the named member will be deleted."
+	},
 	"household.dialog.delete_type.title": {
 		"text": "Delete member type \"{name}\"?",
 		"description": "Title of the confirmation dialog before deleting a member type; {name} is its name."
+	},
+	"household.dialog.unlink.title": {
+		"text": "Unlink the account from {name}?",
+		"description": "Title confirming account unlinking from the named member."
 	},
 	"household.field.base_class": {
 		"text": "Base class",

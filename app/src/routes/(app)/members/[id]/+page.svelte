@@ -1,6 +1,9 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import Field from '#lib/components/Field.svelte';
+	import Card from '#lib/components/Card.svelte';
+	import ConfirmDialog from '#lib/components/ConfirmDialog.svelte';
+	import Form from '#lib/components/Form.svelte';
 	import AccountActions from '../../AccountActions.svelte';
 	import { fieldError, formError } from '#lib/components/form-errors.ts';
 	import { baseClassLabel } from '#lib/features/household/base-classes.ts';
@@ -9,7 +12,6 @@
 
 	let { data, form }: PageProps = $props();
 	const i18n = getI18n();
-	const here = $derived(resolve(`members/${data.member.id}`));
 
 	// Member form errors only: the account forms show their own.
 	const memberForm = $derived(
@@ -37,24 +39,6 @@
 
 {#if formError(i18n.t, memberForm)}
 	<p class="error" role="alert">{formError(i18n.t, memberForm)}</p>
-{/if}
-
-{#if data.confirm}
-	<section class="confirm" aria-live="polite">
-		<p>
-			{data.confirm === 'archive'
-				? i18n.t('household.confirm.archive_member', { name: data.member.name })
-				: i18n.t('household.confirm.delete_member', { name: data.member.name })}
-		</p>
-		<form method="POST" action="?/{data.confirm}" class="row">
-			<button type="submit">
-				{i18n.t(
-					data.confirm === 'archive' ? 'household.action.archive' : 'household.action.delete'
-				)}
-			</button>
-			<a href={here}>{i18n.t('household.action.cancel')}</a>
-		</form>
-	</section>
 {/if}
 
 <form method="POST" action="?/update" class="stack">
@@ -98,9 +82,22 @@
 			own={data.member.account.userId === data.ownId}
 			{form}
 		/>
-		<form method="POST" action="?/unlinkAccount">
-			<button type="submit">{i18n.t('users.account.unlink')}</button>
-		</form>
+		<ConfirmDialog
+			triggerLabel={i18n.t('users.account.unlink')}
+			title={i18n.t('household.dialog.unlink.title', { name: data.member.name })}
+			description={i18n.t('household.confirm.unlink', { name: data.member.name })}
+			cancelLabel={i18n.t('household.action.cancel')}
+		>
+			{#snippet action(close)}
+				<Form
+					action="?/unlinkAccount"
+					success="household.changes.saved"
+					submitLabel={i18n.t('users.account.unlink')}
+					variant="danger"
+					onResult={close}
+				/>
+			{/snippet}
+		</ConfirmDialog>
 	{:else}
 		<p>{i18n.t('users.account.none')}</p>
 
@@ -161,17 +158,48 @@
 	{/if}
 </section>
 
-<div class="row actions">
-	{#if data.member.archivedAt}
-		<form method="POST" action="?/unarchive">
-			<button type="submit">{i18n.t('household.action.unarchive')}</button>
-		</form>
-	{:else}
-		<a href="{here}?confirm=archive">{i18n.t('household.action.archive')}</a>
-	{/if}
-	{#if !data.member.firstLinkedAt}
-		<a href="{here}?confirm=delete">{i18n.t('household.action.delete')}</a>
-	{/if}
+<div class="actions">
+	<Card>
+		<h2>{i18n.t('household.danger_zone')}</h2>
+		{#if data.member.archivedAt}
+			<Form
+				action="?/unarchive"
+				success="household.changes.saved"
+				submitLabel={i18n.t('household.action.unarchive')}
+			/>
+		{:else}
+			<ConfirmDialog
+				triggerLabel={i18n.t('household.action.archive')}
+				title={i18n.t('household.dialog.archive_member.title', { name: data.member.name })}
+				description={i18n.t('household.confirm.archive_member', { name: data.member.name })}
+				cancelLabel={i18n.t('household.action.cancel')}
+			>
+				{#snippet action(close)}<Form
+						action="?/archive"
+						success="household.changes.saved"
+						submitLabel={i18n.t('household.action.archive')}
+						variant="danger"
+						onResult={close}
+					/>{/snippet}
+			</ConfirmDialog>
+		{/if}
+		{#if !data.member.firstLinkedAt}
+			<ConfirmDialog
+				triggerLabel={i18n.t('household.action.delete')}
+				title={i18n.t('household.dialog.delete_member.title', { name: data.member.name })}
+				description={i18n.t('household.confirm.delete_member', { name: data.member.name })}
+				cancelLabel={i18n.t('household.action.cancel')}
+			>
+				{#snippet action(close)}<Form
+						action="?/delete"
+						success="household.changes.saved"
+						submitLabel={i18n.t('household.action.delete')}
+						variant="danger"
+						onResult={close}
+					/>{/snippet}
+			</ConfirmDialog>
+		{/if}
+	</Card>
 </div>
 
 <style>
@@ -200,12 +228,6 @@
 	.actions,
 	.account-section {
 		margin-block-start: var(--space-4);
-	}
-
-	.confirm {
-		padding: var(--space-3);
-		margin-block-end: var(--space-3);
-		border: 1px solid var(--color-border);
 	}
 
 	.error {

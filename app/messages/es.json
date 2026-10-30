@@ -139,6 +139,10 @@
 		"text": "Menor",
 		"source": "5717c39b819da72b"
 	},
+	"household.changes.saved": {
+		"text": "Cambios guardados.",
+		"source": "12b3f1a3e924fd13"
+	},
 	"household.confirm.archive_member": {
 		"text": "¿Archivar a \"{name}\"? Solo las personas administradoras verán a este miembro.",
 		"source": "e6e384fe0152ec1a"
@@ -155,9 +159,33 @@
 		"text": "¿Eliminar el tipo de miembro \"{name}\"? Esto no se puede deshacer.",
 		"source": "f6f11bfb04ec1ff4"
 	},
+	"household.confirm.unlink": {
+		"text": "¿Desvincular la cuenta de {name}? La cuenta conserva su estado de acceso actual y puede vincularse a otro miembro.",
+		"source": "05c9aff6f8c6012a"
+	},
+	"household.danger_zone": {
+		"text": "Zona de peligro",
+		"source": "fd8b8dae44216610"
+	},
+	"household.dialog.archive_member.title": {
+		"text": "¿Archivar a {name}?",
+		"source": "1440693e59d365ce"
+	},
+	"household.dialog.archive_type.title": {
+		"text": "¿Archivar el tipo de miembro «{name}»?",
+		"source": "9b523da91ffc4fb6"
+	},
+	"household.dialog.delete_member.title": {
+		"text": "¿Eliminar a {name}?",
+		"source": "a4b982a9e0bc2413"
+	},
 	"household.dialog.delete_type.title": {
 		"text": "¿Eliminar el tipo de miembro «{name}»?",
 		"source": "761b0f5e2ff24ffe"
+	},
+	"household.dialog.unlink.title": {
+		"text": "¿Desvincular la cuenta de {name}?",
+		"source": "a579705698e860a8"
 	},
 	"household.field.base_class": {
 		"text": "Clase base",

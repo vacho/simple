@@ -24,13 +24,9 @@ export const load: PageServerLoad = (event) => {
 		const types = listMemberTypes(ctx).filter(
 			(type) => !type.archived || type.id === member.memberTypeId
 		);
-		// A destructive action is confirmed on the page, as a second step (design D6).
-		const action = event.url.searchParams.get('confirm');
-		const confirm = action === 'archive' || action === 'delete' ? action : null;
 		return {
 			member,
 			types,
-			confirm,
 			unlinked: member.account ? [] : listUnlinkedAccounts(ctx),
 			ownId: ctx.actor.kind === 'user' ? ctx.actor.id : null,
 			done: event.url.searchParams.has('done')

@@ -117,6 +117,13 @@ test('Deactivate an account, Reactivate an account, and Promote a member to admi
 	const lucia = await signInElsewhere(app, other, 'primer-dia-2026');
 	await expect(lucia.getByRole('link', { name: 'Settings' })).toHaveCount(0);
 
+	await page.getByRole('button', { name: 'Archive', exact: true }).click();
+	const archive = page.getByRole('alertdialog', { name: 'Archive Lucía?' });
+	await archive.getByRole('button', { name: 'Archive', exact: true }).click();
+	await expect(archive).toBeHidden();
+	await expect(page.getByRole('alert')).toContainText("This member's account is active.");
+	await expect(page.getByRole('button', { name: 'Archive', exact: true })).toBeVisible();
+
 	// Promote: settings open at her next request.
 	await page.getByRole('combobox', { name: 'Role' }).click();
 	await page.getByRole('option', { name: 'Administrator', exact: true }).click();
