@@ -1,5 +1,9 @@
 <script lang="ts">
-	import Field from '#lib/components/Field.svelte';
+	import PasswordInput from '#lib/components/PasswordInput.svelte';
+	import Form from '#lib/components/Form.svelte';
+	import Card from '#lib/components/Card.svelte';
+	import PageHeader from '#lib/components/PageHeader.svelte';
+	import Select from '#lib/components/Select.svelte';
 	import { fieldError, formError } from '#lib/components/form-errors.ts';
 	import { getI18n } from '#lib/i18n/t.ts';
 	import type { PageProps } from './$types';
@@ -18,88 +22,75 @@
 	<title>{i18n.t('users.profile.title')}</title>
 </svelte:head>
 
-<h1>{i18n.t('users.profile.title')}</h1>
-<p>{i18n.t('users.profile.intro')}</p>
+<PageHeader title={i18n.t('users.profile.title')} subtitle={i18n.t('users.profile.intro')} />
 
-<form method="POST" action="?/save" class="profile">
-	{#if formError(i18n.t, form)}
-		<p class="error" role="alert">{formError(i18n.t, form)}</p>
-	{/if}
+<div class="profile">
+	<Card
+		><Form action="?/save" success="users.profile.saved" submitLabel={i18n.t('users.profile.save')}>
+			{#if formError(i18n.t, form)}
+				<p class="error" role="alert">{formError(i18n.t, form)}</p>
+			{/if}
 
-	<div class="field">
-		<label for="locale">{i18n.t('users.field.language')}</label>
-		<select
-			id="locale"
-			name="locale"
-			aria-invalid={localeError ? 'true' : undefined}
-			aria-describedby={localeError ? 'locale-error' : undefined}
+			{#key locale}
+				<Select
+					name="locale"
+					label={i18n.t('users.field.language')}
+					value={locale}
+					error={localeError}
+					options={[
+						{ value: '', label: i18n.t('users.profile.browser_default') },
+						...data.languages.map((language) => ({ value: language.code, label: language.name }))
+					]}
+				/>
+			{/key}
+
+			{#key data.profile.timeZone}
+				<Select
+					name="timeZone"
+					label={i18n.t('users.field.time_zone')}
+					value={data.profile.timeZone ?? 'UTC'}
+					error={zoneError}
+					options={data.timeZones.map((zone) => ({ value: zone, label: zone }))}
+				/>
+			{/key}
+		</Form></Card
+	>
+
+	<Card>
+		<h2>{i18n.t('auth.password.section')}</h2>
+		<p>{i18n.t('auth.password.section_hint')}</p>
+		<Form
+			action="?/password"
+			success="auth.password.changed"
+			submitLabel={i18n.t('auth.password.save')}
 		>
-			<option value="" selected={locale === ''}>{i18n.t('users.profile.browser_default')}</option>
-			{#each data.languages as language (language.code)}
-				<option value={language.code} lang={language.code} selected={locale === language.code}>
-					{language.name}
-				</option>
-			{/each}
-		</select>
-		{#if localeError}<p id="locale-error" class="error">{localeError}</p>{/if}
-	</div>
-
-	<div class="field">
-		<label for="timeZone">{i18n.t('users.field.time_zone')}</label>
-		<!-- After a rejected zone, the previous one stays selected: nothing was saved. -->
-		<select
-			id="timeZone"
-			name="timeZone"
-			aria-invalid={zoneError ? 'true' : undefined}
-			aria-describedby={zoneError ? 'timeZone-error' : undefined}
-		>
-			{#each data.timeZones as zone (zone)}
-				<option value={zone} selected={(data.profile.timeZone ?? 'UTC') === zone}>{zone}</option>
-			{/each}
-		</select>
-		{#if zoneError}<p id="timeZone-error" class="error">{zoneError}</p>{/if}
-	</div>
-
-	<button type="submit">{i18n.t('users.profile.save')}</button>
-</form>
-
-<section class="profile">
-	<h2>{i18n.t('auth.password.section')}</h2>
-	<p>{i18n.t('auth.password.section_hint')}</p>
-	{#if data.passwordChanged && !result}
-		<p role="status">{i18n.t('auth.password.changed')}</p>
-	{/if}
-	<form method="POST" action="?/password" class="profile">
-		{#if formError(i18n.t, passwordForm)}
-			<p class="error" role="alert">{formError(i18n.t, passwordForm)}</p>
-		{/if}
-		<Field
-			label={i18n.t('auth.password.current')}
-			name="current"
-			type="password"
-			autocomplete="current-password"
-			error={fieldError(i18n.t, passwordForm, 'current')}
-			required
-		/>
-		<Field
-			label={i18n.t('auth.password.new')}
-			name="password"
-			type="password"
-			autocomplete="new-password"
-			error={fieldError(i18n.t, passwordForm, 'password')}
-			required
-		/>
-		<Field
-			label={i18n.t('auth.password.confirm')}
-			name="confirm"
-			type="password"
-			autocomplete="new-password"
-			error={fieldError(i18n.t, passwordForm, 'confirm')}
-			required
-		/>
-		<button type="submit">{i18n.t('auth.password.save')}</button>
-	</form>
-</section>
+			{#if formError(i18n.t, passwordForm)}
+				<p class="error" role="alert">{formError(i18n.t, passwordForm)}</p>
+			{/if}
+			<PasswordInput
+				label={i18n.t('auth.password.current')}
+				name="current"
+				autoComplete="current-password"
+				error={fieldError(i18n.t, passwordForm, 'current')}
+				required
+			/>
+			<PasswordInput
+				label={i18n.t('auth.password.new')}
+				name="password"
+				autoComplete="new-password"
+				error={fieldError(i18n.t, passwordForm, 'password')}
+				required
+			/>
+			<PasswordInput
+				label={i18n.t('auth.password.confirm')}
+				name="confirm"
+				autoComplete="new-password"
+				error={fieldError(i18n.t, passwordForm, 'confirm')}
+				required
+			/>
+		</Form>
+	</Card>
+</div>
 
 <style>
 	.profile {
@@ -108,13 +99,9 @@
 		max-inline-size: 28rem;
 	}
 
-	.field {
+	.profile :global(form) {
 		display: grid;
-		gap: var(--space-1);
-	}
-
-	label {
-		font-weight: 600;
+		gap: var(--space-3);
 	}
 
 	.error {

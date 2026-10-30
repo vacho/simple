@@ -32,13 +32,15 @@ test('Keyboard navigation: the frame is reachable in order, with a visible focus
 	}
 	expect(order).toEqual(['Skip to content', 'Ana Pérez', 'Home', 'Members', 'Settings']);
 
-	// The user menu opens with Enter, and its links are next in the order.
+	// The user menu opens with Enter and highlights its first choice.
 	await page.keyboard.press('Shift+Tab');
 	await page.keyboard.press('Shift+Tab');
 	await page.keyboard.press('Shift+Tab');
 	await page.keyboard.press('Enter');
-	await page.keyboard.press('Tab');
-	expect((await focused()).text).toBe('Profile');
+	await expect(page.getByRole('menuitem', { name: 'Profile' })).toHaveAttribute(
+		'data-highlighted',
+		''
+	);
 	await page.keyboard.press('Enter');
 	await expect(page).toHaveURL(`${app.url}/profile`);
 });

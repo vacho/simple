@@ -1,5 +1,6 @@
 import { redirect } from '@sveltejs/kit';
 import { getProfile } from '#lib/features/users/server/index.ts';
+import { getHousehold } from '#lib/features/household/server/index.ts';
 import { can } from '#lib/server/policy/policy.ts';
 import { buildCtx } from '#lib/server/web/ctx.ts';
 import { throwForLoad } from '#lib/server/web/responses.ts';
@@ -17,7 +18,7 @@ export const load: LayoutServerLoad = (event) => {
 		const navigation: Section[] = ['home'];
 		if (can(actor, 'household.view')) navigation.push('members');
 		if (can(actor, 'settings.view')) navigation.push('settings');
-		return { displayName, navigation };
+		return { displayName, navigation, householdName: getHousehold(buildCtx(event)).name };
 	} catch (error) {
 		throwForLoad(error);
 	}

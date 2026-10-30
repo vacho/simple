@@ -4,6 +4,7 @@
 	import '#lib/components/base.css';
 	import favicon from '#lib/assets/favicon.svg';
 	import { setI18n } from '#lib/i18n/t.ts';
+	import { textDirection } from '#lib/i18n/locale.ts';
 	import type { LayoutProps } from './$types';
 
 	let { data, children }: LayoutProps = $props();
@@ -12,6 +13,8 @@
 	// resolves once a worker is active, even on the first visit before it controls the page.
 	$effect(() => {
 		const locale = data.locale;
+		document.documentElement.lang = locale;
+		document.documentElement.dir = textDirection(locale);
 		navigator.serviceWorker?.ready.then((registration) =>
 			registration.active?.postMessage({ type: 'locale', locale })
 		);

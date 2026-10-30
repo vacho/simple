@@ -1,5 +1,6 @@
 <script lang="ts">
 	import { enhance, type SubmitFunction } from '$app/forms';
+	import { invalidateAll } from '$app/navigation';
 	import type { Snippet } from 'svelte';
 	import Button from './Button.svelte';
 	import { toast } from './toast.ts';
@@ -31,6 +32,7 @@
 				onSuccess?.();
 			}
 			await update();
+			if (result.type === 'redirect') await invalidateAll();
 		};
 	};
 </script>

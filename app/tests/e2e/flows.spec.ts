@@ -43,10 +43,10 @@ test.describe('Core flows on each supported browser', () => {
 			await expect(page.locator('h1')).toHaveText('Set up the app');
 			await page.getByLabel('Display name').fill('  María José Ñuflo ');
 			await page.getByLabel('Username').fill(' Ana.Perez ');
-			await page.getByLabel('Password').fill('correct horse battery');
+			await page.locator('input[name="password"]').fill('correct horse battery');
 			await submitAndWait(page, page.getByRole('button', { name: 'Create account' }));
 			await expect(page).toHaveURL(`${app.url}/`);
-			await expect(page.locator('h1')).toHaveText('Home');
+			await expect(page.locator('h1')).toHaveText('Unnamed household');
 			expect(zoneOf(app, 'ana.perez')).toBe('America/La_Paz');
 		});
 
@@ -56,7 +56,7 @@ test.describe('Core flows on each supported browser', () => {
 			await open(page, `${app.url}/setup`);
 			await page.getByLabel('Display name').fill('Toño');
 			await page.getByLabel('Username').fill('toño');
-			await page.getByLabel('Password').fill('short');
+			await page.locator('input[name="password"]').fill('short');
 			await submitAndWait(page, page.getByRole('button', { name: 'Create account' }));
 			await expect(page.getByText('Use 3 to 32 characters: lowercase letters')).toBeVisible();
 			await expect(page.getByLabel('Display name')).toHaveValue('Toño');
@@ -124,8 +124,8 @@ test.describe('Core flows on each supported browser', () => {
 		test('English on an English browser, then Spanish on a Spanish one', async ({ browser }) => {
 			const { app } = await startSetUpApp();
 			for (const [locale, heading] of [
-				['en-US', 'Home'],
-				['es-BO', 'Inicio']
+				['en-US', 'Unnamed household'],
+				['es-BO', 'Hogar sin nombre']
 			]) {
 				const context = await browser.newContext({ locale });
 				const page = await context.newPage();
@@ -147,7 +147,7 @@ test.describe('Core flows on each supported browser', () => {
 			await open(page, `${app.url}/login`);
 			await expect(page.locator('h1')).toHaveText('Sign in');
 			await signIn(page, 'ana', 'correct horse battery');
-			await expect(page.locator('h1')).toHaveText('Inicio');
+			await expect(page.locator('h1')).toHaveText('Hogar sin nombre');
 			await expect(page.locator('html')).toHaveAttribute('lang', 'es');
 		});
 	});
@@ -165,8 +165,8 @@ test.describe('Core flows on each supported browser', () => {
 		await app.listening;
 		await context.addCookies([{ name: 'session', value: token, url: app.url }]);
 		await open(page, `${app.url}/`);
-		await page.getByText('Luis').click();
-		await submitAndWait(page, page.getByRole('button', { name: 'Sign out' }));
+		await page.getByRole('button', { name: 'Luis' }).click();
+		await submitAndWait(page, page.getByRole('menuitem', { name: 'Sign out' }));
 		await expect(page).toHaveURL(`${app.url}/login`);
 		expect(
 			(await context.cookies(app.url)).find((cookie) => cookie.name === 'session')
@@ -205,10 +205,10 @@ test.describe('Core flows on each supported browser', () => {
 		await open(lucia, `${app.url}/login`);
 		await signIn(lucia, 'lucia', 'primer-dia-2026');
 		await expect(lucia).toHaveURL(`${app.url}/password`);
-		await lucia.getByLabel('New password', { exact: true }).fill('mi-clave-propia');
-		await lucia.getByLabel('Repeat the new password').fill('mi-clave-propia');
+		await lucia.locator('input[name="password"]').fill('mi-clave-propia');
+		await lucia.locator('input[name="confirm"]').fill('mi-clave-propia');
 		await submitAndWait(lucia, lucia.getByRole('button', { name: 'Save password' }));
-		await expect(lucia.locator('h1')).toHaveText('Home');
+		await expect(lucia.locator('h1')).toHaveText('Unnamed household');
 		await lucia.getByRole('link', { name: 'Members' }).click();
 		await expect(lucia.getByRole('listitem').filter({ hasText: 'Lucía' })).toContainText(
 			'Hija (Minor)'

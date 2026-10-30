@@ -6,6 +6,7 @@
 		value: string;
 		label: string;
 		href?: string;
+		formAction?: string;
 		onSelect?: () => void;
 	}
 
@@ -30,6 +31,13 @@
 									>{item.label}</a
 								>{/snippet}
 						</ArkMenu.Item>
+					{:else if item.formAction}
+						<form method="POST" action={item.formAction}>
+							<ArkMenu.Item value={item.value}>
+								{#snippet asChild(props)}<button {...props()} type="submit">{item.label}</button
+									>{/snippet}
+							</ArkMenu.Item>
+						</form>
 					{:else}
 						<ArkMenu.Item value={item.value} onSelect={item.onSelect}>{item.label}</ArkMenu.Item>
 					{/if}

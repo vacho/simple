@@ -1,15 +1,17 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import { page } from '$app/state';
+	import Icon from '#lib/components/Icon.svelte';
+	import Menu from '#lib/components/Menu.svelte';
 	import { getI18n } from '#lib/i18n/t.ts';
 	import type { LayoutProps } from './$types';
 
 	let { data, children }: LayoutProps = $props();
 	const i18n = getI18n();
 	const sections = {
-		home: { href: resolve(''), label: 'shell.nav.home' },
-		members: { href: resolve('members'), label: 'shell.nav.members' },
-		settings: { href: resolve('settings'), label: 'shell.nav.settings' }
+		home: { href: resolve(''), label: 'shell.nav.home', icon: 'house' },
+		members: { href: resolve('members'), label: 'shell.nav.members', icon: 'users' },
+		settings: { href: resolve('settings'), label: 'shell.nav.settings', icon: 'settings' }
 	} as const;
 </script>
 
@@ -17,17 +19,14 @@
 
 <div class="frame">
 	<header class="top">
-		<details class="user-menu">
-			<summary>{data.displayName}</summary>
-			<ul>
-				<li><a href={resolve('profile')}>{i18n.t('shell.user_menu.profile')}</a></li>
-				<li>
-					<form method="POST" action="/logout">
-						<button type="submit">{i18n.t('auth.sign_out')}</button>
-					</form>
-				</li>
-			</ul>
-		</details>
+		<strong class="household-name">{data.householdName ?? i18n.t('household.unnamed')}</strong>
+		<Menu
+			label={data.displayName}
+			items={[
+				{ value: 'profile', label: i18n.t('shell.user_menu.profile'), href: 'profile' },
+				{ value: 'sign-out', label: i18n.t('auth.sign_out'), formAction: resolve('logout') }
+			]}
+		/>
 	</header>
 
 	<nav class="nav" aria-label={i18n.t('shell.nav.label')}>
@@ -38,6 +37,7 @@
 						href={section.href}
 						aria-current={page.url.pathname === section.href ? 'page' : undefined}
 					>
+						<Icon name={section.icon} />
 						{i18n.t(section.label)}
 					</a>
 				</li>
@@ -74,9 +74,15 @@
 	.top {
 		grid-area: top;
 		display: flex;
-		justify-content: flex-end;
+		justify-content: space-between;
+		align-items: center;
+		gap: var(--space-3);
 		padding: var(--space-2) var(--space-3);
 		border-block-end: 1px solid var(--color-border);
+	}
+
+	.household-name {
+		font-size: var(--text-lg);
 	}
 
 	main {
@@ -101,8 +107,7 @@
 		z-index: 1;
 	}
 
-	.nav ul,
-	.user-menu ul {
+	.nav ul {
 		list-style: none;
 		margin: 0;
 		padding: 0;
@@ -116,7 +121,9 @@
 	}
 
 	.nav a {
-		display: block;
+		display: flex;
+		align-items: center;
+		gap: var(--space-2);
 		padding: var(--space-2) var(--space-3);
 		color: var(--color-text);
 		text-decoration: none;
@@ -124,31 +131,7 @@
 
 	.nav a[aria-current='page'] {
 		color: var(--color-primary);
-		font-weight: 600;
-	}
-
-	.user-menu {
-		position: relative;
-	}
-
-	.user-menu summary {
-		cursor: pointer;
-		padding: var(--space-2);
-	}
-
-	.user-menu ul {
-		position: absolute;
-		inset-inline-end: 0;
-		min-inline-size: 12rem;
-		padding: var(--space-2);
-		background: var(--color-bg);
-		border: 1px solid var(--color-border);
-		border-radius: var(--radius);
-		z-index: 3;
-	}
-
-	.user-menu li + li {
-		margin-block-start: var(--space-2);
+		font-weight: var(--weight-strong);
 	}
 
 	@media (min-width: 1024px) {

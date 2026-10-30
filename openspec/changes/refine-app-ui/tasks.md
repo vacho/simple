@@ -23,8 +23,8 @@ Paths are relative to `app/`, and commands run there (ADR 0023). Ark UI wrappers
 
 ## 4. Frame and personal screens
 
-- [ ] 4.1 Rebuild the signed-in frame: the user menu as a `Menu` on a button with the display name, the navigation with icons and labels, the household name in the header. Update the keyboard test for the new order and add one for the menu. Verify the frame e2e tests, the axe checks and the 360 px and 1024 px layout tests (spec app-shell: Signed-in frame, Keyboard operability, "Menu with the keyboard")
-- [ ] 4.2 Rebuild setup, sign-in, the password change page, home, profile and the error page from the components, using `PasswordInput` for passwords and `Form` with success messages (profile saved, password changed), removing the `?password-changed` flag. Restyle the offline page with the new tokens, keeping it self-contained. Verify the existing e2e tests for these pages pass with role-based locators, and the axe checks in English and Spanish
+- [x] 4.1 Rebuild the signed-in frame: the user menu as a `Menu` on a button with the display name, the navigation with icons and labels, the household name in the header. Update the keyboard test for the new order and add one for the menu. Verify the frame e2e tests, the axe checks and the 360 px and 1024 px layout tests (spec app-shell: Signed-in frame, Keyboard operability, "Menu with the keyboard")
+- [x] 4.2 Rebuild setup, sign-in, the password change page, home, profile and the error page from the components, using `PasswordInput` for passwords and `Form` with success messages (profile saved, password changed), removing the `?password-changed` flag. Restyle the offline page with the new tokens, keeping it self-contained. Verify the existing e2e tests for these pages pass with role-based locators, and the axe checks in English and Spanish
 
 ## 5. Household screens and confirmations
 

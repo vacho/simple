@@ -547,6 +547,10 @@
 		"text": "Guardar",
 		"source": "1509f561f2416598"
 	},
+	"users.profile.saved": {
+		"text": "Perfil guardado.",
+		"source": "c1632eafd4468cab"
+	},
 	"users.profile.title": {
 		"text": "Perfil",
 		"source": "d696a35bdd1883da"

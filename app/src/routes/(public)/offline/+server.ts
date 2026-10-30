@@ -26,13 +26,13 @@ export const GET: RequestHandler = (event) => {
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<meta name="theme-color" content="#1f5fbf">
+<meta name="theme-color" content="#4f46e5">
 <title>${escapeHtml(title)}</title>
 <style>
-:root { color-scheme: light dark; --bg: #ffffff; --text: #1b1f24; }
-@media (prefers-color-scheme: dark) { :root { --bg: #121417; --text: #e8eaed; } }
+:root { color-scheme: light dark; --bg: #f7f8fa; --surface: #ffffff; --text: #111827; --border: #7a8591; }
+@media (prefers-color-scheme: dark) { :root { --bg: #0f1115; --surface: #1f232b; --text: #e5e7eb; --border: #7f8a96; } }
 body { margin: 0; background: var(--bg); color: var(--text); font-family: system-ui, sans-serif; }
-main { max-inline-size: 28rem; margin-inline: auto; padding: 3rem 1rem; text-align: start; }
+main { max-inline-size: 28rem; margin: 3rem auto; padding: 1.5rem; border: 1px solid var(--border); border-radius: 1rem; background: var(--surface); text-align: start; }
 </style>
 </head>
 <body>

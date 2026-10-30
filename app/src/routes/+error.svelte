@@ -1,5 +1,7 @@
 <script lang="ts">
 	import { page } from '$app/state';
+	import Card from '#lib/components/Card.svelte';
+	import PageHeader from '#lib/components/PageHeader.svelte';
 	import { getI18n } from '#lib/i18n/t.ts';
 
 	type ErrorKey = 'errors.not_allowed' | 'errors.page_not_found' | 'errors.unexpected';
@@ -15,4 +17,4 @@
 	<title>{i18n.t(key)}</title>
 </svelte:head>
 
-<h1>{i18n.t(key)}</h1>
+<Card><PageHeader title={i18n.t(key)} /></Card>
