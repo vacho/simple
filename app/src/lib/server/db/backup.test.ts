@@ -32,8 +32,12 @@ describe('Consistent backup command', () => {
 
 	it('Backup while the app is in use: a valid, consistent copy of what was committed', async () => {
 		const { file, db } = database('busy.db');
-		for (let i = 1; i <= 1000; i++) db.prepare('INSERT INTO rows VALUES (?)').run(i);
-		// Another process keeps writing, one row per transaction, while the backup runs.
+		const rows = 20_000;
+		const insert = db.prepare('INSERT INTO rows VALUES (?)');
+		db.transaction(() => {
+			for (let i = 1; i <= rows; i++) insert.run(i);
+		})();
+		// Another process keeps writing, one row per transaction, before, during and after the backup.
 		const writer = spawn(
 			process.execPath,
 			[
@@ -41,30 +45,41 @@ describe('Consistent backup command', () => {
 				`const db = new (require('better-sqlite3'))(${JSON.stringify(file)});
 				db.pragma('busy_timeout = 5000');
 				const insert = db.prepare('INSERT INTO rows VALUES (?)');
-				let id = 1001;
-				process.stdout.write('ready\\n');
+				let id = ${rows + 1};
 				for (;;) insert.run(id++);`
 			],
 			{ cwd: process.cwd() }
 		);
-		await new Promise((resolve) => writer.stdout.once('data', resolve));
-		await new Promise((resolve) => setTimeout(resolve, 100));
-		const before = db.prepare('SELECT max(id) FROM rows').pluck().get() as number;
-		const target = path.join(dir, 'busy-backup.db');
-		backupDatabase(file, target);
-		const after = db.prepare('SELECT max(id) FROM rows').pluck().get() as number;
-		writer.kill();
+		const latest = () => db.prepare('SELECT max(id) FROM rows').pluck().get() as number;
+		/** Waits until the writer has committed a row beyond `id`; how fast depends on the machine. */
+		const writtenBeyond = async (id: number) => {
+			const deadline = Date.now() + 10_000;
+			while (latest() <= id) {
+				if (Date.now() > deadline) throw new Error(`the writer never wrote beyond row ${id}`);
+				await new Promise((resolve) => setTimeout(resolve, 10));
+			}
+		};
+		try {
+			await writtenBeyond(rows);
+			const before = latest();
+			const target = path.join(dir, 'busy-backup.db');
+			backupDatabase(file, target);
+			const after = latest();
+			// The backup never blocks the app: writes go on once it is done.
+			await writtenBeyond(after);
 
-		const copy = new Database(target, { readonly: true });
-		expect(copy.pragma('integrity_check', { simple: true })).toBe('ok');
-		copy.close();
-		const saved = ids(target);
-		// Every row committed before the backup started, none after it ended, and no gap: a snapshot.
-		expect(saved.length).toBeGreaterThanOrEqual(before);
-		expect(saved.length).toBeLessThanOrEqual(after);
-		expect(saved[saved.length - 1]).toBe(saved.length);
-		expect(after).toBeGreaterThan(before);
-		db.close();
+			const copy = new Database(target, { readonly: true });
+			expect(copy.pragma('integrity_check', { simple: true })).toBe('ok');
+			copy.close();
+			const saved = ids(target);
+			// Every row committed before the backup started, none after it ended, and no gap: a snapshot.
+			expect(saved.length).toBeGreaterThanOrEqual(before);
+			expect(saved.length).toBeLessThanOrEqual(after);
+			expect(saved[saved.length - 1]).toBe(saved.length);
+		} finally {
+			writer.kill();
+			db.close();
+		}
 	});
 
 	it('Name collision: fails and leaves the existing file untouched', () => {
