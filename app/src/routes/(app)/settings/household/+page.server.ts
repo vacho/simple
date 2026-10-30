@@ -1,4 +1,3 @@
-import { redirect } from '@sveltejs/kit';
 import { getHousehold, renameHousehold } from '#lib/features/household/server/index.ts';
 import { can } from '#lib/server/policy/policy.ts';
 import { buildCtx } from '#lib/server/web/ctx.ts';
@@ -9,7 +8,7 @@ export const load: PageServerLoad = (event) => {
 	const ctx = buildCtx(event);
 	denyUnless(can(ctx.actor, 'household.update'));
 	try {
-		return { household: getHousehold(ctx), saved: event.url.searchParams.has('saved') };
+		return { household: getHousehold(ctx) };
 	} catch (error) {
 		throwForLoad(error);
 	}
@@ -23,6 +22,6 @@ export const actions: Actions = {
 		} catch (error) {
 			return failForAction(error, values);
 		}
-		redirect(303, '?saved');
+		return { saved: true };
 	}
 };

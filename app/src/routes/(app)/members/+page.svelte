@@ -1,6 +1,11 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import Field from '#lib/components/Field.svelte';
+	import Badge from '#lib/components/Badge.svelte';
+	import DataList from '#lib/components/DataList.svelte';
+	import DataListRow from '#lib/components/DataListRow.svelte';
+	import EmptyState from '#lib/components/EmptyState.svelte';
+	import PageHeader from '#lib/components/PageHeader.svelte';
 	import { fieldError, formError } from '#lib/components/form-errors.ts';
 	import { baseClassLabel } from '#lib/features/household/base-classes.ts';
 	import { getI18n } from '#lib/i18n/t.ts';
@@ -19,39 +24,66 @@
 	<title>{i18n.t('household.members.title')}</title>
 </svelte:head>
 
-<h1>{i18n.t('household.members.title')}</h1>
-<p class="household">{data.household.name ?? i18n.t('household.unnamed')}</p>
+<PageHeader
+	title={i18n.t('household.members.title')}
+	subtitle={data.household.name ?? i18n.t('household.unnamed')}
+/>
 
 {#snippet list(members: typeof data.list.members)}
-	<ul class="members">
+	<DataList>
 		{#each members as member (member.id)}
 			{@const account = accountOf(member)}
-			<li>
-				{#if data.list.withAccounts}
-					<a class="name" href={resolve(`members/${member.id}`)}>{member.name}</a>
-				{:else}
-					<span class="name">{member.name}</span>
-				{/if}
-				<span>
-					{i18n.t('household.members.type_and_class', {
-						type: member.typeName,
-						baseClass: i18n.t(baseClassLabel[member.baseClass])
-					})}
-				</span>
-				{#if data.list.withAccounts}
-					<span>
-						{account?.username
-							? i18n.t('household.members.account', { username: account.username })
-							: i18n.t('household.members.no_account')}
-					</span>
-				{/if}
-			</li>
+			<DataListRow
+				title={member.name}
+				muted={member.archivedAt !== null}
+				meta={i18n.t('household.members.type_and_class', {
+					type: member.typeName,
+					baseClass: i18n.t(baseClassLabel[member.baseClass])
+				})}
+			>
+				{#snippet titleLink()}
+					{#if data.list.withAccounts}<a href={resolve(`members/${member.id}`)}>{member.name}</a
+						>{:else}<strong>{member.name}</strong>{/if}
+				{/snippet}
+				{#snippet trailing()}
+					{#if member.archivedAt !== null}<Badge
+							tone="muted"
+							label={i18n.t('household.member.archived')}
+						/>{/if}
+					{#if data.list.withAccounts}
+						<Badge
+							label={account?.username
+								? i18n.t('household.members.account', { username: account.username })
+								: i18n.t('household.members.no_account')}
+						/>
+						{#if account?.role === 'admin'}<Badge
+								tone="info"
+								label={i18n.t('users.role.admin')}
+							/>{/if}
+						{#if account && !account.active}<Badge
+								tone="warning"
+								label={i18n.t('users.account.state_inactive')}
+							/>{/if}
+						{#if account?.passwordTemporary}<Badge
+								tone="warning"
+								label={i18n.t('users.account.state_temporary')}
+							/>{/if}
+					{/if}
+				{/snippet}
+			</DataListRow>
 		{/each}
-	</ul>
+	</DataList>
 {/snippet}
 
 {#if active.length === 0}
-	<p>{i18n.t('household.members.empty')}</p>
+	<EmptyState
+		title={i18n.t('household.members.title')}
+		description={i18n.t('household.members.empty')}
+	>
+		{#snippet action()}{#if data.manage}<a href="#new-member"
+					>{i18n.t('household.members.create')}</a
+				>{/if}{/snippet}
+	</EmptyState>
 {:else}
 	{@render list(active)}
 {/if}
@@ -76,7 +108,7 @@
 		{@render list(archived)}
 	{/if}
 
-	<h2>{i18n.t('household.members.new')}</h2>
+	<h2 id="new-member">{i18n.t('household.members.new')}</h2>
 	{#if data.types.length === 0}
 		<p>
 			{i18n.t('household.members.needs_type')}
@@ -120,29 +152,6 @@
 {/if}
 
 <style>
-	.household {
-		font-size: 1.25rem;
-	}
-
-	.members {
-		display: grid;
-		gap: var(--space-2);
-		padding: 0;
-		list-style: none;
-	}
-
-	.members li {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-1) var(--space-3);
-		padding-block: var(--space-2);
-		border-block-end: 1px solid var(--color-border);
-	}
-
-	.name {
-		font-weight: 600;
-	}
-
 	.types {
 		display: flex;
 		flex-wrap: wrap;

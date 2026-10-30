@@ -70,7 +70,7 @@ test.describe('in English', () => {
 		await open(page, `${app.url}/`);
 		await page.getByRole('link', { name: 'Members' }).click();
 		await expect(page.locator('h1')).toHaveText('Members');
-		await expect(page.getByText('Familia Pérez')).toBeVisible();
+		await expect(page.getByRole('main').getByText('Familia Pérez')).toBeVisible();
 		await expect(entry(page, 'Lucía')).toContainText('Hija (Minor)');
 		await expect(entry(page, 'Osvaldo')).toContainText('Papá (Adult)');
 		const types = page.getByRole('heading', { name: 'Member types' }).locator('+ ul');
@@ -88,7 +88,7 @@ test.describe('in English', () => {
 		const { app, tokens } = await start({ seeded: false });
 		await signInWith(context, app, tokens.admin);
 		await open(page, `${app.url}/members`);
-		await expect(page.getByText('Unnamed household')).toBeVisible();
+		await expect(page.getByRole('main').getByText('Unnamed household')).toBeVisible();
 		await expect(page.getByText('Members need a member type first.')).toBeVisible();
 		await page.getByRole('link', { name: 'Create a member type' }).click();
 		await expect(page.locator('h1')).toHaveText('Member types');
@@ -129,7 +129,9 @@ test.describe('in English', () => {
 
 		await page.getByRole('link', { name: 'Archive' }).click();
 		await submitAndWait(page, page.getByRole('button', { name: 'Archive' }));
-		await expect(page.getByRole('status')).toHaveText('This member is archived.');
+		await expect(
+			page.getByRole('status').filter({ hasText: 'This member is archived.' })
+		).toBeVisible();
 
 		// A member user no longer sees him.
 		const other = await browser.newContext({ locale: 'en-US' });

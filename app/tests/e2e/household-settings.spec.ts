@@ -82,9 +82,13 @@ test.describe('in English', () => {
 		await expect(page.locator('h1')).toHaveText('Household');
 		await expect(page.getByLabel('Name')).toHaveValue('');
 		await page.getByLabel('Name').fill('  Familia Pérez ');
-		await submitAndWait(page, page.getByRole('button', { name: 'Save name' }));
-		await expect(page.getByRole('status')).toHaveText('Household name saved.');
-		await expect(page.getByLabel('Name')).toHaveValue('Familia Pérez');
+		await page.getByRole('button', { name: 'Save name' }).click();
+		await expect(
+			page.locator('[data-scope="toast"][data-part="group"][role="status"]')
+		).toContainText('Household name saved.');
+		await expect(page.getByRole('textbox', { name: 'Name', exact: true })).toHaveValue(
+			'Familia Pérez'
+		);
 	});
 
 	test('Invalid household name: explained, and nothing saved', async ({ page, context }) => {
@@ -92,7 +96,7 @@ test.describe('in English', () => {
 		await signInWith(context, app, tokens.admin);
 		await open(page, `${app.url}/settings/household`);
 		await page.getByLabel('Name').fill('x'.repeat(65));
-		await submitAndWait(page, page.getByRole('button', { name: 'Save name' }));
+		await page.getByRole('button', { name: 'Save name' }).click();
 		await expect(page.getByText('Use at most 64 characters.')).toBeVisible();
 	});
 

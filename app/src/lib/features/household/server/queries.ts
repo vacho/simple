@@ -23,7 +23,8 @@ const withAccounts = (db: Db) =>
 				userId: users.id,
 				username: users.username,
 				role: users.role,
-				active: users.active
+				active: users.active,
+				passwordTemporary: users.passwordTemporary
 			}
 		})
 		.from(members)
