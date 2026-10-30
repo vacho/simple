@@ -96,7 +96,6 @@
 		<AccountActions
 			account={data.member.account}
 			own={data.member.account.userId === data.ownId}
-			confirm={data.accountConfirm}
 			{form}
 		/>
 		<form method="POST" action="?/unlinkAccount">

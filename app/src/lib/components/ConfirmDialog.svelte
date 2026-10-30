@@ -24,6 +24,8 @@
 <ArkDialog.Root
 	role="alertdialog"
 	closeOnInteractOutside={false}
+	lazyMount
+	unmountOnExit
 	initialFocusEl={() => cancelButton}
 	bind:open
 >

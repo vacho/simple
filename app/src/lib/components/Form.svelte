@@ -17,9 +17,19 @@
 		submitLabel: string;
 		children?: Snippet;
 		onSuccess?: () => void;
+		onResult?: () => void;
+		variant?: 'primary' | 'danger';
 	}
 
-	let { action, success, submitLabel, children, onSuccess }: Props = $props();
+	let {
+		action,
+		success,
+		submitLabel,
+		children,
+		onSuccess,
+		onResult,
+		variant = 'primary'
+	}: Props = $props();
 	let busy = $state(false);
 	const i18n = getI18n();
 
@@ -27,6 +37,7 @@
 		busy = true;
 		return async ({ result, update }) => {
 			busy = false;
+			onResult?.();
 			if (result.type === 'success' || result.type === 'redirect') {
 				toast(i18n.t(success));
 				onSuccess?.();
@@ -39,5 +50,5 @@
 
 <form method="POST" {action} use:enhance={submit}>
 	{@render children?.()}
-	<Button type="submit" {busy}>{submitLabel}</Button>
+	<Button type="submit" {busy} {variant}>{submitLabel}</Button>
 </form>

@@ -483,6 +483,14 @@
 		"text": "Set a new temporary password for {username}? Their sessions end, and they must choose a new password when they sign in.",
 		"description": "Confirmation before an administrator resets a password, above the new temporary password field; {username} is the account's username."
 	},
+	"users.dialog.deactivate.title": {
+		"text": "Deactivate {username}?",
+		"description": "Title of the dialog confirming account deactivation; {username} names the account."
+	},
+	"users.dialog.reset.title": {
+		"text": "Reset the password for {username}?",
+		"description": "Title of the dialog confirming a password reset; {username} names the account."
+	},
 	"users.display_name.control_characters": {
 		"text": "The name contains characters that are not allowed.",
 		"description": "Error under the display name field when it contains invisible control characters."

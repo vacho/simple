@@ -483,6 +483,14 @@
 		"text": "¿Poner una nueva contraseña temporal a {username}? Sus sesiones terminan y deberá elegir una nueva contraseña al iniciar sesión.",
 		"source": "fb26ac795dfc5c5d"
 	},
+	"users.dialog.deactivate.title": {
+		"text": "¿Desactivar a {username}?",
+		"source": "d58a79aa1177bd2a"
+	},
+	"users.dialog.reset.title": {
+		"text": "¿Restablecer la contraseña de {username}?",
+		"source": "4aff5c5e988b653f"
+	},
 	"users.display_name.control_characters": {
 		"text": "El nombre contiene caracteres no permitidos.",
 		"source": "b0ef3c0d05b4d1e3"

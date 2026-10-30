@@ -1,109 +1,114 @@
 <script lang="ts">
-	import Field from '#lib/components/Field.svelte';
+	import Badge from '#lib/components/Badge.svelte';
+	import ConfirmDialog from '#lib/components/ConfirmDialog.svelte';
+	import Form from '#lib/components/Form.svelte';
+	import PasswordInput from '#lib/components/PasswordInput.svelte';
+	import Select from '#lib/components/Select.svelte';
 	import { fieldError, formError, type FormFailure } from '#lib/components/form-errors.ts';
 	import { getI18n } from '#lib/i18n/t.ts';
 
 	interface Props {
 		account: { userId: number; username: string; role: 'admin' | 'member'; active: boolean };
-		/** The signed-in administrator's own account: no actions (ADR 0027). */
 		own: boolean;
-		confirm: { action: 'reset' | 'deactivate'; userId: number } | null;
 		form: FormFailure | null | undefined;
 	}
-
-	let { account, own, confirm, form }: Props = $props();
+	let { account, own, form }: Props = $props();
 	const i18n = getI18n();
 	const roleLabel = { admin: 'users.role.admin', member: 'users.role.member' } as const;
 	const failed = $derived(
 		form?.values?.form === 'account' && form.values.userId === String(account.userId) ? form : null
 	);
-	const confirming = $derived(
-		confirm?.userId === account.userId
-			? confirm.action
-			: (['reset', 'deactivate'] as const).find((action) => action === failed?.values?.confirm)
-	);
 </script>
 
 <div class="account">
-	<ul class="facts">
-		<li>{i18n.t('users.account.username', { username: account.username })}</li>
-		<li>{i18n.t(roleLabel[account.role])}</li>
-		<li>
-			{i18n.t(account.active ? 'users.account.state_active' : 'users.account.state_inactive')}
-		</li>
-	</ul>
-
+	<div class="facts">
+		<span>{i18n.t('users.account.username', { username: account.username })}</span>
+		<Badge
+			tone={account.role === 'admin' ? 'info' : 'neutral'}
+			label={i18n.t(roleLabel[account.role])}
+		/>
+		<Badge
+			tone={account.active ? 'success' : 'warning'}
+			label={i18n.t(account.active ? 'users.account.state_active' : 'users.account.state_inactive')}
+		/>
+	</div>
 	{#if own}
 		<p>{i18n.t('users.account.own')}</p>
 	{:else}
-		{#if failed && formError(i18n.t, failed)}
-			<p class="error" role="alert">{formError(i18n.t, failed)}</p>
-		{/if}
-
-		{#if confirming}
-			<div class="confirm">
-				<p>
-					{confirming === 'reset'
-						? i18n.t('users.confirm.reset', { username: account.username })
-						: i18n.t('users.confirm.deactivate', { username: account.username })}
-				</p>
-				<form
-					method="POST"
-					action={confirming === 'reset' ? '?/resetPassword' : '?/deactivate'}
-					class="stack"
-				>
-					<input type="hidden" name="userId" value={account.userId} />
-					<input type="hidden" name="confirm" value={confirming} />
-					{#if confirming === 'reset'}
-						<Field
+		{#if formError(i18n.t, failed)}<p class="error" role="alert">
+				{formError(i18n.t, failed)}
+			</p>{/if}
+		{#if fieldError(i18n.t, failed, 'password')}<p class="error" role="alert">
+				{fieldError(i18n.t, failed, 'password')}
+			</p>{/if}
+		<Form
+			action="?/setRole"
+			success="users.accounts.done"
+			submitLabel={i18n.t('users.account.change_role')}
+		>
+			<input type="hidden" name="userId" value={account.userId} />
+			<Select
+				name="role"
+				label={i18n.t('users.field.role')}
+				value={account.role}
+				options={(['member', 'admin'] as const).map((role) => ({
+					value: role,
+					label: i18n.t(roleLabel[role])
+				}))}
+			/>
+		</Form>
+		<div class="actions">
+			<ConfirmDialog
+				triggerLabel={i18n.t('users.account.reset_password')}
+				title={i18n.t('users.dialog.reset.title', { username: account.username })}
+				description={i18n.t('users.confirm.reset', { username: account.username })}
+				cancelLabel={i18n.t('household.action.cancel')}
+			>
+				{#snippet action(close)}
+					<Form
+						action="?/resetPassword"
+						success="users.accounts.done"
+						submitLabel={i18n.t('users.account.reset_password')}
+						variant="danger"
+						onResult={close}
+					>
+						<input type="hidden" name="userId" value={account.userId} />
+						<PasswordInput
 							label={i18n.t('users.field.temporary_password')}
 							name="password"
-							type="text"
-							autocomplete="off"
-							error={fieldError(i18n.t, failed, 'password')}
+							autoComplete="new-password"
 							required
 						/>
-					{/if}
-					<button type="submit">
-						{i18n.t(
-							confirming === 'reset' ? 'users.account.reset_password' : 'users.account.deactivate'
-						)}
-					</button>
-				</form>
-				<!-- A form of its own: cancelling sends nothing that was typed. -->
-				<form method="GET">
-					<button type="submit">{i18n.t('household.action.cancel')}</button>
-				</form>
-			</div>
-		{/if}
-
-		<div class="row">
-			<form method="POST" action="?/setRole" class="row">
-				<input type="hidden" name="userId" value={account.userId} />
-				<label for="role-{account.userId}">{i18n.t('users.field.role')}</label>
-				<select id="role-{account.userId}" name="role">
-					{#each ['member', 'admin'] as const as role (role)}
-						<option value={role} selected={account.role === role}>{i18n.t(roleLabel[role])}</option>
-					{/each}
-				</select>
-				<button type="submit">{i18n.t('users.account.change_role')}</button>
-			</form>
-			<form method="GET">
-				<input type="hidden" name="confirm" value="reset" />
-				<input type="hidden" name="user" value={account.userId} />
-				<button type="submit">{i18n.t('users.account.reset_password')}</button>
-			</form>
+					</Form>
+				{/snippet}
+			</ConfirmDialog>
 			{#if account.active}
-				<form method="GET">
-					<input type="hidden" name="confirm" value="deactivate" />
-					<input type="hidden" name="user" value={account.userId} />
-					<button type="submit">{i18n.t('users.account.deactivate')}</button>
-				</form>
+				<ConfirmDialog
+					triggerLabel={i18n.t('users.account.deactivate')}
+					title={i18n.t('users.dialog.deactivate.title', { username: account.username })}
+					description={i18n.t('users.confirm.deactivate', { username: account.username })}
+					cancelLabel={i18n.t('household.action.cancel')}
+				>
+					{#snippet action(close)}
+						<Form
+							action="?/deactivate"
+							success="users.accounts.done"
+							submitLabel={i18n.t('users.account.deactivate')}
+							variant="danger"
+							onResult={close}
+						>
+							<input type="hidden" name="userId" value={account.userId} />
+						</Form>
+					{/snippet}
+				</ConfirmDialog>
 			{:else}
-				<form method="POST" action="?/reactivate">
+				<Form
+					action="?/reactivate"
+					success="users.accounts.done"
+					submitLabel={i18n.t('users.account.reactivate')}
+				>
 					<input type="hidden" name="userId" value={account.userId} />
-					<button type="submit">{i18n.t('users.account.reactivate')}</button>
-				</form>
+				</Form>
 			{/if}
 		</div>
 	{/if}
@@ -112,42 +117,19 @@
 <style>
 	.account {
 		display: grid;
-		gap: var(--space-2);
+		gap: var(--space-3);
 	}
-
-	.row {
+	.facts,
+	.actions {
 		display: flex;
 		flex-wrap: wrap;
 		gap: var(--space-2);
 		align-items: center;
 	}
-
-	.facts {
-		display: flex;
-		flex-wrap: wrap;
-		gap: var(--space-1) var(--space-3);
-		margin: 0;
-		padding: 0;
-		list-style: none;
-	}
-
-	.stack {
+	.account :global(form) {
 		display: grid;
 		gap: var(--space-2);
 	}
-
-	.confirm {
-		display: grid;
-		gap: var(--space-2);
-		max-inline-size: 28rem;
-		padding: var(--space-3);
-		border: 1px solid var(--color-border);
-	}
-
-	label {
-		font-weight: 600;
-	}
-
 	p {
 		margin: 0;
 	}

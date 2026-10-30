@@ -11,7 +11,7 @@ import {
 	unlinkAccount,
 	updateMember
 } from '#lib/features/household/server/index.ts';
-import { accountActions, accountConfirmation } from '../../account-actions.server.ts';
+import { accountActions } from '../../account-actions.server.ts';
 import { buildCtx } from '#lib/server/web/ctx.ts';
 import { failForAction, throwForLoad } from '#lib/server/web/responses.ts';
 import type { Actions, PageServerLoad, RequestEvent } from './$types';
@@ -31,7 +31,6 @@ export const load: PageServerLoad = (event) => {
 			member,
 			types,
 			confirm,
-			accountConfirm: accountConfirmation(event.url),
 			unlinked: member.account ? [] : listUnlinkedAccounts(ctx),
 			ownId: ctx.actor.kind === 'user' ? ctx.actor.id : null,
 			done: event.url.searchParams.has('done')

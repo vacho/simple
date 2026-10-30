@@ -114,7 +114,9 @@ test('Development catalog renders in both themes without axe violations and prev
 		await expect(dialog).toBeHidden();
 		await expect(confirmTrigger).toBeFocused();
 
-		const menuTrigger = page.getByRole('button', { name: 'Ana Pérez' });
+		const menuTrigger = page
+			.getByRole('region', { name: 'Dialog, ConfirmDialog, Menu, Tooltip, Toaster', exact: true })
+			.getByRole('button', { name: 'Ana Pérez' });
 		await menuTrigger.focus();
 		await page.keyboard.press('Enter');
 		const menu = page.getByRole('menu');
