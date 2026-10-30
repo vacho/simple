@@ -1,8 +1,8 @@
 # 0026. Members, not user accounts, are the people household data refers to
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-10-29
-- Change: add-household-members (`openspec/changes/add-household-members/design.md`, decision D1)
+- Change: add-household-members (`openspec/changes/archive/2026-10-30-add-household-members/design.md`, decision D1)
 
 ## Context
 

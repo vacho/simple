@@ -1,8 +1,8 @@
 # 0027. Account states are enforced by session validation and the policy
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-10-29
-- Change: add-household-members (`openspec/changes/add-household-members/design.md`, decisions D2, D3 and D5)
+- Change: add-household-members (`openspec/changes/archive/2026-10-30-add-household-members/design.md`, decisions D2, D3 and D5)
 
 ## Context
 
