@@ -24,19 +24,20 @@ Git flow (one branch per change, parallel worktrees, merge and archive order) an
 |---|---|---|---|---|
 | 1 | `bootstrap-app-foundation` | App skeleton, setup, sign-in, sessions, deny-by-default policy, profile (language, time zone), runtime translations (English base, Spanish preinstalled), PWA shell, backups | `user-auth`, `access-control`, `app-shell`, `localization`, `data-backup` | Archived v0.1.0 |
 | 2 | `add-household-members` | Household, member types catalog, members, admin creating users and linking them to members | `household`, modifies `user-auth` | Archived v0.2.0 |
-| 3 | `add-access-control` | Roles as a catalog, per-user grants, visibility rule B (visible if the account or the attributed member is visible) | modifies `access-control` | Planned |
-| 4 | `add-language-catalog` | The in-app AI assistant (first consumer: translation); admin installs languages, generates their translations with an AI model, reviews, edits and activates them; export and import | `ai-assistant`, modifies `localization` | Planned |
-| 5 | `add-categories` | Category trees for income and expenses, tags, essential vs discretionary, seeded defaults | `categories` | Planned |
-| 6 | `add-currencies-and-accounts` | Currency, bank and crypto-network catalogs; accounts (bank, cash, crypto wallet, card, other) with owner, currency and opening balance | `currencies`, `accounts` | Planned |
-| 7 | `add-transaction-ledger` | Income, expenses, transfers (including cross-currency), allocations to members or the shared pool, splits, balance adjustments | `ledger` | Planned |
-| 8 | `add-quick-entry` | Fast entry form, shortcuts, smart defaults, recent suggestions, counterparties catalog | `quick-entry`, `counterparties` | Planned |
-| 9 | `add-dashboard-reporting` | Balances, net cash flow, breakdowns by category, member and period, household vs per-member views | `reporting` | Planned |
+| 3 | `refine-app-ui` | Visual identity ("Modern fintech" tokens, Inter), the component library on Ark UI, confirmation dialogs, badges and saved-change messages, every existing screen rebuilt; the UI standard every later change uses (ADR 0028) | modifies `app-shell` | Proposed |
+| 4 | `add-access-control` | Roles as a catalog, per-user grants, visibility rule B (visible if the account or the attributed member is visible) | modifies `access-control` | Planned |
+| 5 | `add-language-catalog` | The in-app AI assistant (first consumer: translation); admin installs languages, generates their translations with an AI model, reviews, edits and activates them; export and import | `ai-assistant`, modifies `localization` | Planned |
+| 6 | `add-categories` | Category trees for income and expenses, tags, essential vs discretionary, seeded defaults | `categories` | Planned |
+| 7 | `add-currencies-and-accounts` | Currency, bank and crypto-network catalogs; accounts (bank, cash, crypto wallet, card, other) with owner, currency and opening balance | `currencies`, `accounts` | Planned |
+| 8 | `add-transaction-ledger` | Income, expenses, transfers (including cross-currency), allocations to members or the shared pool, splits, balance adjustments | `ledger` | Planned |
+| 9 | `add-quick-entry` | Fast entry form, shortcuts, smart defaults, recent suggestions, counterparties catalog | `quick-entry`, `counterparties` | Planned |
+| 10 | `add-dashboard-reporting` | Balances, net cash flow, breakdowns by category, member and period, household vs per-member views | `reporting` | Planned |
 | | **MVP** | | | |
-| 10 | `add-recurring-transactions` | Recurring templates (shared or per member) proposing due entries to confirm | `recurrence` | Planned |
-| 11 | `add-budgets` | Budgets per category, member and period | `budgets` | Planned |
-| 12 | `add-multi-currency-reports` | Exchange rates table by date; reports totalled in a base currency | `exchange-rates`, modifies `reporting` | Planned |
-| 13 | `add-offline-quick-entry` | Log transactions offline, upload when back online | modifies `ledger`, `app-shell` | Planned |
-| 14 | `add-public-api` | Versioned JSON API with personal tokens | `public-api` | Planned |
+| 11 | `add-recurring-transactions` | Recurring templates (shared or per member) proposing due entries to confirm | `recurrence` | Planned |
+| 12 | `add-budgets` | Budgets per category, member and period | `budgets` | Planned |
+| 13 | `add-multi-currency-reports` | Exchange rates table by date; reports totalled in a base currency | `exchange-rates`, modifies `reporting` | Planned |
+| 14 | `add-offline-quick-entry` | Log transactions offline, upload when back online | modifies `ledger`, `app-shell` | Planned |
+| 15 | `add-public-api` | Versioned JSON API with personal tokens | `public-api` | Planned |
 
 Status: **Planned** (only in this roadmap), **Proposed** (its plan is committed in `openspec/changes/`), **Archived vX.Y.Z** (closed and released; just **Archived** when there was no release). Proposing sets Proposed and archiving sets Archived, through the `change-flow` skill and the archive guidance; abandoning a proposed change sets it back to Planned (`change-flow`, "Abandoning a change"); nothing else edits this column.
 
@@ -52,10 +53,10 @@ Status: **Planned** (only in this roadmap), **Proposed** (its plan is committed 
 ### Open questions, by change
 
 - **Change 1:** deploy and packaging (Docker, hosting): decide once the app is built.
-- **Change 7:** an append-only ledger (corrections recorded as reversal or adjustment entries)? The base currency for reports?
-- **Change 3:** which role presets ship by default?
-- **Change 4:** confirm the defaults proposed in "AI inside the app" below (model, key handling, spending limit).
-- **Change 9:** which periods and comparisons belong in the MVP dashboard?
+- **Change 8:** an append-only ledger (corrections recorded as reversal or adjustment entries)? The base currency for reports?
+- **Change 4:** which role presets ship by default?
+- **Change 5:** confirm the defaults proposed in "AI inside the app" below (model, key handling, spending limit).
+- **Change 10:** which periods and comparisons belong in the MVP dashboard?
 
 ### Open questions about the workflow
 
@@ -82,17 +83,17 @@ Some data is managed by users in the app rather than fixed in code. Each catalog
 
 | Catalog | Change | How it is managed | Specific rules |
 |---|---|---|---|
-| Currencies | 6 | The household enables currencies from a built-in reference list (ISO 4217 and common crypto) and may add custom ones (code, symbol, decimals) | Decimals are immutable once amounts exist; a currency in use can be disabled, not deleted |
-| Banks and institutions | 6 | Name, country, optional logo | Archived, not deleted, once used by an account |
-| Crypto networks | 6 | Seeded with common networks (TRC20, BEP20, ERC20, ...); the administrator adds others | Archived, not deleted, once used by a wallet |
-| Accounts | 6 | One catalog for bank accounts, cash boxes, crypto wallets, cards and others, with a fixed **type** list and free names | Optional fields per type (bank from the banks catalog and last 4 digits; network from the crypto networks catalog); currency immutable after the first transaction; opening balance recorded as an opening entry; archived, not deleted, once used |
-| Roles | 3 | Named sets of permissions created and edited by the administrator, assigned to users, with per-user grants for exceptions | The built-in Administrator role can't be edited or deleted; at least one administrator always exists; a role in use can't be deleted until its users are reassigned |
+| Currencies | 7 | The household enables currencies from a built-in reference list (ISO 4217 and common crypto) and may add custom ones (code, symbol, decimals) | Decimals are immutable once amounts exist; a currency in use can be disabled, not deleted |
+| Banks and institutions | 7 | Name, country, optional logo | Archived, not deleted, once used by an account |
+| Crypto networks | 7 | Seeded with common networks (TRC20, BEP20, ERC20, ...); the administrator adds others | Archived, not deleted, once used by a wallet |
+| Accounts | 7 | One catalog for bank accounts, cash boxes, crypto wallets, cards and others, with a fixed **type** list and free names | Optional fields per type (bank from the banks catalog and last 4 digits; network from the crypto networks catalog); currency immutable after the first transaction; opening balance recorded as an opening entry; archived, not deleted, once used |
+| Roles | 4 | Named sets of permissions created and edited by the administrator, assigned to users, with per-user grants for exceptions | The built-in Administrator role can't be edited or deleted; at least one administrator always exists; a role in use can't be deleted until its users are reassigned |
 | Member types | 2 | Free names ("Son", "Grandmother", "Dependent nephew"), each mapped to a fixed **base class**: adult, minor or dependent | Rules and permissions use the base class, never the name; archived, not deleted, once used |
 | Members | 2 | Household members, optionally linked to a user account | Archived, not deleted, once referenced |
-| Languages | 4 | Only an administrator installs a language. A "Generate translation" tool explicitly calls an AI model on the English source texts and their descriptions; the administrator reviews, edits and activates | English is the base and can't be removed; Spanish is preinstalled; only UI texts are sent to the model, never household data; stale texts are flagged when English changes |
-| Categories and tags | 5 | Separate trees for income (salary, dividends, freelance) and expenses, with essential or discretionary flags, plus free tags | Archived, not deleted, once used; moving a category keeps its history; payment details such as "paid by QR" are tags, not a catalog |
-| Counterparties | 8 | Merchants, schools, employers ("Hipermaxi", "Colegio San Ignacio"), with a default category and attribution for suggestions | Archived, not deleted, once used |
-| Exchange rates | 12 | Not a catalog but dated reference data: the rate between two currencies on a date, entered by the administrator (imports later) | A rate used by a report is kept; corrections add a new dated rate |
+| Languages | 5 | Only an administrator installs a language. A "Generate translation" tool explicitly calls an AI model on the English source texts and their descriptions; the administrator reviews, edits and activates | English is the base and can't be removed; Spanish is preinstalled; only UI texts are sent to the model, never household data; stale texts are flagged when English changes |
+| Categories and tags | 6 | Separate trees for income (salary, dividends, freelance) and expenses, with essential or discretionary flags, plus free tags | Archived, not deleted, once used; moving a category keeps its history; payment details such as "paid by QR" are tags, not a catalog |
+| Counterparties | 9 | Merchants, schools, employers ("Hipermaxi", "Colegio San Ignacio"), with a default category and attribution for suggestions | Archived, not deleted, once used |
+| Exchange rates | 13 | Not a catalog but dated reference data: the rate between two currencies on a date, entered by the administrator (imports later) | A rate used by a report is kept; corrections add a new dated rate |
 
 **Fixed lists, not catalogs**, because they drive behavior: account types, transaction kinds, member base classes and time zones (from `Intl`). Users still name accounts freely ("Petty cash", "Ana's Binance").
 
@@ -115,7 +116,7 @@ This is about AI used **by the app**. AI that maintains the **code** (Claude Cod
 7. **Results are validated before they are stored**, and AI output is never trusted as is. For translation: valid ICU syntax and the same placeholders as the English text; failures are reported per text and left untranslated (they fall back to English).
 8. **Human in the loop.** AI results are drafts (origin `ai`) that the administrator reviews, edits and activates.
 
-### Proposed defaults (to confirm in change 4)
+### Proposed defaults (to confirm in change 5)
 
 - **Provider and SDK:** Anthropic's Claude API through the official TypeScript SDK, `@anthropic-ai/sdk`, server-side only.
 - **Model:** `claude-opus-5-5`, the current default model, with `effort` set explicitly. The model ID is a setting, not hard-coded.
