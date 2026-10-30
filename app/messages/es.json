@@ -15,6 +15,10 @@
 		"text": "La contraseña actual es incorrecta.",
 		"source": "055bc05cf859a64e"
 	},
+	"auth.password.hide": {
+		"text": "Ocultar contraseña",
+		"source": "a60a56c584b3b05b"
+	},
 	"auth.password.intro": {
 		"text": "Una persona administradora te dio una contraseña temporal. Elige la tuya para continuar; solo tú la conocerás.",
 		"source": "343f123384bfae45"
@@ -42,6 +46,10 @@
 	"auth.password.section_hint": {
 		"text": "Sigues con la sesión iniciada en este dispositivo; en tus otros dispositivos se cerrará la sesión.",
 		"source": "4acbc57c892f4f94"
+	},
+	"auth.password.show": {
+		"text": "Mostrar contraseña",
+		"source": "6aeaa6a53d09dcad"
 	},
 	"auth.password.title": {
 		"text": "Elige tu contraseña",
@@ -146,6 +154,10 @@
 	"household.confirm.delete_type": {
 		"text": "¿Eliminar el tipo de miembro \"{name}\"? Esto no se puede deshacer.",
 		"source": "f6f11bfb04ec1ff4"
+	},
+	"household.dialog.delete_type.title": {
+		"text": "¿Eliminar el tipo de miembro «{name}»?",
+		"source": "761b0f5e2ff24ffe"
 	},
 	"household.field.base_class": {
 		"text": "Clase base",
@@ -339,6 +351,14 @@
 		"text": "Versión de la aplicación {version}",
 		"source": "72d8d877ecb8d5a9"
 	},
+	"shell.dev.catalog.intro": {
+		"text": "Ejemplos de los componentes, colores y escala tipográfica de la aplicación.",
+		"source": "d8816dfb770d212c"
+	},
+	"shell.dev.catalog.title": {
+		"text": "Catálogo de componentes",
+		"source": "344287dcc1273996"
+	},
 	"shell.home.title": {
 		"text": "Inicio",
 		"source": "3a78695388b38b5c"
@@ -358,6 +378,10 @@
 	"shell.nav.settings": {
 		"text": "Configuración",
 		"source": "74a883a037bc227f"
+	},
+	"shell.notifications": {
+		"text": "Notificaciones",
+		"source": "788011833a5a0f22"
 	},
 	"shell.skip_to_content": {
 		"text": "Ir al contenido",

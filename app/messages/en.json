@@ -15,6 +15,10 @@
 		"text": "The current password is wrong.",
 		"description": "Error under the current password field when the user types a password that isn't theirs."
 	},
+	"auth.password.hide": {
+		"text": "Hide password",
+		"description": "Accessible name of the button that hides the currently visible password."
+	},
 	"auth.password.intro": {
 		"text": "An administrator gave you a temporary password. Choose your own to continue; only you will know it.",
 		"description": "Introduction on the page that asks for a new password at the first sign-in after an account is created or its password reset."
@@ -42,6 +46,10 @@
 	"auth.password.section_hint": {
 		"text": "You stay signed in on this device; your other devices are signed out.",
 		"description": "Help text above the password change form on the profile page."
+	},
+	"auth.password.show": {
+		"text": "Show password",
+		"description": "Accessible name of the button that reveals the currently hidden password."
 	},
 	"auth.password.title": {
 		"text": "Choose your password",
@@ -146,6 +154,10 @@
 	"household.confirm.delete_type": {
 		"text": "Delete the member type \"{name}\"? This can't be undone.",
 		"description": "Confirmation before deleting a member type that no member has; {name} is the type's name as entered."
+	},
+	"household.dialog.delete_type.title": {
+		"text": "Delete member type \"{name}\"?",
+		"description": "Title of the confirmation dialog before deleting a member type; {name} is its name."
 	},
 	"household.field.base_class": {
 		"text": "Base class",
@@ -339,6 +351,14 @@
 		"text": "App version {version}",
 		"description": "Line on the settings page showing the installed app version; {version} is a version number such as 0.1.0."
 	},
+	"shell.dev.catalog.intro": {
+		"text": "Examples of the app components, colors and type scale.",
+		"description": "Introduction on the development-only component catalog page."
+	},
+	"shell.dev.catalog.title": {
+		"text": "Component catalog",
+		"description": "Heading and page title of the development-only component catalog."
+	},
 	"shell.home.title": {
 		"text": "Home",
 		"description": "Heading of the home page shown after signing in."
@@ -358,6 +378,10 @@
 	"shell.nav.settings": {
 		"text": "Settings",
 		"description": "Navigation link to the administrators' settings page."
+	},
+	"shell.notifications": {
+		"text": "Notifications",
+		"description": "Accessible name of the live region that announces saved changes."
 	},
 	"shell.skip_to_content": {
 		"text": "Skip to content",

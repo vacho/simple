@@ -1,42 +1,53 @@
 <script lang="ts">
+	import { Field as ArkField } from '@ark-ui/svelte/field';
 	import type { HTMLInputAttributes } from 'svelte/elements';
 
 	interface Props extends HTMLInputAttributes {
 		label: string;
 		name: string;
-		/** Translated error shown under the input. */
+		/** Translated hint and error shown next to the input. */
+		hint?: string;
 		error?: string;
 	}
 
-	let { label, name, error, ...input }: Props = $props();
-	const id = $props.id();
+	let { label, name, hint, error, ...input }: Props = $props();
 </script>
 
-<div class="field">
-	<label for="{id}-input">{label}</label>
-	<input
-		id="{id}-input"
-		{name}
-		aria-invalid={error ? 'true' : undefined}
-		aria-describedby={error ? `${id}-error` : undefined}
-		{...input}
-	/>
-	{#if error}
-		<p id="{id}-error" class="error">{error}</p>
-	{/if}
+<div class="field-wrapper">
+	<ArkField.Root invalid={!!error} required={!!input.required} disabled={!!input.disabled}>
+		<ArkField.Label>{label}</ArkField.Label>
+		<ArkField.Input {name} {...input} />
+		{#if hint}<ArkField.HelperText>{hint}</ArkField.HelperText>{/if}
+		{#if error}<ArkField.ErrorText>{error}</ArkField.ErrorText>{/if}
+	</ArkField.Root>
 </div>
 
 <style>
-	.field {
+	.field-wrapper :global([data-scope='field'][data-part='root']) {
 		display: grid;
 		gap: var(--space-1);
 	}
 
-	label {
-		font-weight: 600;
+	.field-wrapper :global([data-part='label']) {
+		font-weight: var(--weight-strong);
 	}
 
-	.error {
-		margin: 0;
+	.field-wrapper :global([data-part='input']) {
+		inline-size: 100%;
+		min-block-size: 2.75rem;
+		padding: var(--space-2) var(--space-3);
+		border: 1px solid var(--color-border);
+		border-radius: var(--radius-control);
+		background: var(--color-surface-raised);
+		color: var(--color-text);
+		font: inherit;
+	}
+
+	.field-wrapper :global([data-part='helper-text']) {
+		color: var(--color-text-muted);
+	}
+
+	.field-wrapper :global([data-part='error-text']) {
+		color: var(--color-danger);
 	}
 </style>

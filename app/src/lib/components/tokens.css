@@ -21,6 +21,7 @@
 	--color-info: #175cd3;
 	--color-info-soft: #ddebff;
 	--color-focus: #4f46e5;
+	--color-transparent: transparent;
 
 	--font-body:
 		'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', sans-serif;

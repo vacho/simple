@@ -1,4 +1,6 @@
 <script lang="ts">
+	import AppLocaleProvider from '#lib/components/AppLocaleProvider.svelte';
+	import Toaster from '#lib/components/Toaster.svelte';
 	import '#lib/components/base.css';
 	import favicon from '#lib/assets/favicon.svg';
 	import { setI18n } from '#lib/i18n/t.ts';
@@ -29,4 +31,7 @@
 	<link rel="icon" href={favicon} />
 </svelte:head>
 
-{@render children()}
+<AppLocaleProvider locale={data.locale}>
+	{@render children()}
+	<Toaster />
+</AppLocaleProvider>
