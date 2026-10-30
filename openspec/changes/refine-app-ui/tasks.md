@@ -6,9 +6,9 @@ Paths are relative to `app/`, and commands run there (ADR 0023). Ark UI wrappers
 
 ## 1. Dependencies and visual identity
 
-- [ ] 1.1 Add `@ark-ui/svelte` 5.24.3, `@lucide/svelte` 1.57.0 and `@fontsource-variable/inter` 5.3.0 (D2, D3), and verify `npm ci` and `npm run check` pass
-- [ ] 1.2 Rewrite `tokens.css` with the D1 tokens for both themes, choosing the semantic colors and their soft variants within direction B, and extend `tokens.test.ts` to check every text-on-background pair at 4.5:1, every control boundary at 3:1 and every badge text on its soft background, in both themes. Keep the old token names working until group 4 replaces their uses, then remove them. Verify the contrast tests pass (spec app-shell: Light and dark appearance, Status shown as labeled badges, "Badge without color")
-- [ ] 1.3 Declare the two Inter `@font-face` rules (latin, latin-ext, the package's `unicode-range`) in `base.css`, set `--font-body`, apply tabular figures to numbers, and add the stylelint rules rejecting color literals outside `tokens.css` (D5), each with a passing and a failing case in `stylelint.test.ts`. Verify the build emits exactly the two Inter files and that `npm run check` passes
+- [x] 1.1 Add `@ark-ui/svelte` 5.24.3, `@lucide/svelte` 1.57.0 and `@fontsource-variable/inter` 5.3.0 (D2, D3), and verify `npm ci` and `npm run check` pass
+- [x] 1.2 Rewrite `tokens.css` with the D1 tokens for both themes, choosing the semantic colors and their soft variants within direction B, and extend `tokens.test.ts` to check every text-on-background pair at 4.5:1, every control boundary at 3:1 and every badge text on its soft background, in both themes. Keep the old token names working until group 4 replaces their uses, then remove them. Verify the contrast tests pass (spec app-shell: Light and dark appearance, Status shown as labeled badges, "Badge without color")
+- [x] 1.3 Declare the two Inter `@font-face` rules (latin, latin-ext, the package's `unicode-range`) in `base.css`, set `--font-body`, apply tabular figures to numbers, and add the stylelint rules rejecting color literals outside `tokens.css` (D5), each with a passing and a failing case in `stylelint.test.ts`. Verify the build emits exactly the two Inter files and that `npm run check` passes
 
 ## 2. Presentational components and the catalog
 

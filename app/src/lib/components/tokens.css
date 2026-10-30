@@ -1,38 +1,77 @@
-/* Design tokens (D10). Colors are checked for WCAG AA contrast in tokens.test.ts. */
+/* The app's visual identity. Keep color literals here so every theme can be audited together. */
 :root {
 	color-scheme: light dark;
 
-	--color-bg: #ffffff;
-	--color-surface: #f3f5f7;
-	--color-text: #1b1f24;
-	--color-text-muted: #545d68;
+	--color-bg: #f7f8fa;
+	--color-surface: #eef1f5;
+	--color-surface-raised: #ffffff;
+	--color-text: #111827;
+	--color-text-muted: #4b5563;
 	--color-border: #7a8591;
-	--color-primary: #1f5fbf;
+	--color-primary: #4f46e5;
 	--color-on-primary: #ffffff;
-	--color-error: #b3261e;
-	--color-focus: #1f5fbf;
+	--color-primary-soft: #e0e7ff;
+	--color-success: #126b46;
+	--color-success-soft: #ddf7e9;
+	--color-warning: #8a4b00;
+	--color-warning-soft: #fff1c2;
+	--color-danger: #b42318;
+	--color-danger-soft: #fee4e2;
+	--color-on-danger: #ffffff;
+	--color-info: #175cd3;
+	--color-info-soft: #ddebff;
+	--color-focus: #4f46e5;
 
-	--font-body: system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', sans-serif;
+	--font-body:
+		'Inter Variable', system-ui, -apple-system, 'Segoe UI', Roboto, 'Noto Sans', sans-serif;
+	--text-xs: 0.75rem;
+	--text-sm: 0.875rem;
+	--text-base: 1rem;
+	--text-lg: 1.25rem;
+	--text-xl: 1.5rem;
+	--text-2xl: 1.75rem;
+	--weight-regular: 400;
+	--weight-strong: 600;
+	--leading: 1.5;
+
 	--space-1: 0.25rem;
 	--space-2: 0.5rem;
 	--space-3: 1rem;
 	--space-4: 1.5rem;
 	--space-5: 2rem;
-	--radius: 0.5rem;
+	--space-6: 3rem;
+	--radius-control: 0.75rem;
+	--radius-card: 1rem;
+	--shadow-raised: 0 0.25rem 1rem rgb(17 24 39 / 8%);
+
+	/* Compatibility until the existing screens move to components in group 4. */
+	--color-error: var(--color-danger);
+	--radius: var(--radius-control);
 	--nav-size: 4rem;
 	--side-nav-size: 14rem;
 }
 
 @media (prefers-color-scheme: dark) {
 	:root {
-		--color-bg: #121417;
-		--color-surface: #1e2227;
-		--color-text: #e8eaed;
-		--color-text-muted: #a9b1bb;
+		--color-bg: #0f1115;
+		--color-surface: #181b21;
+		--color-surface-raised: #1f232b;
+		--color-text: #e5e7eb;
+		--color-text-muted: #9ca3af;
 		--color-border: #7f8a96;
-		--color-primary: #8ab4f8;
-		--color-on-primary: #0b1d3a;
-		--color-error: #f2b8b5;
-		--color-focus: #8ab4f8;
+		--color-primary: #a5b4fc;
+		--color-on-primary: #1e1b4b;
+		--color-primary-soft: #272a4a;
+		--color-success: #6ce5ad;
+		--color-success-soft: #173b2d;
+		--color-warning: #f9c77c;
+		--color-warning-soft: #3b2b18;
+		--color-danger: #ff8a80;
+		--color-danger-soft: #422220;
+		--color-on-danger: #0f1115;
+		--color-info: #8fb8ff;
+		--color-info-soft: #1b304b;
+		--color-focus: #a5b4fc;
+		--shadow-raised: none;
 	}
 }
