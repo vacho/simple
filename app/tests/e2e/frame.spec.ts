@@ -56,7 +56,7 @@ test('Wide screen: a side navigation next to the content from 1024 px', async ({
 	expect(await noHorizontalScroll(page)).toBe(true);
 });
 
-test('Navigation follows permissions: Settings for the admin, not for a member', async ({
+test('Navigation follows permissions: Settings for the admin, not for a member; Members for both', async ({
 	page,
 	context
 }) => {
@@ -68,7 +68,7 @@ test('Navigation follows permissions: Settings for the admin, not for a member',
 	await context.clearCookies();
 	await context.addCookies([{ name: 'session', value: tokens.member, url: app.url }]);
 	await page.goto(`${app.url}/`);
-	await expect(nav.getByRole('link')).toHaveText(['Home']);
+	await expect(nav.getByRole('link')).toHaveText(['Home', 'Members']);
 });
 
 test('User menu: the display name, a Profile link and a Sign out action', async ({

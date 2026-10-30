@@ -1,6 +1,7 @@
 // No account enumeration through timing (D4): unknown usernames are checked against a dummy hash
 // with the same parameters, so both paths take comparable time. Runs serially, after a warm-up,
-// with a fresh throttle state for every attempt.
+// with a fresh throttle state for every attempt. A timing test: npm run test:unit runs it after
+// the other tests, alone, so a busy machine doesn't skew the measurement.
 import { performance } from 'node:perf_hooks';
 import { describe, expect, it } from 'vitest';
 import { testCtx } from '../../../server/core/ctx.ts';

@@ -49,6 +49,7 @@ Two columns added to `users`, both `NOT NULL` with defaults, so existing rows ne
 
 - **Sign-in:** `getCredentialsForSignIn` also returns `active`. The second sign-in transaction treats `!credentials.active` exactly like a wrong password (records the failure, same message). The hash is still verified once, so the response time doesn't reveal the state (the "No account enumeration" requirement).
 - **Session validation:** `findSessionWithUser` also selects `active` and `password_temporary`. A session of an inactive user is invalidated and the cookie cleared, like an expired one, so the request is anonymous. Deactivation also deletes the sessions (D6); the check at validation covers a session created in the same instant.
+- **Time zone at sign-in:** sign-in stores the browser's time zone when the account has none, as before, except while the password is temporary: the gate (D5) refuses the profile write, so the zone is stored at a later sign-in.
 - **The actor:** `UserActor` gains `passwordTemporary: boolean`, read on every request, so a reset or a first sign-in takes effect at once, and a role change applies from the next request without touching sessions (the "Account roles" requirement).
 
 ### D3. Account management split between `users` and `auth`
@@ -60,7 +61,8 @@ The `users` feature owns the `users` rows; `auth` owns hashing and sessions. Dep
 | Create an account for a member | `household` service: hashes through `auth`'s exported `hashNewPassword`, then calls `users.createAccount` and links the member | hash first, then one transaction (account and link together, or neither) |
 | Link and unlink an existing account | `household` service | one |
 | Reset a password | `auth` service: hash, then `users.setPassword(temporary)` and delete all the user's sessions | hash first, then one |
-| Deactivate, reactivate | `auth` service: `users.setActive`, and on deactivation delete all the user's sessions | one |
+| Deactivate | `auth` service: `users.setActive`, then delete all the user's sessions | one |
+| Reactivate | `users` service (`setActive`): no session work, so an `auth` function would only forward the call (ADR 0008) | one |
 | Change role | `users` service | one |
 | Change own password, including the forced change | `auth` service | **two**, see below |
 | List accounts | `users` service (settings accounts page) | none |
@@ -113,6 +115,8 @@ New actions, by actor. ✓ allowed, ✗ denied; "user" is a signed-in user with 
 | `(password)/password` | a user whose password is temporary | new password twice; its own minimal layout without navigation, so its load needs nothing the gate denies |
 
 - **Route guard:** after resolving a user with `passwordTemporary`, page requests other than `/password`, `/logout` and the public paths redirect (303) to `/password?redirectTo=<path>`; other requests get a 403. After the change, the page redirects to `redirectTo` through the existing `safeRedirect`.
+- **`/password` without a temporary password** redirects to the profile, where everyone else changes their password.
+- **Shared account actions:** the member page and the accounts page use the same form actions (`routes/(app)/account-actions.server.ts`) and component (`routes/(app)/AccountActions.svelte`). The confirmation steps are small GET forms (`?confirm=<action>&id=` or `&user=`), so they work without JavaScript, and Cancel is a form of its own so nothing typed is sent.
 - **Navigation:** "Members" is added for every signed-in user; "Settings" stays administrators-only and gains links to household, member types and accounts.
 - Every form action is a thin adapter: parse the form, call one service function, map errors with `failForAction`. Confirmation for destructive actions (archive, delete, deactivate, reset) is a second step on the page, not a browser dialog.
 

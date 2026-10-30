@@ -2,7 +2,7 @@
 // ADR 0008 boundaries are checked on one forbidden and one allowed case each (task 1.3).
 import { ESLint } from 'eslint';
 import path from 'node:path';
-import { describe, expect, it } from 'vitest';
+import { beforeAll, describe, expect, it } from 'vitest';
 
 const root = path.resolve(import.meta.dirname, '../..');
 const fixtures = path.join(import.meta.dirname, 'fixtures');
@@ -17,6 +17,12 @@ async function ruleIds(file: string): Promise<string[]> {
 	const [result] = await eslint.lintFiles([path.join(fixtures, file)]);
 	return result.messages.map((message) => message.ruleId ?? message.message);
 }
+
+// ESLint's first run loads the config, plugins and parser: about half a second, but several on a
+// busy machine. Paid once here, so each test times only its own lint.
+beforeAll(async () => {
+	await eslint.lintFiles([path.join(fixtures, 'src/lib/features/notes/server/index.ts')]);
+}, 60_000);
 
 describe('feature boundaries (ADR 0008)', () => {
 	it.each([

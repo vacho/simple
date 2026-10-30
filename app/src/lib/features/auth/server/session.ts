@@ -35,7 +35,8 @@ export type Validation =
 export function validateSession(db: Db, token: string, now: number): Validation {
 	const id = sessionId(token);
 	const found = findSessionWithUser(db, id);
-	if (!found || found.expiresAt.getTime() <= now) {
+	// A deactivated account's sessions end with it (ADR 0027), like expired ones.
+	if (!found || !found.active || found.expiresAt.getTime() <= now) {
 		if (found) repo.deleteSession(db, id);
 		return { user: undefined, session: { action: 'clear' } };
 	}
@@ -53,4 +54,9 @@ export function sessionOwner(db: Db, token: string): number | undefined {
 
 export function invalidateSession(db: Db, token: string): void {
 	repo.deleteSession(db, sessionId(token));
+}
+
+/** Ends every session of a user, except the one of `keepToken` when given. */
+export function endSessionsOf(db: Db, userId: number, keepToken?: string): void {
+	repo.deleteSessionsOf(db, userId, keepToken === undefined ? undefined : sessionId(keepToken));
 }

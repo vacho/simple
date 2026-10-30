@@ -1,4 +1,52 @@
 {
+	"auth.password.changed": {
+		"text": "Password changed.",
+		"description": "Confirmation shown on the profile page after the password is changed."
+	},
+	"auth.password.confirm": {
+		"text": "Repeat the new password",
+		"description": "Label of the field where the user types the new password a second time."
+	},
+	"auth.password.current": {
+		"text": "Current password",
+		"description": "Label of the current password field on the profile page."
+	},
+	"auth.password.current_wrong": {
+		"text": "The current password is wrong.",
+		"description": "Error under the current password field when the user types a password that isn't theirs."
+	},
+	"auth.password.intro": {
+		"text": "An administrator gave you a temporary password. Choose your own to continue; only you will know it.",
+		"description": "Introduction on the page that asks for a new password at the first sign-in after an account is created or its password reset."
+	},
+	"auth.password.mismatch": {
+		"text": "The two new passwords don't match.",
+		"description": "Error under the second new password field when it differs from the first."
+	},
+	"auth.password.new": {
+		"text": "New password",
+		"description": "Label of the new password field."
+	},
+	"auth.password.same_as_temporary": {
+		"text": "Choose a password different from the temporary one.",
+		"description": "Error when a user replacing a temporary password types the same temporary password again."
+	},
+	"auth.password.save": {
+		"text": "Save password",
+		"description": "Button that saves the new password."
+	},
+	"auth.password.section": {
+		"text": "Change password",
+		"description": "Heading of the password change form on the profile page."
+	},
+	"auth.password.section_hint": {
+		"text": "You stay signed in on this device; your other devices are signed out.",
+		"description": "Help text above the password change form on the profile page."
+	},
+	"auth.password.title": {
+		"text": "Choose your password",
+		"description": "Heading and page title of the page where a user replaces the temporary password an administrator gave them."
+	},
 	"auth.setup.closed": {
 		"text": "The app is already set up. Sign in instead.",
 		"description": "Error shown when setup is submitted after an account already exists, for example by two people at once."
@@ -47,6 +95,230 @@
 		"text": "Something went wrong. Please try again.",
 		"description": "Heading and page title shown when an unexpected error stops a page from loading."
 	},
+	"household.account.linked": {
+		"text": "That account already belongs to another member.",
+		"description": "Error shown when an administrator tries to link an account that is already linked to another member."
+	},
+	"household.action.archive": {
+		"text": "Archive",
+		"description": "Button that archives a member type or a member."
+	},
+	"household.action.cancel": {
+		"text": "Cancel",
+		"description": "Button that closes a confirmation without doing anything."
+	},
+	"household.action.delete": {
+		"text": "Delete",
+		"description": "Button that deletes a member type or a member that was never used."
+	},
+	"household.action.unarchive": {
+		"text": "Unarchive",
+		"description": "Button that brings back an archived member type or member."
+	},
+	"household.base_class.adult": {
+		"text": "Adult",
+		"description": "Base class of a member type: an adult member of the household. Shown in lists and in the base class selector."
+	},
+	"household.base_class.dependent": {
+		"text": "Dependent",
+		"description": "Base class of a member type: a person the household supports who is not a minor, such as an elderly relative. Shown in lists and in the base class selector."
+	},
+	"household.base_class.invalid": {
+		"text": "Choose a base class.",
+		"description": "Error under the base class field of a member type when no valid base class is chosen."
+	},
+	"household.base_class.minor": {
+		"text": "Minor",
+		"description": "Base class of a member type: a child under legal age. Shown in lists and in the base class selector."
+	},
+	"household.confirm.archive_member": {
+		"text": "Archive \"{name}\"? Only administrators will see this member.",
+		"description": "Confirmation before archiving a member; {name} is the member's name as entered."
+	},
+	"household.confirm.archive_type": {
+		"text": "Archive the member type \"{name}\"? It won't be offered for members any more; members who have it keep it.",
+		"description": "Confirmation before archiving a member type; {name} is the type's name as entered."
+	},
+	"household.confirm.delete_member": {
+		"text": "Delete \"{name}\"? This can't be undone.",
+		"description": "Confirmation before deleting a member that never had an account; {name} is the member's name as entered."
+	},
+	"household.confirm.delete_type": {
+		"text": "Delete the member type \"{name}\"? This can't be undone.",
+		"description": "Confirmation before deleting a member type that no member has; {name} is the type's name as entered."
+	},
+	"household.field.base_class": {
+		"text": "Base class",
+		"description": "Label of the base class selector of a member type."
+	},
+	"household.field.member_type": {
+		"text": "Member type",
+		"description": "Label of the member type selector of a member."
+	},
+	"household.field.name": {
+		"text": "Name",
+		"description": "Label of the name field for the household, a member type or a member."
+	},
+	"household.id.conflict": {
+		"text": "Something different was already saved from this form. Reload the page and try again.",
+		"description": "Error shown when a form is submitted again with different content after it was already saved once."
+	},
+	"household.id.invalid": {
+		"text": "This form is out of date. Reload the page and try again.",
+		"description": "Error shown when a form arrives without a valid identifier, usually because the page is very old."
+	},
+	"household.member.active_account": {
+		"text": "This member's account is active. Deactivate or unlink the account before archiving the member.",
+		"description": "Error shown when an administrator tries to archive a member linked to an active user account."
+	},
+	"household.member.archived": {
+		"text": "This member is archived.",
+		"description": "Notice on an archived member's page."
+	},
+	"household.member.back": {
+		"text": "Back to members",
+		"description": "Link from a member's page back to the members list."
+	},
+	"household.member.ever_linked": {
+		"text": "This member has had an account, so it can't be deleted. Archive it instead.",
+		"description": "Error shown when an administrator tries to delete a member that has been linked to a user account at some time."
+	},
+	"household.member.has_account": {
+		"text": "This member already has an account.",
+		"description": "Error shown when an administrator tries to create or link an account for a member that already has one."
+	},
+	"household.member.save": {
+		"text": "Save changes",
+		"description": "Button that saves a member's name and type."
+	},
+	"household.member.title": {
+		"text": "Member {name}",
+		"description": "Heading and page title of an administrator's page for one member; {name} is the member's name as entered."
+	},
+	"household.member.type_unavailable": {
+		"text": "Choose a member type that isn't archived.",
+		"description": "Error under the member type field when the chosen type is archived or no longer exists."
+	},
+	"household.member_type.base_class_in_use": {
+		"text": "Members have this type, so its base class can't change.",
+		"description": "Error shown when an administrator tries to change the base class of a member type that a member has, even an archived member."
+	},
+	"household.member_type.in_use": {
+		"text": "Members have this type, so it can't be deleted. Archive it instead.",
+		"description": "Error shown when an administrator tries to delete a member type that a member has."
+	},
+	"household.member_types.archived": {
+		"text": "Archived",
+		"description": "Label next to a member type that is archived and no longer offered for members."
+	},
+	"household.member_types.base_class_locked": {
+		"text": "Members have this type, so the base class is fixed.",
+		"description": "Note under the disabled base class selector of a member type that is in use."
+	},
+	"household.member_types.create": {
+		"text": "Create member type",
+		"description": "Button that creates a member type."
+	},
+	"household.member_types.empty": {
+		"text": "There are no member types yet. Create the first one below.",
+		"description": "Shown on the member types page while the catalog is empty."
+	},
+	"household.member_types.intro": {
+		"text": "Name the kinds of members your household has, such as \"Son\" or \"Grandmother\". Each type has a base class, which decides how its members are treated.",
+		"description": "Introduction on the member types page; the names in quotes are examples."
+	},
+	"household.member_types.member_count": {
+		"text": "{count, plural, one {# member} other {# members}}",
+		"description": "Number of active members that have a member type, shown next to the type."
+	},
+	"household.member_types.new": {
+		"text": "New member type",
+		"description": "Heading of the form that creates a member type."
+	},
+	"household.member_types.save": {
+		"text": "Save",
+		"description": "Button that saves the changes to one member type in the list."
+	},
+	"household.member_types.title": {
+		"text": "Member types",
+		"description": "Heading and page title of the member types page, and the link to it on the settings page."
+	},
+	"household.members.account": {
+		"text": "Account: {username}",
+		"description": "Shown next to a member in the administrators' list when the member has a user account; {username} is the account's username."
+	},
+	"household.members.archived_heading": {
+		"text": "Archived members",
+		"description": "Heading of the list of archived members, shown only to administrators."
+	},
+	"household.members.create": {
+		"text": "Add member",
+		"description": "Button that adds a member to the household."
+	},
+	"household.members.empty": {
+		"text": "The household has no members yet.",
+		"description": "Shown on the members page while the household has no active members."
+	},
+	"household.members.go_to_types": {
+		"text": "Create a member type",
+		"description": "Link from the members page to the member types page, when no member type exists yet."
+	},
+	"household.members.needs_type": {
+		"text": "Members need a member type first.",
+		"description": "Shown instead of the new member form when no member type that isn't archived exists; followed by a link to the member types page."
+	},
+	"household.members.new": {
+		"text": "New member",
+		"description": "Heading of the form that adds a member to the household."
+	},
+	"household.members.no_account": {
+		"text": "No account",
+		"description": "Shown next to a member in the administrators' list when the member has no user account."
+	},
+	"household.members.title": {
+		"text": "Members",
+		"description": "Heading and page title of the household members page."
+	},
+	"household.members.type_and_class": {
+		"text": "{type} ({baseClass})",
+		"description": "A member's type followed by its base class in parentheses, in the members list; {type} is the type's name as entered and {baseClass} is the translated base class."
+	},
+	"household.name.control_characters": {
+		"text": "Remove the invisible control characters from the name.",
+		"description": "Error under a name field when the text contains invisible control characters, usually from pasting."
+	},
+	"household.name.empty": {
+		"text": "Enter a name.",
+		"description": "Error under a household, member type or member name field when it is empty after removing spaces."
+	},
+	"household.name.taken": {
+		"text": "That name is already in use.",
+		"description": "Error shown when another member type, or another member, already has the same name, ignoring upper and lower case."
+	},
+	"household.name.too_long": {
+		"text": "Use at most 64 characters.",
+		"description": "Error under a household, member type or member name field when the name is longer than 64 characters."
+	},
+	"household.settings.intro": {
+		"text": "The name of the household, as every member sees it.",
+		"description": "Introduction on the household settings page."
+	},
+	"household.settings.save": {
+		"text": "Save name",
+		"description": "Button that saves the household name."
+	},
+	"household.settings.saved": {
+		"text": "Household name saved.",
+		"description": "Confirmation shown after the household name is saved."
+	},
+	"household.settings.title": {
+		"text": "Household",
+		"description": "Heading and page title of the household settings page, and the link to it on the settings page."
+	},
+	"household.unnamed": {
+		"text": "Unnamed household",
+		"description": "Shown instead of the household name while no administrator has named the household."
+	},
 	"offline.message": {
 		"text": "Reconnect to the internet to continue.",
 		"description": "Text under the offline heading."
@@ -54,6 +326,10 @@
 	"offline.title": {
 		"text": "You're offline",
 		"description": "Heading and page title of the page shown when the app is opened without a network connection."
+	},
+	"settings.sections": {
+		"text": "Household settings",
+		"description": "Heading of the list of links to the household settings pages on the settings page."
 	},
 	"settings.title": {
 		"text": "Settings",
@@ -75,6 +351,10 @@
 		"text": "Main",
 		"description": "Accessible name of the main navigation, read by screen readers as \"Main navigation\"."
 	},
+	"shell.nav.members": {
+		"text": "Members",
+		"description": "Navigation link to the household members page, shown to every signed-in user."
+	},
 	"shell.nav.settings": {
 		"text": "Settings",
 		"description": "Navigation link to the administrators' settings page."
@@ -86,6 +366,98 @@
 	"shell.user_menu.profile": {
 		"text": "Profile",
 		"description": "Link in the user menu to the user's own profile page."
+	},
+	"users.account.change_role": {
+		"text": "Change role",
+		"description": "Button that saves the chosen role of an account."
+	},
+	"users.account.create": {
+		"text": "Create account",
+		"description": "Button that creates a user account for a member."
+	},
+	"users.account.create_heading": {
+		"text": "Create an account",
+		"description": "Heading of the form that creates a user account for a member."
+	},
+	"users.account.create_hint": {
+		"text": "Tell the person their username and temporary password. They will choose their own password when they first sign in.",
+		"description": "Help text above the account creation form."
+	},
+	"users.account.deactivate": {
+		"text": "Deactivate",
+		"description": "Button or link that deactivates an account."
+	},
+	"users.account.link": {
+		"text": "Link account",
+		"description": "Button that links the chosen account to this member."
+	},
+	"users.account.link_field": {
+		"text": "Account",
+		"description": "Label of the selector of accounts that have no member yet."
+	},
+	"users.account.link_heading": {
+		"text": "Link an existing account",
+		"description": "Heading of the form that links an account with no member to this member."
+	},
+	"users.account.none": {
+		"text": "This member has no account, so they can't sign in.",
+		"description": "Shown in the account section of a member who has no user account."
+	},
+	"users.account.own": {
+		"text": "This is your account. Change your password on your profile.",
+		"description": "Shown instead of the account actions on the administrator's own account."
+	},
+	"users.account.reactivate": {
+		"text": "Reactivate",
+		"description": "Button that lets a deactivated account sign in again."
+	},
+	"users.account.reset_password": {
+		"text": "Reset password",
+		"description": "Button or link that starts setting a new temporary password for an account."
+	},
+	"users.account.section": {
+		"text": "Account",
+		"description": "Heading of the account section on an administrator's page for one member."
+	},
+	"users.account.state_active": {
+		"text": "Active",
+		"description": "State of an account that can sign in."
+	},
+	"users.account.state_inactive": {
+		"text": "Deactivated",
+		"description": "State of an account that can't sign in until an administrator reactivates it."
+	},
+	"users.account.state_temporary": {
+		"text": "Waiting for a new password",
+		"description": "State of an account whose temporary password hasn't been replaced yet."
+	},
+	"users.account.unlink": {
+		"text": "Unlink account",
+		"description": "Button that removes the link between a member and their account; the account keeps working."
+	},
+	"users.account.username": {
+		"text": "Username: {username}",
+		"description": "Shows an account's username in the account section; {username} is the username."
+	},
+	"users.accounts.done": {
+		"text": "Account updated.",
+		"description": "Confirmation shown after an account action succeeds."
+	},
+	"users.accounts.intro": {
+		"text": "Every account that can sign in, including those not linked to a member.",
+		"description": "Introduction on the administrators' accounts page."
+	},
+	"users.accounts.title": {
+		"text": "Accounts",
+		"description": "Heading and page title of the administrators' accounts page, and the link to it on the settings page."
+	},
+	"users.confirm.deactivate": {
+		"text": "Deactivate {username}? They are signed out everywhere and can't sign in until the account is reactivated.",
+		"description": "Confirmation before an administrator deactivates an account; {username} is the account's username."
+	},
+	"users.confirm.reset": {
+		"text": "Set a new temporary password for {username}? Their sessions end, and they must choose a new password when they sign in.",
+		"description": "Confirmation before an administrator resets a password, above the new temporary password field; {username} is the account's username."
 	},
 	"users.display_name.control_characters": {
 		"text": "The name contains characters that are not allowed.",
@@ -111,6 +483,14 @@
 		"text": "Password",
 		"description": "Label of the password field."
 	},
+	"users.field.role": {
+		"text": "Role",
+		"description": "Label of the role selector of an account."
+	},
+	"users.field.temporary_password": {
+		"text": "Temporary password",
+		"description": "Label of the password field when an administrator creates an account or resets a password; the user must replace it at their next sign-in."
+	},
 	"users.field.time_zone": {
 		"text": "Time zone",
 		"description": "Label of the time zone selector on the profile page."
@@ -118,6 +498,10 @@
 	"users.field.username": {
 		"text": "Username",
 		"description": "Label of the username field, used to sign in."
+	},
+	"users.last_admin": {
+		"text": "The household needs at least one active administrator.",
+		"description": "Error shown when a role change or a deactivation would leave the household without any active administrator."
 	},
 	"users.locale.not_installed": {
 		"text": "Choose one of the available languages.",
@@ -142,6 +526,18 @@
 	"users.profile.title": {
 		"text": "Profile",
 		"description": "Heading and page title of the user's own profile page."
+	},
+	"users.role.admin": {
+		"text": "Administrator",
+		"description": "Role of an account that manages the household and the app. Shown in lists and in the role selector."
+	},
+	"users.role.invalid": {
+		"text": "Choose a role.",
+		"description": "Error under the role field when no valid role is chosen."
+	},
+	"users.role.member": {
+		"text": "Member",
+		"description": "Role of an account of a household member who isn't an administrator. Shown in lists and in the role selector."
 	},
 	"users.time_zone.invalid": {
 		"text": "Choose a valid time zone.",

@@ -8,7 +8,14 @@ export function findSessionWithUser(db: Db, sessionId: string) {
 	return db
 		.select({
 			expiresAt: sessions.expiresAt,
-			user: { id: users.id, role: users.role, locale: users.locale, timeZone: users.timeZone }
+			user: {
+				id: users.id,
+				role: users.role,
+				locale: users.locale,
+				timeZone: users.timeZone,
+				passwordTemporary: users.passwordTemporary
+			},
+			active: users.active
 		})
 		.from(sessions)
 		.innerJoin(users, eq(sessions.userId, users.id))

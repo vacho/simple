@@ -66,6 +66,22 @@ Start the server from the app folder: database migrations are read from `drizzle
 
 The first visit shows the setup page, which creates the first account, the administrator. Until then every page leads to setup.
 
+## Household, members and accounts
+
+After setup, the administrator prepares the household from **Settings**:
+
+1. **Household:** give the household its name. Until then every page shows "Unnamed household".
+2. **Member types:** create the kinds of member the household has ("Son", "Grandmother", "Dependent nephew"). Each type has a base class, adult, minor or dependent, which decides how its members are treated; the name is free. No types exist until you create them.
+3. **Members:** on the **Members** page, add each person. A member needs a member type, and doesn't need an account: young children can be members without ever signing in. Link your own account, the one created at setup, to your member from that member's page.
+4. **Accounts:** on a member's page, create an account for anyone who will sign in: a username, a display name, a role (administrator or member) and a temporary password. Tell the person their username and temporary password; at their first sign-in the app asks them to choose their own, and shows nothing else until they do.
+
+Every signed-in user sees the household name and its members; only administrators change them, and only administrators see usernames, roles and account states. **Settings → Accounts** lists every account, including those linked to no member.
+
+- **Someone forgot their password:** an administrator resets it from the member's page or the accounts page, choosing a new temporary password. The person's sessions end, and they choose a new password at their next sign-in. There is no email recovery. Administrators change their own password on their profile, like everyone else.
+- **Someone leaves the household:** deactivate their account instead of deleting it. A deactivated account can't sign in, its sessions end at once, and its member and history stay. Reactivating restores sign-in with the same password. Accounts are never deleted.
+- **Archiving:** member types and members that are in use are archived, not deleted. Archived types aren't offered for new members; archived members are hidden from everyone but administrators. Only a type no member ever had, or a member that never had an account, can be deleted. A member whose account is active must have it deactivated or unlinked before being archived.
+- **Administrators:** the household always keeps at least one active administrator. No one can deactivate their own account or change their own role, and a change that would leave no active administrator is refused.
+
 ## HTTPS and reverse proxies
 
 Outside `localhost`, serve the app over HTTPS through a TLS-terminating reverse proxy. With [Caddy](https://caddyserver.com/), which obtains certificates automatically:

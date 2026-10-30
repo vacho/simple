@@ -15,6 +15,8 @@ export interface UserActor {
 	locale: string | null;
 	/** Canonical IANA zone; null means UTC. */
 	timeZone: string | null;
+	/** Set by an administrator: only the password change and sign-out are allowed (ADR 0027). */
+	passwordTemporary: boolean;
 }
 
 export interface SystemActor {

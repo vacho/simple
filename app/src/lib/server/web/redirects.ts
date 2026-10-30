@@ -20,3 +20,9 @@ export function signInUrl(requested: URL): string {
 	const target = `${requested.pathname}${requested.search}`;
 	return target === '/' ? '/login' : `/login?redirectTo=${encodeURIComponent(target)}`;
 }
+
+/** The password change page, remembering where the user was going (ADR 0027). */
+export function passwordChangeUrl(requested: URL): string {
+	const target = `${requested.pathname}${requested.search}`;
+	return target === '/' ? '/password' : `/password?redirectTo=${encodeURIComponent(target)}`;
+}

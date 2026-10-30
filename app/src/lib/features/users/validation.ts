@@ -51,6 +51,12 @@ export const timeZone = v.pipe(
 
 export const newAccount = v.object({ displayName, username, password });
 
+export const roles = ['admin', 'member'] as const;
+export const role = v.picklist(roles, 'users.role.invalid');
+
+/** An account an administrator creates for a member (ADR 0026); the password is temporary. */
+export const newMemberAccount = v.object({ displayName, username, password, role });
+
 /** Profile changes: a locale code or null for "browser default", and a time zone. */
 export const profileChanges = v.partial(
 	v.object({ locale: v.nullable(v.pipe(v.string(), v.minLength(1))), timeZone })

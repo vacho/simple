@@ -1,5 +1,6 @@
 // Setup, sign-in, sign-out and session resolution (D4, D5). Use cases do their async work first
 // (hashing, token generation), then short synchronous transactions, and see no HTTP types.
+import * as v from 'valibot';
 import type { Ctx } from '../../../server/core/ctx.ts';
 import {
 	anonymous,
@@ -14,14 +15,24 @@ import { parseInput } from '../../../server/core/validation.ts';
 import { authorize } from '../../../server/policy/policy.ts';
 import {
 	createAdmin,
+	getCredentialsById,
 	getCredentialsForSignIn,
 	hasAnyUser,
+	setActive,
+	setOwnPassword,
+	setTemporaryPassword,
 	updateProfile
 } from '../../users/server/index.ts';
-import { canonicalTimeZone, newAccount, normalizeUsername } from '../../users/validation.ts';
+import {
+	canonicalTimeZone,
+	newAccount,
+	normalizeUsername,
+	password as passwordRule
+} from '../../users/validation.ts';
 import { dummyHash, hashPassword, verifyPassword } from './password.ts';
 import {
 	createSession,
+	endSessionsOf,
 	generateSessionToken,
 	invalidateSession,
 	sessionOwner,
@@ -118,16 +129,25 @@ export async function signIn(ctx: Ctx, input: SignInInput): Promise<NewSession> 
 		// Concurrent attempts may have locked the username while the hash was being checked.
 		const until = lockedUntil(tx.db, username, input.address, now);
 		if (until) return { status: 'throttled', until };
-		if (!credentials || !matches) {
+		// A deactivated account is refused exactly like a wrong password (ADR 0027).
+		if (!credentials || !credentials.active || !matches) {
 			recordFailure(tx.db, username, input.address, now);
 			return { status: 'invalid' };
 		}
 		recordSuccess(tx.db, username);
 		const expiresAt = createSession(tx.db, token, credentials.id, now);
 		const timeZone = browserZone(input.timeZone);
-		if (credentials.timeZone === null && timeZone) {
+		// With a temporary password the profile waits (ADR 0027): a later sign-in stores it.
+		if (credentials.timeZone === null && timeZone && !credentials.passwordTemporary) {
 			// The user has just proven who they are: they update their own profile.
-			const user: UserActor = { kind: 'user', ...credentials };
+			const user: UserActor = {
+				kind: 'user',
+				id: credentials.id,
+				role: credentials.role,
+				locale: credentials.locale,
+				timeZone: credentials.timeZone,
+				passwordTemporary: credentials.passwordTemporary
+			};
 			updateProfile({ ...tx, actor: user }, credentials.id, { timeZone });
 		}
 		return { status: 'ok', session: { token, expiresAt } };
@@ -167,4 +187,114 @@ export function resolveActor(
 		validateSession(tx.db, token, Date.now())
 	);
 	return { actor: user ?? anonymous, session };
+}
+
+const newPassword = v.object({ password: passwordRule });
+
+/**
+ * Checks a new password against the password rules and hashes it, outside any transaction
+ * (ADR 0002). For the household feature's account creation, too.
+ */
+export async function hashNewPassword(input: unknown): Promise<string> {
+	return hashPassword(parseInput(newPassword, input).password);
+}
+
+/** An administrator's reset: a new temporary password, and every session of that user ends. */
+export async function resetPassword(ctx: Ctx, userId: number, input: unknown): Promise<void> {
+	authorize(ctx.actor, 'accounts.manage', { userId });
+	const passwordHash = await hashNewPassword(input);
+	withTransaction(ctx, (tx) => {
+		setTemporaryPassword(tx, userId, passwordHash);
+		endSessionsOf(tx.db, userId);
+	});
+}
+
+/**
+ * A deactivated account can't sign in, and its sessions end now (ADR 0027). Reactivating needs
+ * no session work, so it is the users feature's `setActive` alone.
+ */
+export function deactivate(ctx: Ctx, userId: number): void {
+	withTransaction(ctx, (tx) => {
+		setActive(tx, userId, false);
+		endSessionsOf(tx.db, userId);
+	});
+}
+
+export interface PasswordChange {
+	/** Required unless the password is temporary: the user has just signed in with it. */
+	current?: string;
+	password: string;
+	confirm: string;
+	/** The client address, for the per-address counter. */
+	address: string;
+}
+
+type ChangeOutcome = 'ok' | 'wrong' | { until: Date };
+
+/**
+ * The user changes their own password (design D3): two transactions around the async hashing,
+ * like sign-in. A wrong current password counts as a failed sign-in, recorded before throwing.
+ * The other sessions end; the current one (`token`) stays.
+ */
+export async function changeOwnPassword(
+	ctx: Ctx,
+	token: string,
+	input: PasswordChange
+): Promise<void> {
+	authorize(ctx.actor, 'password.changeOwn');
+	const { actor } = ctx;
+	if (actor.kind !== 'user') throw new Forbidden();
+	const password = parseInput(newPassword, { password: input.password }).password;
+	if (input.confirm.normalize('NFKC') !== password) {
+		throw new Invalid([{ field: 'confirm', key: 'auth.password.mismatch', params: {} }]);
+	}
+	const system = asSystem(ctx, 'password change');
+
+	const first = withTransaction(system, (tx) => {
+		const credentials = getCredentialsById(tx, actor.id);
+		if (!credentials) throw new Forbidden();
+		return {
+			credentials,
+			until: lockedUntil(tx.db, credentials.username, input.address, Date.now())
+		};
+	});
+	const { credentials } = first;
+	if (first.until) {
+		throw new Throttled('auth.sign_in.locked', { minutes: minutesUntil(first.until) });
+	}
+
+	// Outside any transaction: Argon2 is slow and async. One verification either way.
+	let wrongCurrent = false;
+	if (credentials.passwordTemporary) {
+		if (await verifyPassword(credentials.passwordHash, password)) {
+			throw new Invalid([
+				{ field: 'password', key: 'auth.password.same_as_temporary', params: {} }
+			]);
+		}
+	} else {
+		const current = (input.current ?? '').normalize('NFKC');
+		wrongCurrent = !(await verifyPassword(credentials.passwordHash, current));
+	}
+	const passwordHash = wrongCurrent ? '' : await hashPassword(password);
+
+	const outcome = withTransaction(system, (tx): ChangeOutcome => {
+		const now = Date.now();
+		// Other attempts may have locked the username while the hash was being checked.
+		const until = lockedUntil(tx.db, credentials.username, input.address, now);
+		if (until) return { until };
+		if (wrongCurrent) {
+			recordFailure(tx.db, credentials.username, input.address, now);
+			return 'wrong';
+		}
+		setOwnPassword({ ...tx, actor }, passwordHash);
+		endSessionsOf(tx.db, actor.id, token);
+		return 'ok';
+	});
+
+	if (outcome === 'wrong') {
+		throw new Invalid([{ field: 'current', key: 'auth.password.current_wrong', params: {} }]);
+	}
+	if (outcome !== 'ok') {
+		throw new Throttled('auth.sign_in.locked', { minutes: minutesUntil(outcome.until) });
+	}
 }

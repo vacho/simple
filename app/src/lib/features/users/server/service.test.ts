@@ -23,7 +23,8 @@ const user = (id: number, role: UserActor['role']): UserActor => ({
 	id,
 	role,
 	locale: null,
-	timeZone: null
+	timeZone: null,
+	passwordTemporary: false
 });
 
 const password = '  secret phrase  ';

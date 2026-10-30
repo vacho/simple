@@ -177,4 +177,42 @@ test.describe('Core flows on each supported browser', () => {
 		});
 		expect([reused.status, reused.headers.get('location')]).toEqual([303, '/login']);
 	});
+
+	test('household flow: an administrator creates a member and their account, and the member signs in, replaces the temporary password and sees the members page', async ({
+		page,
+		browser
+	}) => {
+		const { app, admin } = await startSetUpApp();
+		await page.context().addCookies([{ name: 'session', value: admin.token, url: app.url }]);
+
+		await open(page, `${app.url}/settings/member-types`);
+		await page.getByLabel('Name').fill('Hija');
+		await page.getByLabel('Base class').selectOption({ label: 'Minor' });
+		await submitAndWait(page, page.getByRole('button', { name: 'Create member type' }));
+
+		await open(page, `${app.url}/members`);
+		await page.getByLabel('Name').fill('Lucía');
+		await submitAndWait(page, page.getByRole('button', { name: 'Add member' }));
+		await page.getByRole('link', { name: 'Lucía' }).click();
+		await page.waitForLoadState('networkidle');
+		await page.getByLabel('Username').fill('lucia');
+		await page.getByLabel('Temporary password').fill('primer-dia-2026');
+		await submitAndWait(page, page.getByRole('button', { name: 'Create account' }));
+		await expect(page.getByText('Username: lucia')).toBeVisible();
+
+		const other = await browser.newContext({ locale: 'en-US' });
+		const lucia = await other.newPage();
+		await open(lucia, `${app.url}/login`);
+		await signIn(lucia, 'lucia', 'primer-dia-2026');
+		await expect(lucia).toHaveURL(`${app.url}/password`);
+		await lucia.getByLabel('New password', { exact: true }).fill('mi-clave-propia');
+		await lucia.getByLabel('Repeat the new password').fill('mi-clave-propia');
+		await submitAndWait(lucia, lucia.getByRole('button', { name: 'Save password' }));
+		await expect(lucia.locator('h1')).toHaveText('Home');
+		await lucia.getByRole('link', { name: 'Members' }).click();
+		await expect(lucia.getByRole('listitem').filter({ hasText: 'Lucía' })).toContainText(
+			'Hija (Minor)'
+		);
+		await other.close();
+	});
 });

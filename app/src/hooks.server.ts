@@ -9,7 +9,7 @@ import { provideDictionary } from '#lib/i18n/dictionaries.ts';
 import { resolveLocale, textDirection } from '#lib/i18n/locale.ts';
 import { startup } from '#lib/server/startup.ts';
 import { buildCtx, unidentifiedCtx } from '#lib/server/web/ctx.ts';
-import { signInUrl } from '#lib/server/web/redirects.ts';
+import { passwordChangeUrl, signInUrl } from '#lib/server/web/redirects.ts';
 import { applySessionResult, readSessionToken } from '#lib/server/web/session-cookie.ts';
 
 let db: App.Locals['db'];
@@ -62,14 +62,28 @@ const setupGate: Handle = ({ event, resolve }) => {
 	return resolve(event);
 };
 
-const routeGuard: Handle = ({ event, resolve }) => {
-	if (event.locals.actor.kind === 'user' || isPublic(event.url.pathname)) return resolve(event);
+// While the password is temporary, only these pages open (ADR 0027); the policy refuses the rest.
+const withTemporaryPassword = ['/password', '/logout'];
+
+const wantsPage = (event: Parameters<Handle>[0]['event']) => {
 	const { method, headers } = event.request;
-	const wantsPage =
+	return (
 		event.isDataRequest ||
-		((method === 'GET' || method === 'HEAD') &&
-			(headers.get('accept') ?? '').includes('text/html'));
-	if (wantsPage) redirect(303, signInUrl(event.url));
+		((method === 'GET' || method === 'HEAD') && (headers.get('accept') ?? '').includes('text/html'))
+	);
+};
+
+const routeGuard: Handle = ({ event, resolve }) => {
+	const { actor } = event.locals;
+	const path = event.url.pathname;
+	if (actor.kind === 'user') {
+		if (!actor.passwordTemporary || isPublic(path) || withTemporaryPassword.includes(path))
+			return resolve(event);
+		if (wantsPage(event)) redirect(303, passwordChangeUrl(event.url));
+		return new Response('Forbidden', { status: 403 });
+	}
+	if (isPublic(path)) return resolve(event);
+	if (wantsPage(event)) redirect(303, signInUrl(event.url));
 	return new Response('Unauthorized', { status: 401 });
 };
 
