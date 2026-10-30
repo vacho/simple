@@ -4,6 +4,7 @@ import { type BrowserContext, type Page } from '@playwright/test';
 import { v7 } from 'uuid';
 import { resolveActor } from '../../src/lib/features/auth/server/index.ts';
 import {
+	archiveMemberType,
 	createMember,
 	createMemberType,
 	renameHousehold
@@ -36,6 +37,11 @@ function household(db: Db, token: string) {
 	createMemberType(ctx, { id: adulto, name: 'Papá', baseClass: 'adult' });
 	createMember(ctx, { id: v7(), name: 'Lucía', memberTypeId: hija });
 	createMember(ctx, { id: v7(), name: 'Osvaldo', memberTypeId: adulto });
+	// A type no member has yet, and an archived one.
+	createMemberType(ctx, { id: v7(), name: 'Abuela', baseClass: 'adult' });
+	const old = v7();
+	createMemberType(ctx, { id: old, name: 'Antiguo', baseClass: 'dependent' });
+	archiveMemberType(ctx, old);
 }
 
 async function start({ locale = null as string | null, seeded = true } = {}) {
@@ -55,7 +61,7 @@ const entry = (page: Page, name: string) => page.getByRole('listitem').filter({ 
 test.describe('in English', () => {
 	test.use({ locale: 'en-US' });
 
-	test('Member views the household, and Account details are hidden from members: read-only list', async ({
+	test('Member views the household, and Account details are hidden from members: read-only members and member types', async ({
 		page,
 		context
 	}) => {
@@ -67,6 +73,9 @@ test.describe('in English', () => {
 		await expect(page.getByText('Familia Pérez')).toBeVisible();
 		await expect(entry(page, 'Lucía')).toContainText('Hija (Minor)');
 		await expect(entry(page, 'Osvaldo')).toContainText('Papá (Adult)');
+		const types = page.getByRole('heading', { name: 'Member types' }).locator('+ ul');
+		await expect(types).toContainText('Abuela (Adult)');
+		await expect(types).not.toContainText('Antiguo');
 		await expect(page.locator('main form')).toHaveCount(0);
 		await expect(page.locator('main a')).toHaveCount(0);
 		await expect(page.locator('main')).not.toContainText(/Account|No account/);

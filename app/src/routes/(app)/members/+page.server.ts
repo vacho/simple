@@ -19,8 +19,8 @@ export const load: PageServerLoad = (event) => {
 			household: getHousehold(ctx),
 			list: listMembers(ctx),
 			manage,
-			// Types a new member can have, and the ID of that member (ADR 0007).
-			types: manage ? listMemberTypes(ctx).filter((type) => !type.archived) : [],
+			// Types members can have, shown to everyone (spec household), and the new member's ID.
+			types: listMemberTypes(ctx).filter((type) => !type.archived),
 			newId: v7()
 		};
 	} catch (error) {

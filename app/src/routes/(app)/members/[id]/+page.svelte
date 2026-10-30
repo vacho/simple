@@ -3,16 +3,12 @@
 	import Field from '#lib/components/Field.svelte';
 	import AccountActions from '../../AccountActions.svelte';
 	import { fieldError, formError } from '#lib/components/form-errors.ts';
+	import { baseClassLabel } from '#lib/features/household/base-classes.ts';
 	import { getI18n } from '#lib/i18n/t.ts';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
 	const i18n = getI18n();
-	const baseClassLabel = {
-		adult: 'household.base_class.adult',
-		minor: 'household.base_class.minor',
-		dependent: 'household.base_class.dependent'
-	} as const;
 	const here = $derived(resolve(`members/${data.member.id}`));
 
 	// Member form errors only: the account forms show their own.

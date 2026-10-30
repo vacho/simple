@@ -2,16 +2,12 @@
 	import { resolve } from '$app/paths';
 	import Field from '#lib/components/Field.svelte';
 	import { fieldError, formError } from '#lib/components/form-errors.ts';
+	import { baseClassLabel } from '#lib/features/household/base-classes.ts';
 	import { getI18n } from '#lib/i18n/t.ts';
 	import type { PageProps } from './$types';
 
 	let { data, form }: PageProps = $props();
 	const i18n = getI18n();
-	const baseClassLabel = {
-		adult: 'household.base_class.adult',
-		minor: 'household.base_class.minor',
-		dependent: 'household.base_class.dependent'
-	} as const;
 	const active = $derived(data.list.members.filter((member) => member.archivedAt === null));
 	const archived = $derived(data.list.members.filter((member) => member.archivedAt !== null));
 	const accountOf = (member: (typeof data.list.members)[number]) =>
@@ -58,6 +54,20 @@
 	<p>{i18n.t('household.members.empty')}</p>
 {:else}
 	{@render list(active)}
+{/if}
+
+{#if data.types.length > 0}
+	<h2>{i18n.t('household.member_types.title')}</h2>
+	<ul class="types">
+		{#each data.types as type (type.id)}
+			<li>
+				{i18n.t('household.members.type_and_class', {
+					type: type.name,
+					baseClass: i18n.t(baseClassLabel[type.baseClass])
+				})}
+			</li>
+		{/each}
+	</ul>
 {/if}
 
 {#if data.manage}
@@ -131,6 +141,14 @@
 
 	.name {
 		font-weight: 600;
+	}
+
+	.types {
+		display: flex;
+		flex-wrap: wrap;
+		gap: var(--space-1) var(--space-3);
+		padding: 0;
+		list-style: none;
 	}
 
 	.stack {
