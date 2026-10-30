@@ -173,3 +173,18 @@ describe('Temporary password replaced at first sign-in', () => {
 		expect(resolveActor(anonymousCtx, token).actor).toMatchObject({ passwordTemporary: true });
 	});
 });
+
+describe('Operations of every signed-in user', () => {
+	it('Own password change is allowed: a member user changes their own password', async () => {
+		await account('hugo', 'hugo password');
+		const { token, ctx } = await signInAs('hugo', 'hugo password');
+		expect(ctx.actor).toMatchObject({ kind: 'user', role: 'member' });
+		await changeOwnPassword(ctx, token, {
+			current: 'hugo password',
+			password: 'hugo new password',
+			confirm: 'hugo new password',
+			address: address()
+		});
+		expect(await canSignIn('hugo', 'hugo new password')).toBe(true);
+	});
+});

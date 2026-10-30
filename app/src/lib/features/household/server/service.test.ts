@@ -11,6 +11,7 @@ import {
 	createMemberType,
 	deleteMemberType,
 	getHousehold,
+	listMembers,
 	listMemberTypes,
 	renameHousehold,
 	unarchiveMemberType,
@@ -198,5 +199,13 @@ describe('Archiving member types', () => {
 		const id = typeNamed('Sobrino dependiente')!.id;
 		unarchiveMemberType(admin, id);
 		expect(listMemberTypes(member).map((type) => type.name)).toContain('Sobrino dependiente');
+	});
+});
+
+describe('Operations of every signed-in user', () => {
+	it('Viewing the household is allowed: a member user reads the name, the members and the member types', () => {
+		expect(() => getHousehold(member)).not.toThrow();
+		expect(() => listMemberTypes(member)).not.toThrow();
+		expect(() => listMembers(member)).not.toThrow();
 	});
 });

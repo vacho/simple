@@ -47,8 +47,8 @@ Paths are relative to `app/`, and commands run there (ADR 0023). E2e tests use t
 
 ## 8. Final verification
 
-- [ ] 8.1 Check the new code against ADR 0008 and ADRs 0026 and 0027: the household feature owns its tables and reads `users` only in `queries.ts`; no function only forwards a call; account states are enforced only in sign-in, session validation and `can()`. Verify `npm run check` (including the boundaries) passes and record any deviation in the design
-- [ ] 8.2 From a clean clone of the branch: `npm ci`, `npm run check`, `npm run test:unit`, `npm run build`, `npm run test:e2e`, `npm run test:e2e:pseudo` and `npm run check:scenarios -- add-household-members`, and verify every command passes
+- [x] 8.1 Check the new code against ADR 0008 and ADRs 0026 and 0027: the household feature owns its tables and reads `users` only in `queries.ts`; no function only forwards a call; account states are enforced only in sign-in, session validation and `can()`. Verify `npm run check` (including the boundaries) passes and record any deviation in the design
+- [x] 8.2 From a clean clone of the branch: `npm ci`, `npm run check`, `npm run test:unit`, `npm run build`, `npm run test:e2e`, `npm run test:e2e:pseudo` and `npm run check:scenarios -- add-household-members`, and verify every command passes
 
 ## Workflow follow-up
 

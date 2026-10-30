@@ -82,18 +82,18 @@ export function updateMemberType(ctx: Ctx, id: string, input: unknown): void {
 }
 
 export function archiveMemberType(ctx: Ctx, id: string): void {
-	setMemberTypeArchived(ctx, id, new Date());
-}
-
-export function unarchiveMemberType(ctx: Ctx, id: string): void {
-	setMemberTypeArchived(ctx, id, null);
-}
-
-function setMemberTypeArchived(ctx: Ctx, id: string, archivedAt: Date | null): void {
 	authorize(ctx.actor, 'memberTypes.manage');
 	withTransaction(ctx, (tx) => {
 		if (!repo.findMemberType(tx.db, id)) throw new NotFound();
-		repo.updateMemberType(tx.db, id, { archivedAt });
+		repo.updateMemberType(tx.db, id, { archivedAt: new Date() });
+	});
+}
+
+export function unarchiveMemberType(ctx: Ctx, id: string): void {
+	authorize(ctx.actor, 'memberTypes.manage');
+	withTransaction(ctx, (tx) => {
+		if (!repo.findMemberType(tx.db, id)) throw new NotFound();
+		repo.updateMemberType(tx.db, id, { archivedAt: null });
 	});
 }
 
