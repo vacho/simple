@@ -46,7 +46,7 @@ body {
 	color: var(--color-text);
 	text-align: start;
 	/* Long words (some languages, pasted names) wrap instead of widening the page. */
-	overflow-wrap: break-word;
+	overflow-wrap: anywhere;
 }
 
 h1 {

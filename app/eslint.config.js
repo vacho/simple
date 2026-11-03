@@ -91,6 +91,26 @@ export default defineConfig(
 		rules: { 'no-restricted-imports': restrict(restrictedImports) }
 	},
 	{
+		files: ['src/routes/**'],
+		rules: {
+			'no-restricted-imports': restrict(restrictedImports, icuParser, {
+				patterns: [
+					{
+						group: ['@ark-ui/svelte', '@ark-ui/svelte/**', '@lucide/svelte', '@lucide/svelte/**'],
+						message: 'Use the wrappers in #lib/components/ (ADR 0028).'
+					}
+				]
+			}),
+			'svelte/no-restricted-html-elements': [
+				'error',
+				{
+					elements: ['dialog', 'select', 'details', 'summary'],
+					message: 'Use the wrappers in #lib/components/ (ADR 0028).'
+				}
+			]
+		}
+	},
+	{
 		// Boundary fixtures break the rules on purpose; tests/lint/boundaries.test.ts lints them.
 		ignores: ['tests/lint/fixtures/']
 	}

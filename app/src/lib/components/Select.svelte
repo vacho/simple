@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { Field as ArkField } from '@ark-ui/svelte/field';
 	import { Select as ArkSelect, createListCollection } from '@ark-ui/svelte/select';
+	import Icon from './Icon.svelte';
 
 	interface Option {
 		label: string;
@@ -39,7 +40,7 @@
 			<ArkSelect.Control>
 				<ArkSelect.Trigger>
 					<ArkSelect.ValueText placeholder={label} />
-					<ArkSelect.Indicator>⌄</ArkSelect.Indicator>
+					<ArkSelect.Indicator><Icon name="chevron-down" size={16} /></ArkSelect.Indicator>
 				</ArkSelect.Trigger>
 			</ArkSelect.Control>
 			<ArkSelect.Positioner>
@@ -61,6 +62,7 @@
 <style>
 	.select-wrapper :global([data-scope='field'][data-part='root']) {
 		display: grid;
+		grid-template-columns: minmax(0, 1fr);
 		gap: var(--space-1);
 	}
 

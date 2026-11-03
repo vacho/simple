@@ -217,3 +217,23 @@ test.describe('Core flows on each supported browser', () => {
 		await other.close();
 	});
 });
+
+test('Confirmation dialogs on each supported browser: delete only after confirming', async ({
+	page,
+	context
+}) => {
+	const { app, admin } = await startSetUpApp();
+	await context.addCookies([{ name: 'session', value: admin.token, url: app.url }]);
+	await open(page, `${app.url}/settings/member-types`);
+	await page.getByRole('textbox', { name: 'Name', exact: true }).fill('Vecino');
+	await submitAndWait(page, page.getByRole('button', { name: 'Create member type' }));
+	const row = page.getByRole('listitem').filter({ hasText: 'Vecino' });
+	await row.getByRole('button', { name: 'Delete', exact: true }).click();
+	const dialog = page.getByRole('alertdialog', { name: 'Delete member type "Vecino"?' });
+	await expect(dialog).toBeVisible();
+	await expect(row).toBeVisible();
+	await dialog.getByRole('button', { name: 'Delete', exact: true }).click();
+	await expect(dialog).toBeHidden();
+	await expect(row).toHaveCount(0);
+	await expect(page.getByText('There are no member types yet.')).toBeVisible();
+});

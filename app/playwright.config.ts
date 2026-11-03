@@ -8,7 +8,7 @@ const data = mkdtempSync(path.join(tmpdir(), 'simple-e2e-'));
 // npm run test:e2e:pseudo: the same production build, started with the en-XA pseudo-locale (D14).
 const pseudo = process.env.I18N_PSEUDO === '1';
 
-const coreFlows = ['flows.spec.ts', 'profile.spec.ts'];
+const coreFlows = ['flows.spec.ts', 'profile.spec.ts', 'same-origin.spec.ts'];
 
 // End-to-end tests run against the production build, so production-only behavior (CSRF) is active.
 export default defineConfig({

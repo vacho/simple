@@ -34,9 +34,9 @@ Paths are relative to `app/`, and commands run there (ADR 0023). Ark UI wrappers
 
 ## 6. The standard, enforced and documented
 
-- [ ] 6.1 Add the ESLint rules for routes (D5): no `@ark-ui/svelte` or `@lucide/svelte` imports, no `<dialog>`, `<select>`, `<details>` or `<summary>`, each with a forbidden and an allowed fixture in `tests/lint/`. Verify `npm run check` passes on the app and fails on each forbidden fixture
-- [ ] 6.2 Add an e2e test that loads every page, signed out and signed in, and fails on any request to another origin; add the dialog confirmation to the core flows run on Firefox and WebKit. Verify both pass on the three browsers (spec app-shell: Everything the interface loads comes from the app, Supported browsers)
-- [ ] 6.3 Add the new screens and states (dialogs open, badges, empty states, toasts) to the Spanish and `en-XA` screen checks, and update `README.md`: the components and the rules for contributors (pointing to ADR 0028 and the catalog), and that JavaScript is required. Verify `npm run test:e2e:pseudo` and the Spanish screen checks pass
+- [x] 6.1 Add the ESLint rules for routes (D5): no `@ark-ui/svelte` or `@lucide/svelte` imports, no `<dialog>`, `<select>`, `<details>` or `<summary>`, each with a forbidden and an allowed fixture in `tests/lint/`. Verify `npm run check` passes on the app and fails on each forbidden fixture
+- [x] 6.2 Add an e2e test that loads every page, signed out and signed in, and fails on any request to another origin; add the dialog confirmation to the core flows run on Firefox and WebKit. Verify both pass on the three browsers (spec app-shell: Everything the interface loads comes from the app, Supported browsers)
+- [x] 6.3 Add the new screens and states (dialogs open, badges, empty states, toasts) to the Spanish and `en-XA` screen checks, and update `README.md`: the components and the rules for contributors (pointing to ADR 0028 and the catalog), and that JavaScript is required. Verify `npm run test:e2e:pseudo` and the Spanish screen checks pass
 
 ## 7. Final verification
 

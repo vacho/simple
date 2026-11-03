@@ -95,6 +95,7 @@
 <style>
 	.profile {
 		display: grid;
+		grid-template-columns: minmax(0, 1fr);
 		gap: var(--space-3);
 		max-inline-size: 28rem;
 	}

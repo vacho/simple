@@ -7,12 +7,16 @@ import { readFileSync } from 'node:fs';
 import path from 'node:path';
 import { type Page } from '@playwright/test';
 import {
+	archiveMember,
 	createAccountForMember,
 	createMember,
 	createMemberType,
 	renameHousehold
 } from '../../src/lib/features/household/server/index.ts';
 import { resolveActor } from '../../src/lib/features/auth/server/index.ts';
+import { getDictionary, seed } from '../../src/lib/features/languages/server/index.ts';
+import { createTranslator } from '../../src/lib/i18n/t.ts';
+import { systemActor } from '../../src/lib/server/core/actor.ts';
 import { testCtx } from '../../src/lib/server/core/ctx.ts';
 import {
 	addMember,
@@ -22,6 +26,7 @@ import {
 	prepareDatabase,
 	setUpAdmin,
 	startApp,
+	open,
 	test
 } from './app.ts';
 
@@ -58,7 +63,12 @@ const notTranslatable = [
 	version,
 	'Familia Pérez',
 	'Lucía',
-	'Osvaldo'
+	'Osvaldo',
+	'Hija',
+	'Vecino',
+	'UTC',
+	Intl.DateTimeFormat().resolvedOptions().timeZone,
+	'ana (Ana Pérez)'
 ];
 
 /** Visible texts of the page, outside select options (language and time zone names). */
@@ -69,7 +79,7 @@ const visibleTexts = (page: Page) =>
 		for (let node = walker.nextNode(); node; node = walker.nextNode()) {
 			const parent = node.parentElement!;
 			const text = node.textContent!.trim();
-			if (!text || parent.closest('option, script, style')) continue;
+			if (!text || parent.closest('[hidden], option, script, style')) continue;
 			const style = getComputedStyle(parent);
 			if (style.display === 'none' || style.visibility === 'hidden') continue;
 			texts.push(text);
@@ -232,5 +242,98 @@ test.describe(`${pseudo ? 'No plain text in en-XA' : 'Spanish is complete'}: eve
 		await context.addCookies([{ name: 'session', value: tokens.temporary, url: app.url }]);
 		await page.goto(`${app.url}/password`);
 		await check(page, 'password');
+	});
+
+	test('empty lists, labeled badges, dialogs and success messages', async ({ page, context }) => {
+		const databasePath = newDatabasePath();
+		const { admin, t } = await prepareDatabase(databasePath, async (db) => {
+			const admin = await setUpAdmin(db);
+			seed(testCtx(db, { actor: systemActor('screen test translations') }), {
+				pseudoLocale: pseudo
+			});
+			const code = pseudo ? 'en-XA' : 'es';
+			return { admin, t: createTranslator(code, getDictionary(testCtx(db), code).messages) };
+		});
+		const app = startApp(databasePath);
+		await app.listening;
+		await context.addCookies([{ name: 'session', value: admin.token, url: app.url }]);
+		await open(page, `${app.url}/members`);
+		await expect(page.getByText(t('household.members.empty'), { exact: true })).toBeVisible();
+		await check(page, 'empty members');
+		await open(page, `${app.url}/settings/member-types`);
+		await expect(page.getByText(t('household.member_types.empty'), { exact: true })).toBeVisible();
+		await check(page, 'empty member types');
+		await page
+			.getByRole('textbox', { name: t('household.field.name'), exact: true })
+			.fill('Vecino');
+		await page
+			.getByRole('button', { name: t('household.member_types.create'), exact: true })
+			.click();
+		const toast = page.locator('[data-scope="toast"][data-part="group"][role="status"]');
+		await expect(toast).toContainText(t('household.changes.saved'));
+		await check(page, 'saved member type toast');
+		const row = page.getByRole('listitem').filter({ hasText: 'Vecino' });
+		for (const key of ['household.action.archive', 'household.action.delete'] as const) {
+			await row.getByRole('button', { name: t(key), exact: true }).click();
+			const dialog = page.getByRole('alertdialog');
+			await expect(dialog).toBeVisible();
+			await check(page, `member type ${key} dialog`);
+			await dialog.getByRole('button', { name: t('household.action.cancel'), exact: true }).click();
+		}
+	});
+
+	test('account, member and archive dialogs with badges', async ({ page, context }) => {
+		const databasePath = newDatabasePath();
+		const { admin, t, lucia, osvaldo } = await prepareDatabase(databasePath, async (db) => {
+			const admin = await setUpAdmin(db);
+			seed(testCtx(db, { actor: systemActor('screen test translations') }), {
+				pseudoLocale: pseudo
+			});
+			const code = pseudo ? 'en-XA' : 'es';
+			const t = createTranslator(code, getDictionary(testCtx(db), code).messages);
+			const ctx = testCtx(db, { actor: resolveActor(testCtx(db), admin.token).actor });
+			const type = v7(),
+				lucia = v7(),
+				osvaldo = v7();
+			createMemberType(ctx, { id: type, name: 'Hija', baseClass: 'minor' });
+			createMember(ctx, { id: lucia, name: 'Lucía', memberTypeId: type });
+			createMember(ctx, { id: osvaldo, name: 'Osvaldo', memberTypeId: type });
+			archiveMember(ctx, osvaldo);
+			await createAccountForMember(ctx, lucia, {
+				displayName: 'Lucía',
+				username: 'lucia',
+				role: 'member',
+				password: 'primer-dia-2026'
+			});
+			return { admin, t, lucia, osvaldo };
+		});
+		const app = startApp(databasePath);
+		await app.listening;
+		await context.addCookies([{ name: 'session', value: admin.token, url: app.url }]);
+		await open(page, `${app.url}/members`);
+		await page
+			.getByRole('button', { name: t('household.members.show_archived'), exact: true })
+			.click();
+		await expect(
+			page.getByText(t('household.member.state_archived'), { exact: true })
+		).toBeVisible();
+		await check(page, 'archived and temporary account badges');
+		await open(page, `${app.url}/members/${lucia}`);
+		for (const key of [
+			'users.account.reset_password',
+			'users.account.deactivate',
+			'users.account.unlink',
+			'household.action.archive'
+		] as const) {
+			await page.getByRole('button', { name: t(key), exact: true }).click();
+			const dialog = page.getByRole('alertdialog');
+			await expect(dialog).toBeVisible();
+			await check(page, `${key} dialog`);
+			await dialog.getByRole('button', { name: t('household.action.cancel'), exact: true }).click();
+		}
+		await open(page, `${app.url}/members/${osvaldo}`);
+		await page.getByRole('button', { name: t('household.action.delete'), exact: true }).click();
+		await expect(page.getByRole('alertdialog')).toBeVisible();
+		await check(page, 'delete member dialog');
 	});
 });

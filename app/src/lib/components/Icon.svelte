@@ -2,6 +2,7 @@
 	import Archive from '@lucide/svelte/icons/archive';
 	import ArrowLeft from '@lucide/svelte/icons/arrow-left';
 	import ArrowRight from '@lucide/svelte/icons/arrow-right';
+	import ChevronDown from '@lucide/svelte/icons/chevron-down';
 	import ChevronRight from '@lucide/svelte/icons/chevron-right';
 	import CircleCheck from '@lucide/svelte/icons/circle-check';
 	import Eye from '@lucide/svelte/icons/eye';
@@ -24,6 +25,7 @@
 		archive: Archive,
 		'arrow-left': ArrowLeft,
 		'arrow-right': ArrowRight,
+		'chevron-down': ChevronDown,
 		'chevron-right': ChevronRight,
 		'circle-check': CircleCheck,
 		eye: Eye,

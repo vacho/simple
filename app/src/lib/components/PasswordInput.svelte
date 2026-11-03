@@ -56,6 +56,7 @@
 <style>
 	.password-wrapper :global([data-scope='field'][data-part='root']) {
 		display: grid;
+		grid-template-columns: minmax(0, 1fr);
 		gap: var(--space-1);
 	}
 
@@ -69,6 +70,7 @@
 	}
 
 	.password-wrapper :global([data-scope='password-input'][data-part='input']) {
+		flex: 1;
 		min-inline-size: 0;
 		min-block-size: 2.75rem;
 		padding: var(--space-2) var(--space-3);
