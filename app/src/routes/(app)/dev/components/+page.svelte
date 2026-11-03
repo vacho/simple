@@ -95,7 +95,7 @@
 		<h2><code>Badge</code></h2>
 		<div class="examples">
 			{#each tones as tone (tone)}
-				<Badge {tone} label={i18n.t('household.member.archived')} />
+				<Badge {tone} label={i18n.t('household.member.state_archived')} />
 			{/each}
 		</div>
 	</section>

@@ -4,6 +4,7 @@ import { type BrowserContext, type Page } from '@playwright/test';
 import { v7 } from 'uuid';
 import { resolveActor } from '../../src/lib/features/auth/server/index.ts';
 import {
+	archiveMember,
 	archiveMemberType,
 	createMember,
 	createMemberType,
@@ -21,6 +22,7 @@ import {
 	expect,
 	open,
 	submitAndWait,
+	choose,
 	test
 } from './app.ts';
 
@@ -57,6 +59,56 @@ async function start({ locale = null as string | null, seeded = true } = {}) {
 }
 
 const entry = (page: Page, name: string) => page.getByRole('listitem').filter({ hasText: name });
+
+for (const locale of ['en', 'es'] as const) {
+	test(`Archived member: labeled badge and archived visibility in ${locale}`, async ({
+		page,
+		context
+	}) => {
+		const databasePath = newDatabasePath();
+		const admin = await prepareDatabase(databasePath, async (db) => {
+			const admin = await setUpAdmin(db, { locale });
+			const ctx = testCtx(db, { actor: resolveActor(testCtx(db), admin.token).actor });
+			const typeId = v7();
+			const id = v7();
+			createMemberType(ctx, { id: typeId, name: 'Vecino', baseClass: 'adult' });
+			createMember(ctx, { id, name: 'Marcos', memberTypeId: typeId });
+			archiveMember(ctx, id);
+			return admin;
+		});
+		const app = startApp(databasePath);
+		await app.listening;
+		await signInWith(context, app, admin.token);
+		await open(page, `${app.url}/members`);
+		const toggle = page.getByRole('button', {
+			name: locale === 'en' ? 'Show archived' : 'Mostrar archivados'
+		});
+		await expect(page.getByRole('link', { name: 'Marcos' })).toBeHidden();
+		await toggle.click();
+		await expect(toggle).toHaveAttribute('aria-expanded', 'true');
+		await expect(
+			entry(page, 'Marcos').getByText(locale === 'en' ? 'Archived' : 'Archivado', { exact: true })
+		).toBeVisible();
+		await toggle.click();
+		await expect(page.getByRole('link', { name: 'Marcos' })).toBeHidden();
+	});
+}
+
+for (const admin of [true, false]) {
+	test(`${admin ? 'No members yet' : "Empty list for a user who can't act"}: empty household actions follow permissions`, async ({
+		page,
+		context
+	}) => {
+		const { app, tokens } = await start({ seeded: false });
+		await signInWith(context, app, admin ? tokens.admin : tokens.member);
+		await open(page, `${app.url}/members`);
+		await expect(page.getByText('The household has no members yet.')).toBeVisible();
+		await expect(page.getByRole('link', { name: 'Add member', exact: true })).toHaveCount(
+			admin ? 1 : 0
+		);
+		if (!admin) await expect(page.getByRole('main').getByRole('button')).toHaveCount(0);
+	});
+}
 
 test.describe('in English', () => {
 	test.use({ locale: 'en-US' });
@@ -103,7 +155,7 @@ test.describe('in English', () => {
 		await open(page, `${app.url}/members`);
 		await expect(entry(page, 'Lucía')).toContainText('No account');
 		await page.getByLabel('Name').fill('Mateo');
-		await page.getByLabel('Member type').selectOption({ label: 'Hija (Minor)' });
+		await choose(page, 'Member type', 'Hija (Minor)');
 		await submitAndWait(page, page.getByRole('button', { name: 'Add member' }));
 		await expect(entry(page, 'Mateo')).toContainText('Hija (Minor)');
 
@@ -132,9 +184,7 @@ test.describe('in English', () => {
 			.getByRole('alertdialog')
 			.getByRole('button', { name: 'Archive', exact: true })
 			.click();
-		await expect(
-			page.getByRole('status').filter({ hasText: 'This member is archived.' })
-		).toBeVisible();
+		await expect(page.getByRole('main').getByText('Archived', { exact: true })).toBeVisible();
 
 		// A member user no longer sees him.
 		const other = await browser.newContext({ locale: 'en-US' });

@@ -1,5 +1,4 @@
 <script lang="ts">
-	import Badge from '#lib/components/Badge.svelte';
 	import DataList from '#lib/components/DataList.svelte';
 	import DataListRow from '#lib/components/DataListRow.svelte';
 	import PageHeader from '#lib/components/PageHeader.svelte';
@@ -17,10 +16,6 @@
 		<DataListRow title={account.displayName} muted={!account.active}>
 			{#snippet titleLink()}<h2>{account.displayName}</h2>{/snippet}
 			{#snippet trailing()}
-				{#if account.passwordTemporary}<Badge
-						tone="warning"
-						label={i18n.t('users.account.state_temporary')}
-					/>{/if}
 				<AccountActions
 					account={{ ...account, userId: account.id }}
 					own={account.id === data.ownId}

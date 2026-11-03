@@ -12,7 +12,8 @@ import {
 	expect,
 	open,
 	submitAndWait,
-	test
+	test,
+	choose
 } from './app.ts';
 
 const zoneOf = (app: App, username: string) => {
@@ -187,7 +188,7 @@ test.describe('Core flows on each supported browser', () => {
 
 		await open(page, `${app.url}/settings/member-types`);
 		await page.getByLabel('Name').fill('Hija');
-		await page.getByLabel('Base class').selectOption({ label: 'Minor' });
+		await choose(page, 'Base class', 'Minor');
 		await submitAndWait(page, page.getByRole('button', { name: 'Create member type' }));
 
 		await open(page, `${app.url}/members`);

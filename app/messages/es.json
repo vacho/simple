@@ -211,10 +211,6 @@
 		"text": "La cuenta de este miembro está activa. Desactiva o desvincula la cuenta antes de archivar al miembro.",
 		"source": "4dbcefe2317c4fc6"
 	},
-	"household.member.archived": {
-		"text": "Este miembro está archivado.",
-		"source": "43c171467167c1a0"
-	},
 	"household.member.back": {
 		"text": "Volver a los miembros",
 		"source": "ae1cfb212ff58fd0"
@@ -230,6 +226,10 @@
 	"household.member.save": {
 		"text": "Guardar cambios",
 		"source": "dd0ae7a5cbcf2339"
+	},
+	"household.member.state_archived": {
+		"text": "Archivado",
+		"source": "bdb86505f8062d15"
 	},
 	"household.member.title": {
 		"text": "Miembro {name}",
@@ -314,6 +314,10 @@
 	"household.members.no_account": {
 		"text": "Sin cuenta",
 		"source": "79eb5c21a49f5f26"
+	},
+	"household.members.show_archived": {
+		"text": "Mostrar archivados",
+		"source": "e9de9f2f7a8547e2"
 	},
 	"household.members.title": {
 		"text": "Miembros",

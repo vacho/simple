@@ -1,7 +1,12 @@
 <script lang="ts">
 	import { resolve } from '$app/paths';
 	import Field from '#lib/components/Field.svelte';
+	import Card from '#lib/components/Card.svelte';
+	import Form from '#lib/components/Form.svelte';
+	import Select from '#lib/components/Select.svelte';
+
 	import Badge from '#lib/components/Badge.svelte';
+	import Button from '#lib/components/Button.svelte';
 	import DataList from '#lib/components/DataList.svelte';
 	import DataListRow from '#lib/components/DataListRow.svelte';
 	import EmptyState from '#lib/components/EmptyState.svelte';
@@ -13,6 +18,7 @@
 
 	let { data, form }: PageProps = $props();
 	const i18n = getI18n();
+	let showArchived = $state(false);
 	const active = $derived(data.list.members.filter((member) => member.archivedAt === null));
 	const archived = $derived(data.list.members.filter((member) => member.archivedAt !== null));
 	const accountOf = (member: (typeof data.list.members)[number]) =>
@@ -48,7 +54,7 @@
 				{#snippet trailing()}
 					{#if member.archivedAt !== null}<Badge
 							tone="muted"
-							label={i18n.t('household.member.archived')}
+							label={i18n.t('household.member.state_archived')}
 						/>{/if}
 					{#if data.list.withAccounts}
 						<Badge
@@ -104,8 +110,18 @@
 
 {#if data.manage}
 	{#if archived.length > 0}
-		<h2>{i18n.t('household.members.archived_heading')}</h2>
-		{@render list(archived)}
+		<Button
+			variant="secondary"
+			aria-expanded={showArchived}
+			aria-controls="archived-members"
+			onclick={() => (showArchived = !showArchived)}
+		>
+			{i18n.t('household.members.show_archived')}
+		</Button>
+		<div id="archived-members" hidden={!showArchived}>
+			<h2>{i18n.t('household.members.archived_heading')}</h2>
+			{@render list(archived)}
+		</div>
 	{/if}
 
 	<h2 id="new-member">{i18n.t('household.members.new')}</h2>
@@ -115,39 +131,40 @@
 			<a href={resolve('settings/member-types')}>{i18n.t('household.members.go_to_types')}</a>
 		</p>
 	{:else}
-		<form method="POST" action="?/create" class="stack">
-			{#if formError(i18n.t, form)}
-				<p class="error" role="alert">{formError(i18n.t, form)}</p>
-			{/if}
-			<input type="hidden" name="id" value={form?.values?.id || data.newId} />
-			<Field
-				label={i18n.t('household.field.name')}
-				name="name"
-				defaultValue={form?.values?.name ?? ''}
-				error={fieldError(i18n.t, form, 'name')}
-				required
-			/>
-			<div class="field">
-				<label for="new-type">{i18n.t('household.field.member_type')}</label>
-				<select
-					id="new-type"
-					name="memberTypeId"
-					aria-invalid={typeError ? 'true' : undefined}
-					aria-describedby={typeError ? 'new-type-error' : undefined}
+		<div class="create-member">
+			<Card
+				><Form
+					action="?/create"
+					success="household.changes.saved"
+					submitLabel={i18n.t('household.members.create')}
 				>
-					{#each data.types as type (type.id)}
-						<option value={type.id} selected={form?.values?.memberTypeId === type.id}>
-							{i18n.t('household.members.type_and_class', {
+					{#if formError(i18n.t, form)}
+						<p class="error" role="alert">{formError(i18n.t, form)}</p>
+					{/if}
+					<input type="hidden" name="id" value={form?.values?.id || data.newId} />
+					<Field
+						label={i18n.t('household.field.name')}
+						name="name"
+						defaultValue={form?.values?.name ?? ''}
+						error={fieldError(i18n.t, form, 'name')}
+						required
+					/>
+					<Select
+						name="memberTypeId"
+						label={i18n.t('household.field.member_type')}
+						value={form?.values?.memberTypeId || data.types[0].id}
+						error={typeError}
+						options={data.types.map((type) => ({
+							value: type.id,
+							label: i18n.t('household.members.type_and_class', {
 								type: type.name,
 								baseClass: i18n.t(baseClassLabel[type.baseClass])
-							})}
-						</option>
-					{/each}
-				</select>
-				{#if typeError}<p id="new-type-error" class="error">{typeError}</p>{/if}
-			</div>
-			<button type="submit">{i18n.t('household.members.create')}</button>
-		</form>
+							})
+						}))}
+					/>
+				</Form></Card
+			>
+		</div>
 	{/if}
 {/if}
 
@@ -160,21 +177,9 @@
 		list-style: none;
 	}
 
-	.stack {
-		display: grid;
-		gap: var(--space-3);
-		max-inline-size: 28rem;
+	.create-member {
+		max-inline-size: 32rem;
 	}
-
-	.field {
-		display: grid;
-		gap: var(--space-1);
-	}
-
-	label {
-		font-weight: 600;
-	}
-
 	.error {
 		margin: 0;
 	}

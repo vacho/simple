@@ -15,7 +15,8 @@ import {
 	expect,
 	open,
 	submitAndWait,
-	test
+	test,
+	choose
 } from './app.ts';
 
 test.use({ locale: 'en-US' });
@@ -75,7 +76,7 @@ test('Link the setup administrator to a member, Create an account for a member a
 	await signInWith(context, app, admin.token);
 
 	await openMember(page, app, 'Osvaldo');
-	await page.getByLabel('Account', { exact: true }).selectOption({ label: 'ana (Ana Pérez)' });
+	await choose(page, 'Account', 'ana (Ana Pérez)');
 	await submitAndWait(page, page.getByRole('button', { name: 'Link account' }));
 	await expect(page.getByText('Username: ana')).toBeVisible();
 	await expect(page.getByText('This is your account.')).toBeVisible();

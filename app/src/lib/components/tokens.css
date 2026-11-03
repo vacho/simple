@@ -45,9 +45,6 @@
 	--radius-card: 1rem;
 	--shadow-raised: 0 0.25rem 1rem rgb(17 24 39 / 8%);
 
-	/* Compatibility until the existing screens move to components in group 4. */
-	--color-error: var(--color-danger);
-	--radius: var(--radius-control);
 	--nav-size: 4rem;
 	--side-nav-size: 14rem;
 }

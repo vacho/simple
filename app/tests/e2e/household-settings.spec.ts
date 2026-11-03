@@ -16,7 +16,8 @@ import {
 	expect,
 	open,
 	submitAndWait,
-	test
+	test,
+	choose
 } from './app.ts';
 
 const signInWith = (context: BrowserContext, app: App, token: string) =>
@@ -71,6 +72,31 @@ const row = (page: Page, name: string) =>
 test.describe('in English', () => {
 	test.use({ locale: 'en-US' });
 
+	test('Dialog with the keyboard: cancel receives focus, Tab stays inside and Escape restores the trigger', async ({
+		page,
+		context
+	}) => {
+		const { app, tokens } = await start(null, true);
+		await signInWith(context, app, tokens.admin);
+		await open(page, `${app.url}/settings/member-types`);
+		const trigger = row(page, 'Hijo').getByRole('button', { name: 'Archive', exact: true });
+		await trigger.focus();
+		await page.keyboard.press('Enter');
+		const dialog = page.getByRole('alertdialog');
+		const cancel = dialog.getByRole('button', { name: 'Cancel', exact: true });
+		await expect(cancel).toBeFocused();
+		await page.keyboard.press('Tab');
+		await expect(dialog.getByRole('button', { name: 'Archive', exact: true })).toBeFocused();
+		await page.keyboard.press('Tab');
+		await expect(cancel).toBeFocused();
+		await page.keyboard.press('Shift+Tab');
+		await expect(dialog.getByRole('button', { name: 'Archive', exact: true })).toBeFocused();
+		await page.keyboard.press('Escape');
+		await expect(dialog).toBeHidden();
+		await expect(trigger).toBeFocused();
+		await expect(row(page, 'Hijo')).not.toContainText('Archived');
+	});
+
 	test('Administrator names the household, and Unnamed household after setup: the settings page saves the name', async ({
 		page,
 		context
@@ -110,7 +136,7 @@ test.describe('in English', () => {
 		await expect(page.getByText('There are no member types yet.')).toBeVisible();
 
 		await page.getByLabel('Name').fill('Abuela');
-		await page.getByLabel('Base class').selectOption({ label: 'Adult' });
+		await choose(page, 'Base class', 'Adult');
 		await submitAndWait(page, page.getByRole('button', { name: 'Create member type' }));
 		await expect(row(page, 'Abuela')).toContainText('0 members');
 
@@ -148,7 +174,7 @@ test.describe('in English', () => {
 		await open(page, `${app.url}/settings/member-types`);
 		await expect(row(page, 'Hijo')).toContainText('1 member');
 		await expect(row(page, 'Abuela')).toContainText('3 members');
-		await expect(row(page, 'Hijo').getByLabel('Base class')).toBeDisabled();
+		await expect(row(page, 'Hijo').getByRole('combobox', { name: 'Base class' })).toBeDisabled();
 		await expect(row(page, 'Hijo').getByRole('button', { name: 'Delete' })).toHaveCount(0);
 
 		await row(page, 'Hijo').getByRole('button', { name: 'Archive' }).click();
@@ -187,7 +213,7 @@ test.describe('in Spanish', () => {
 		await expect(page.locator('h1')).toHaveText('Tipos de miembro');
 		await expect(row(page, 'Hijo')).toContainText('1 miembro');
 		await expect(row(page, 'Abuela')).toContainText('3 miembros');
-		await expect(row(page, 'Hijo').getByLabel('Clase base')).toHaveValue('minor');
+		await expect(row(page, 'Hijo').locator('select[name="baseClass"]')).toHaveValue('minor');
 		await expect(row(page, 'Hijo').locator('option:checked')).toHaveText('Menor');
 	});
 

@@ -7,9 +7,10 @@
 		titleLink?: Snippet;
 		trailing?: Snippet;
 		muted?: boolean;
+		children?: Snippet;
 	}
 
-	let { title, meta, titleLink, trailing, muted = false }: Props = $props();
+	let { title, meta, titleLink, trailing, children, muted = false }: Props = $props();
 </script>
 
 <li data-muted={muted || undefined}>
@@ -18,9 +19,15 @@
 		{#if meta}<span>{meta}</span>{/if}
 	</div>
 	{#if trailing}<div class="trailing">{@render trailing()}</div>{/if}
+	{#if children}<div class="details">{@render children()}</div>{/if}
 </li>
 
 <style>
+	.details {
+		flex-basis: 100%;
+		display: grid;
+		gap: var(--space-3);
+	}
 	li {
 		display: flex;
 		flex-wrap: wrap;

@@ -27,14 +27,14 @@ async function homeInPseudoLocale(env: Record<string, string>) {
 test('a production start without the flag has no en-XA', async () => {
 	const { html, output } = await homeInPseudoLocale({ I18N_PSEUDO: '' });
 	expect(html).toContain('<html lang="en" dir="ltr">');
-	expect(html).toContain('<h1>Home</h1>');
+	expect(html).toContain('<title>Home</title>');
 	expect(output).not.toContain('I18N_PSEUDO');
 });
 
 test('with I18N_PSEUDO=1 every text is pseudo-localized, with a startup warning', async () => {
 	const { html, output } = await homeInPseudoLocale({ I18N_PSEUDO: '1' });
 	expect(html).toContain('<html lang="en-XA" dir="ltr">');
-	expect(html).toMatch(/<h1>\[Ĥöɱé ~+\]<\/h1>/);
+	expect(html).toMatch(/<title>\[Ĥöɱé ~+\]<\/title>/);
 	expect(output).toContain('I18N_PSEUDO is set');
 });
 

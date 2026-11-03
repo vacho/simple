@@ -8,7 +8,13 @@
 	import { getI18n } from '#lib/i18n/t.ts';
 
 	interface Props {
-		account: { userId: number; username: string; role: 'admin' | 'member'; active: boolean };
+		account: {
+			userId: number;
+			username: string;
+			role: 'admin' | 'member';
+			active: boolean;
+			passwordTemporary: boolean;
+		};
 		own: boolean;
 		form: FormFailure | null | undefined;
 	}
@@ -22,6 +28,9 @@
 
 <div class="account">
 	<div class="facts">
+		{#if account.passwordTemporary}
+			<Badge tone="warning" label={i18n.t('users.account.state_temporary')} />
+		{/if}
 		<span>{i18n.t('users.account.username', { username: account.username })}</span>
 		<Badge
 			tone={account.role === 'admin' ? 'info' : 'neutral'}
@@ -125,10 +134,6 @@
 		flex-wrap: wrap;
 		gap: var(--space-2);
 		align-items: center;
-	}
-	.account :global(form) {
-		display: grid;
-		gap: var(--space-2);
 	}
 	p {
 		margin: 0;

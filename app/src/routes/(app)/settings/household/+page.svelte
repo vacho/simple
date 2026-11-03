@@ -40,10 +40,6 @@
 	.stack {
 		max-inline-size: 28rem;
 	}
-	.stack :global(form) {
-		display: grid;
-		gap: var(--space-3);
-	}
 
 	.error {
 		margin: 0;

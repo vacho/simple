@@ -28,8 +28,7 @@ export const load: PageServerLoad = (event) => {
 			member,
 			types,
 			unlinked: member.account ? [] : listUnlinkedAccounts(ctx),
-			ownId: ctx.actor.kind === 'user' ? ctx.actor.id : null,
-			done: event.url.searchParams.has('done')
+			ownId: ctx.actor.kind === 'user' ? ctx.actor.id : null
 		};
 	} catch (error) {
 		throwForLoad(error);
@@ -74,7 +73,7 @@ export const actions: Actions = {
 			const { displayName, username, role } = input;
 			return failForAction(error, { displayName, username, role, form: 'create-account' });
 		}
-		redirect(303, `${event.url.pathname}?done`);
+		redirect(303, event.url.pathname);
 	},
 	linkAccount: act((ctx, id, values) => linkAccount(ctx, id, Number(values.userId))),
 	unlinkAccount: act((ctx, id) => unlinkAccount(ctx, id)),

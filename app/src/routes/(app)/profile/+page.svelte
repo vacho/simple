@@ -99,11 +99,6 @@
 		max-inline-size: 28rem;
 	}
 
-	.profile :global(form) {
-		display: grid;
-		gap: var(--space-3);
-	}
-
 	.error {
 		margin: 0;
 	}

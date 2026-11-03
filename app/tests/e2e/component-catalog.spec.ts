@@ -2,6 +2,7 @@ import AxeBuilder from '@axe-core/playwright';
 import { spawn } from 'node:child_process';
 import { rmSync } from 'node:fs';
 import path from 'node:path';
+import { stripVTControlCharacters } from 'node:util';
 import {
 	appRoot,
 	expect,
@@ -39,7 +40,9 @@ test('Development catalog renders in both themes without axe violations and prev
 	server.stdout.on('data', (chunk) => (output += chunk));
 	server.stderr.on('data', (chunk) => (output += chunk));
 	try {
-		await expect.poll(() => output.includes('Local:'), { timeout: 30000 }).toBe(true);
+		await expect
+			.poll(() => stripVTControlCharacters(output).includes(url), { timeout: 30000 })
+			.toBe(true);
 		await context.addCookies([{ name: 'session', value: admin.token, url }]);
 		for (const colorScheme of ['light', 'dark'] as const) {
 			await page.emulateMedia({ colorScheme });

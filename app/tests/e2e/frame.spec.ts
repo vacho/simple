@@ -9,6 +9,7 @@ import {
 	setUpAdmin,
 	startApp,
 	expect,
+	open,
 	test
 } from './app.ts';
 
@@ -91,7 +92,7 @@ test('Menu with the keyboard: focus moves between choices and returns to its tri
 }) => {
 	const { app, tokens } = await startWithMember();
 	await context.addCookies([{ name: 'session', value: tokens.member, url: app.url }]);
-	await page.goto(`${app.url}/`);
+	await open(page, `${app.url}/`);
 	const trigger = page.getByRole('button', { name: 'Luis' });
 	await trigger.focus();
 	await page.keyboard.press('Enter');

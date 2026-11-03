@@ -36,8 +36,7 @@ async function save(page: Page, language?: string, zone?: string) {
 		await page.getByRole('combobox', { name: /^(Time zone|Zona horaria)$/ }).click();
 		await page.getByRole('option', { name: zone, exact: true }).click();
 	}
-	await page.getByRole('button', { name: /^(Save|Guardar)$/ }).click();
-	await page.waitForLoadState('networkidle');
+	await submitAndWait(page, page.getByRole('button', { name: /^(Save|Guardar)$/ }));
 }
 
 test.describe('with an English browser', () => {

@@ -211,10 +211,6 @@
 		"text": "This member's account is active. Deactivate or unlink the account before archiving the member.",
 		"description": "Error shown when an administrator tries to archive a member linked to an active user account."
 	},
-	"household.member.archived": {
-		"text": "This member is archived.",
-		"description": "Notice on an archived member's page."
-	},
 	"household.member.back": {
 		"text": "Back to members",
 		"description": "Link from a member's page back to the members list."
@@ -230,6 +226,10 @@
 	"household.member.save": {
 		"text": "Save changes",
 		"description": "Button that saves a member's name and type."
+	},
+	"household.member.state_archived": {
+		"text": "Archived",
+		"description": "Badge on an archived member, in the members list and on the member's page."
 	},
 	"household.member.title": {
 		"text": "Member {name}",
@@ -314,6 +314,10 @@
 	"household.members.no_account": {
 		"text": "No account",
 		"description": "Shown next to a member in the administrators' list when the member has no user account."
+	},
+	"household.members.show_archived": {
+		"text": "Show archived",
+		"description": "Button that shows or hides archived members for administrators."
 	},
 	"household.members.title": {
 		"text": "Members",

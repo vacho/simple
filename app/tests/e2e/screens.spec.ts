@@ -115,7 +115,7 @@ test.describe(`${pseudo ? 'No plain text in en-XA' : 'Spanish is complete'}: eve
 		await page.locator('input[name="username"]').fill('toño');
 		await page.locator('input[name="password"]').fill('short');
 		await page.locator('button[type="submit"]').click();
-		await expect(page.locator('.error').first()).toBeVisible();
+		await expect(page.locator('[data-part="error-text"]').first()).toBeVisible();
 		await check(page, 'setup errors');
 	});
 
@@ -147,18 +147,22 @@ test.describe(`${pseudo ? 'No plain text in en-XA' : 'Spanish is complete'}: eve
 		await submit('correct horse battery');
 		await expect(page).toHaveURL(`${app.url}/`);
 		await check(page, 'home');
-		await page.locator('summary').click();
+		await page.getByRole('button', { name: 'Ana Pérez' }).click();
 		await check(page, 'home, user menu open');
 		for (const screen of ['/settings', '/profile', '/nowhere']) {
 			await page.goto(`${app.url}${screen}`);
 			await check(page, screen);
 		}
 		await page.goto(`${app.url}/profile`);
-		await page.locator('select[name="timeZone"]').evaluate((select: HTMLSelectElement) => {
-			select.add(new Option('+02:00', '+02:00', true, true));
+		// The selector offers only valid zones; send an invalid value through the real form.
+		await page.waitForLoadState('networkidle');
+		await page.locator('form[action="?/save"]').evaluate((form) => {
+			form.addEventListener('formdata', (event) => {
+				(event as FormDataEvent).formData.set('timeZone', '+02:00');
+			});
 		});
 		await page.locator('form[action="?/save"] button[type="submit"]').click();
-		await expect(page.locator('.error')).toBeVisible();
+		await expect(page.locator('[data-part="error-text"]')).toBeVisible();
 		await check(page, 'profile, invalid zone');
 	});
 
