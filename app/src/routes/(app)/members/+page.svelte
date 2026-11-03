@@ -23,6 +23,11 @@
 	const archived = $derived(data.list.members.filter((member) => member.archivedAt !== null));
 	const accountOf = (member: (typeof data.list.members)[number]) =>
 		'account' in member ? member.account : undefined;
+	const takenError = $derived(form?.error?.key === 'household.name.taken');
+	const nameError = $derived(
+		fieldError(i18n.t, form, 'name') ?? (takenError ? formError(i18n.t, form) : undefined)
+	);
+	const topError = $derived(takenError ? undefined : formError(i18n.t, form));
 	const typeError = $derived(fieldError(i18n.t, form, 'memberTypeId'));
 </script>
 
@@ -138,15 +143,15 @@
 					success="household.changes.saved"
 					submitLabel={i18n.t('household.members.create')}
 				>
-					{#if formError(i18n.t, form)}
-						<p class="error" role="alert">{formError(i18n.t, form)}</p>
+					{#if topError}
+						<p class="error" role="alert">{topError}</p>
 					{/if}
 					<input type="hidden" name="id" value={form?.values?.id || data.newId} />
 					<Field
 						label={i18n.t('household.field.name')}
 						name="name"
 						defaultValue={form?.values?.name ?? ''}
-						error={fieldError(i18n.t, form, 'name')}
+						error={nameError}
 						required
 					/>
 					<Select

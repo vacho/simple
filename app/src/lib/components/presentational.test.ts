@@ -53,7 +53,7 @@ describe('presentational components', () => {
 	});
 
 	it.each(['neutral', 'success', 'warning', 'danger', 'info', 'muted'] as const)(
-		'Badge renders the %s tone with its text label',
+		'Badge without color: Badge renders the %s tone with its text label',
 		(tone) => {
 			const { body } = render(Badge, { props: { tone, label: 'Archived' } });
 			expect(body).toContain(`data-tone="${tone}"`);

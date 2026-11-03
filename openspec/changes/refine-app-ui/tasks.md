@@ -40,8 +40,8 @@ Paths are relative to `app/`, and commands run there (ADR 0023). Ark UI wrappers
 
 ## 7. Final verification
 
-- [ ] 7.1 Check the code against ADR 0028 and ADR 0008: every interactive element in routes comes from an Ark UI wrapper, no route styles duplicate a component, colors appear only in `tokens.css`. Verify `npm run check` passes and record any deviation in the design
-- [ ] 7.2 From a clean clone of the branch: `npm ci`, `npm run check`, `npm run test:unit`, `npm run build`, `npm run test:e2e`, `npm run test:e2e:pseudo` and `npm run check:scenarios -- refine-app-ui`, and verify every command passes
+- [x] 7.1 Check the code against ADR 0028 and ADR 0008: every interactive element in routes comes from an Ark UI wrapper, no route styles duplicate a component, colors appear only in `tokens.css`. Verify `npm run check` passes and record any deviation in the design
+- [x] 7.2 From a clean clone of the branch: `npm ci`, `npm run check`, `npm run test:unit`, `npm run build`, `npm run test:e2e`, `npm run test:e2e:pseudo` and `npm run check:scenarios -- refine-app-ui`, and verify every command passes
 
 ## Workflow follow-up
 

@@ -146,7 +146,7 @@ test.describe('in English', () => {
 		await expect(page.locator('h1')).toHaveText('Member types');
 	});
 
-	test('Create a member, and Administrator views the household: accounts shown to administrators', async ({
+	test('Create a member, Error stays with its form, and Administrator views the household: accounts shown to administrators', async ({
 		page,
 		context
 	}) => {
@@ -154,14 +154,18 @@ test.describe('in English', () => {
 		await signInWith(context, app, tokens.admin);
 		await open(page, `${app.url}/members`);
 		await expect(entry(page, 'Lucía')).toContainText('No account');
+		await page.getByLabel('Name').fill('lucía');
+		await submitAndWait(page, page.getByRole('button', { name: 'Add member' }));
+		await expect(page.getByLabel('Name')).toHaveAttribute('aria-invalid', 'true');
+		await expect(page.locator('form[action="?/create"] [data-part="error-text"]')).toHaveText(
+			'That name is already in use.'
+		);
+		await expect(page.locator('[data-scope="toast"][data-part="root"]')).toHaveCount(0);
+
 		await page.getByLabel('Name').fill('Mateo');
 		await choose(page, 'Member type', 'Hija (Minor)');
 		await submitAndWait(page, page.getByRole('button', { name: 'Add member' }));
 		await expect(entry(page, 'Mateo')).toContainText('Hija (Minor)');
-
-		await page.getByLabel('Name').fill('lucía');
-		await submitAndWait(page, page.getByRole('button', { name: 'Add member' }));
-		await expect(page.getByRole('alert')).toHaveText('That name is already in use.');
 	});
 
 	test('Archive a member, Unarchive a member and Delete a member never linked: the member page', async ({

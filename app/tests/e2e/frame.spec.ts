@@ -95,7 +95,9 @@ test('Menu with the keyboard: focus moves between choices and returns to its tri
 	await open(page, `${app.url}/`);
 	const trigger = page.getByRole('button', { name: 'Luis' });
 	await trigger.focus();
+	await expect(trigger).toBeFocused();
 	await page.keyboard.press('Enter');
+	await expect(page.getByRole('menu')).toBeFocused();
 	await expect(page.getByRole('menuitem', { name: 'Profile' })).toHaveAttribute(
 		'data-highlighted',
 		''

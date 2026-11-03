@@ -121,9 +121,10 @@ test('Development catalog renders in both themes without axe violations and prev
 			.getByRole('region', { name: 'Dialog, ConfirmDialog, Menu, Tooltip, Toaster', exact: true })
 			.getByRole('button', { name: 'Ana Pérez' });
 		await menuTrigger.focus();
+		await expect(menuTrigger).toBeFocused();
 		await page.keyboard.press('Enter');
 		const menu = page.getByRole('menu');
-		await expect(menu).toBeVisible();
+		await expect(menu).toBeFocused();
 		await expect(menu.getByRole('menuitem', { name: 'Profile' })).toHaveAttribute(
 			'data-highlighted',
 			''

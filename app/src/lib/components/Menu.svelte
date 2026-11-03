@@ -16,10 +16,21 @@
 	}
 
 	let { label, items }: Props = $props();
+	let wrapper: HTMLDivElement | undefined = $state();
+
+	// Zag's ArrowDown queues focusMenu in requestAnimationFrame, while Presence unmounts the menu in
+	// a later frame; if Escape arrives before ArrowDown's frame, unmounting blurs the menu to body.
+	function onExitComplete() {
+		queueMicrotask(() => {
+			if (document.activeElement === document.body) {
+				wrapper?.querySelector<HTMLElement>('[data-part="trigger"]')?.focus();
+			}
+		});
+	}
 </script>
 
-<div class="menu-wrapper">
-	<ArkMenu.Root>
+<div class="menu-wrapper" bind:this={wrapper}>
+	<ArkMenu.Root {onExitComplete}>
 		<ArkMenu.Trigger>{label}</ArkMenu.Trigger>
 		<ArkMenu.Positioner>
 			<ArkMenu.Content aria-label={label}>

@@ -97,7 +97,7 @@ test.describe('in English', () => {
 		await expect(row(page, 'Hijo')).not.toContainText('Archived');
 	});
 
-	test('Administrator names the household, and Unnamed household after setup: the settings page saves the name', async ({
+	test('Administrator names the household, Unnamed household after setup, and Message after saving: the settings page saves the name', async ({
 		page,
 		context
 	}) => {
@@ -126,7 +126,7 @@ test.describe('in English', () => {
 		await expect(page.getByText('Use at most 64 characters.')).toBeVisible();
 	});
 
-	test('Create a member type, No member types after setup, and Delete an unused member type: the catalog page', async ({
+	test('Create a member type, No member types after setup, Cancel a deletion, and Delete an unused member type: the catalog page', async ({
 		page,
 		context
 	}) => {

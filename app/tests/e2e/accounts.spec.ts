@@ -101,7 +101,7 @@ test('Link the setup administrator to a member, Create an account for a member a
 	await other.close();
 });
 
-test('Deactivate an account, Reactivate an account, and Promote a member to administrator: effective at the next request', async ({
+test('Deactivate an account, Confirm a deactivation, A failed confirmed action explains why, Reactivate an account, and Promote a member to administrator: effective at the next request', async ({
 	page,
 	context,
 	browser
@@ -136,10 +136,12 @@ test('Deactivate an account, Reactivate an account, and Promote a member to admi
 	await expect(lucia.getByRole('link', { name: 'Settings' })).toBeVisible();
 
 	// Deactivate after confirming: her next request is signed out.
-	// The confirmation step is an in-app navigation, not a page load.
 	await page.getByRole('button', { name: 'Deactivate' }).click();
 	const dialog = page.getByRole('alertdialog', { name: 'Deactivate lucia?' });
 	await expect(dialog).toBeVisible();
+	await expect(dialog).toContainText(
+		"They are signed out everywhere and can't sign in until the account is reactivated."
+	);
 	await dialog.getByRole('button', { name: 'Deactivate', exact: true }).click();
 	await expect(page.getByText('Deactivated')).toBeVisible();
 	await lucia.reload();
@@ -154,7 +156,7 @@ test('Deactivate an account, Reactivate an account, and Promote a member to admi
 	await again.close();
 });
 
-test('Reset a forgotten password from the accounts page: confirmed, and the own account has no actions', async ({
+test('Reset a forgotten password from the accounts page, and Confirmation keeps what was typed private: confirmed, and the own account has no actions', async ({
 	page,
 	context
 }) => {
