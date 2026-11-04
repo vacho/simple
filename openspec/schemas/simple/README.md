@@ -10,7 +10,7 @@ It is a fork of OpenSpec's built-in `spec-driven` schema, taken from OpenSpec 1.
 - `adr` (new): reviews the design against the ADRs in force, creates Proposed ADRs for its durable decisions and writes `adr.md` in the change. See `docs/adr/README.md` and the `adr` skill.
 - `tasks`: requires `adr` and honors the ADRs it lists; task documentation goes in `app/README.md`, never in `docs/` (the upstream example used `docs/export.md`).
 - `templates/adr.md` (new).
-- `proposal`: `skip_specs` is only for refactors of app code (upstream also allowed tooling and docs, which here never are OpenSpec changes); runs the `change-flow` skill's `prepare` action first (on `main`, or on `change/<id>` once it exists; clean tree).
+- `proposal`: `skip_specs` is only for app code with no behavior change, refactors and appearance-only changes (ADR 0031; upstream also allowed tooling and docs, which here never are OpenSpec changes); runs the `change-flow` skill's `prepare` action first (on `main`, or on `change/<id>` once it exists; clean tree).
 - `apply`: checks the change branch and commits each task group through the `change-flow` skill (`.claude/skills/change-flow/`).
 - `proposal` and `tasks`: run `change-flow` `prepare` step 4 (roadmap status and commits) at the end of propose and update; `apply` points to `/opsx:archive` for closing. Git follows the OpenSpec commands (ADR 0029); the archive hook lives in `openspec/config.yaml` (`operations.archive.guidance`).
 

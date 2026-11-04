@@ -36,9 +36,12 @@ artifacts:
       Every change must either declare at least one capability (new or
       modified) or explicitly opt out of specs: `openspec validate` rejects a
       change with zero deltas unless the change's `.openspec.yaml` sets
-      `skip_specs: true`. Use `skip_specs: true` only for a refactor of app
-      code with no spec-level behavior change - specs describe behavior, so if
-      behavior does not change, no spec should change either. Agent tooling
+      `skip_specs: true`. Use `skip_specs: true` only for app code with no
+      spec-level behavior change: a refactor, or an appearance-only change
+      (tokens, styles, layout of existing screens; its ux.md carries the
+      mockups, and a new visual identity also brings an ADR superseding the
+      identity ADR in force, ADRs 0030 and 0031) - specs describe behavior, so
+      if behavior does not change, no spec should change either. Agent tooling
       and project documentation are never OpenSpec changes: they go on `main`
       or a `chore/` or `docs/` branch (change-flow skill).
       Do not invent a requirement just to satisfy validation.

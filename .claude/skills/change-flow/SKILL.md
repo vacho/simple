@@ -44,7 +44,7 @@ commit: docs(<id>): ...         docs(<id>): update specs ...           merge --n
 - Merge with `--no-ff`, one change at a time, re-verified on top of `main` ([ADR 0010](../../../docs/adr/0010-merge-no-ff-one-change-at-a-time.md)).
 - A change runs alone unless it meets the parallel conditions in `openspec-parallel-apply` ([ADR 0020](../../../docs/adr/0020-parallel-changes-in-worktrees.md)).
 - Commits follow the convention below ([ADR 0024](../../../docs/adr/0024-commit-convention-file-kinds-and-multi-agent-tooling.md)), checked by the Git hooks in `.githooks/` ([ADR 0025](../../../docs/adr/0025-git-hooks-contract-with-multi-agent-tooling.md)).
-- Each change, and each branch that changes what runs, ends in a version and a tag, released only after the owner approves the merge; a failed close is never undone without the owner's yes ([ADR 0018](../../../docs/adr/0018-versions-release-after-approval-and-rollback.md)).
+- Each change, and each branch that changes what runs, ends in a version and a tag, released only after the owner approves the merge; a failed close is never undone without the owner's yes ([ADR 0031](../../../docs/adr/0031-versions-with-appearance-only-changes.md)).
 - Commits are proposed for review before they are made, unless the commit mode is `auto` ([ADR 0015](../../../docs/adr/0015-commits-reviewed-before-they-are-made.md)).
 
 ## Inputs
@@ -155,7 +155,8 @@ The version is `app/package.json` `version`, in Semantic Versioning. Pick the le
 | Work closed | Before 1.0.0 | From 1.0.0 |
 |---|---|---|
 | An OpenSpec change that requires manual action from the operator on upgrade (breaking configuration, a migration that can't run automatically) | minor | major |
-| An OpenSpec change with `skip_specs: true` (a refactor of app code, no behavior change) | patch | patch |
+| An OpenSpec change with `skip_specs: true`: a refactor of app code, or an appearance-only change that keeps the visual identity (adjusted tokens, a restyled screen) | patch | patch |
+| An appearance-only change that replaces the visual identity (`skip_specs: true`, with an ADR superseding the identity ADR in force, ADR 0031) | minor | minor |
 | Any other OpenSpec change | minor | minor |
 | A `fix/`, `chore/` or `build/` branch that changes what runs in production (app code, dependencies, packaging) | patch | patch |
 | Anything that doesn't change what runs: documentation, OpenSpec artifacts, agent tooling, CI, tests only, dev-only tool configs, `app/README.md` only | no release | no release |
