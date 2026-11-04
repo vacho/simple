@@ -230,3 +230,17 @@ Use `Form` for enhanced mutations: provide a translated submit label and a succe
 Colors, typography, spacing and shapes come from `tokens.css`. Stylelint rejects color literals elsewhere and physical CSS properties; use logical properties so layouts mirror in right-to-left languages. The contrast tests cover both themes. Inter and icons are served by the app, with no external font or icon requests.
 
 While signed in on the development server, open `/dev/components` for the component and token catalog; `?dir=rtl` previews right-to-left. Change the language through the profile and the theme through the device. The catalog returns 404 in production. New screens and states must pass axe and the Spanish and `en-XA` screen checks (`npm run test:e2e:pseudo`), including open dialogs, badges, empty states and success messages.
+
+### Design tools, demo data and captures
+
+Screens are designed before they are built ([ADR 0030](../docs/adr/0030-ux-artifact-and-design-docs.md)); `docs/design/` holds the style guide, the screen map and the approved mockups. Three commands support it, all with fictitious data only:
+
+```sh
+npm run design:export   # design-export/tokens.json (W3C tokens, light and dark) and DESIGN.md, from tokens.css
+npm run demo -- <path>  # a new database with the demo household (refuses an existing file)
+npm run design:capture  # builds, then captures every shipped screen into ../docs/design/screens/
+```
+
+- `design:export` writes to `design-export/`, which is not committed: regenerate it whenever `tokens.css` changes, then import `tokens.json` as Figma variables or give `DESIGN.md` to Google Stitch or any other tool.
+- `demo` creates the Rivera household (`tests/design/demo-household.ts`): members, member types, an archived member and an account. Start the app with `DATABASE_PATH=<path>` and sign in as `marta` / `demo household 2026`. Never design or capture with the real database.
+- `design:capture` runs `tests/design/capture.spec.ts` with its own Playwright config: each screen at 390 px and 1280 px, in English and the light theme, with a `source.md`. Run it on `main` after a change that alters screens and commit the result as project docs.

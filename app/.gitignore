@@ -3,6 +3,9 @@ node_modules
 # Runtime data (database and backups)
 /data/
 
+# Design system export (npm run design:export)
+/design-export/
+
 # Test outputs
 /test-results/
 /playwright-report/

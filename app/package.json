@@ -25,7 +25,10 @@
 		"lint:css": "stylelint \"src/**/*.{css,svelte}\"",
 		"icons": "node --import tsx scripts/gen-icons.ts",
 		"backup": "node --import tsx scripts/backup.ts",
-		"check:scenarios": "node --import tsx scripts/check-scenarios.ts"
+		"check:scenarios": "node --import tsx scripts/check-scenarios.ts",
+		"design:export": "node --import tsx scripts/design-export.ts",
+		"design:capture": "npm run build && playwright test -c playwright.design.config.ts",
+		"demo": "node --import tsx tests/design/demo.ts"
 	},
 	"devDependencies": {
 		"@axe-core/playwright": "^4.14.0",
