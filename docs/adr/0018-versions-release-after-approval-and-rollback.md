@@ -1,6 +1,6 @@
 # 0018. Versions, release after approval, and recovery of a failed close
 
-- Status: Accepted
+- Status: Superseded by 0031
 - Date: 2026-10-23
 - Change: none (process decision taken with the owner while defining the workflow)
 - Supersedes: 0014

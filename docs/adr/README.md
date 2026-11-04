@@ -84,7 +84,7 @@ The options rejected and why, one line each.
 | [0015](0015-commits-reviewed-before-they-are-made.md) | Commits reviewed before they are made, configurable to automatic | Accepted |
 | [0016](0016-commit-convention-and-contents.md) | Commit convention and what each commit contains | Superseded by 0022 |
 | [0017](0017-plan-updates-where-the-change-lives.md) | Propose on main, update the plan where the change lives, archive on main | Accepted |
-| [0018](0018-versions-release-after-approval-and-rollback.md) | Versions, release after approval, and recovery of a failed close | Accepted |
+| [0018](0018-versions-release-after-approval-and-rollback.md) | Versions, release after approval, and recovery of a failed close | Superseded by 0031 |
 | [0019](0019-git-hooks-contract.md) | Git hooks contract | Superseded by 0025 |
 | [0020](0020-parallel-changes-in-worktrees.md) | Parallel changes only under conditions, in worktrees outside the repository | Accepted |
 | [0021](0021-dates-time-zones-and-timestamps.md) | Calendar dates, UTC timestamps and canonical time zones | Accepted |
@@ -97,3 +97,4 @@ The options rejected and why, one line each.
 | [0028](0028-ui-components-and-visual-identity.md) | One component library on Ark UI, and one visual identity as tokens | Accepted |
 | [0029](0029-openspec-commands-drive-the-git-flow.md) | OpenSpec commands drive the Git flow | Accepted |
 | [0030](0030-ux-artifact-and-design-docs.md) | A UX artifact per change, and docs/design/ as the visual source of truth | Accepted |
+| [0031](0031-versions-with-appearance-only-changes.md) | Versions (with appearance-only changes), release after approval, and recovery of a failed close | Accepted |
