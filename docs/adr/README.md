@@ -95,3 +95,4 @@ The options rejected and why, one line each.
 | [0026](0026-members-are-the-people-household-data-refers-to.md) | Members, not user accounts, are the people household data refers to | Accepted |
 | [0027](0027-account-states-enforced-by-sessions-and-policy.md) | Account states are enforced by session validation and the policy | Accepted |
 | [0028](0028-ui-components-and-visual-identity.md) | One component library on Ark UI, and one visual identity as tokens | Proposed |
+| [0029](0029-openspec-commands-drive-the-git-flow.md) | OpenSpec commands drive the Git flow | Accepted |

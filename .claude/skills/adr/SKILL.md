@@ -55,7 +55,7 @@ ADRs **in force** are the `Accepted` and `Proposed` ones. When an Accepted ADR h
 
 ### accept
 
-Runs when a change is archived, on `main`, as part of `/opsx:archive` inside `change-flow` `close`.
+Runs when a change is archived, on `main`, as part of `/opsx:archive`, which runs `change-flow` `close` (ADR 0029).
 
 1. Read the change's `adr.md` for the ADRs it created and the ones it supersedes. Every `docs/adr/` file whose `Change` line names this change must be in it; a Proposed one that isn't was dropped and must be rejected first (`reject`).
 2. Check each Proposed ADR against the code that shipped. If the implementation changed the decision, update the ADR to match, then **show the owner that change and wait for their yes** before accepting it: once Accepted it can never be edited again.

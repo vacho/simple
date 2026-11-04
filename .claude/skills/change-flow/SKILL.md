@@ -1,11 +1,22 @@
 ---
 name: change-flow
-description: The Git workflow of this project, and the source of truth for it. Prepare before proposing or updating a plan, start a change's branch, commit plan or task-group work with the commit convention, close a change (update, re-check, release after approval, merge --no-ff, archive and tag on main, clean up, resumable, with a confirmed undo on failure), or create a branch for work outside a change. Use it for every branch, commit, merge and archive, whenever the owner asks to propose, start, commit, merge, close or branch, and from the apply step of the OpenSpec schema "simple".
+description: The Git workflow of this project, and the source of truth for it. Prepare before proposing or updating a plan, start a change's branch, commit plan or task-group work with the commit convention, close a change (update, re-check, release after approval, merge --no-ff, archive and tag on main, clean up, resumable, with a confirmed undo on failure), or create a branch for work outside a change. Git follows the OpenSpec commands (ADR 0029): run it from /opsx:propose and /opsx:update (prepare), /opsx:apply (start, commit) and /opsx:archive (close), for every branch, commit, merge and archive, and directly when the owner asks to commit, branch, or recover a failed close.
 ---
 
 # Change flow
 
 How OpenSpec changes move through Git in this project. This skill is the source of truth for the rules and the steps; the reasons are in the ADRs it cites. Parallel changes add the `openspec-parallel-apply` skill on top of this one.
+
+**Git follows the OpenSpec commands** ([ADR 0029](../../../docs/adr/0029-openspec-commands-drive-the-git-flow.md)). The owner runs one command per step and its Git steps run inside it; never hand them a Git step as a separate command:
+
+| The owner runs | Runs from this skill |
+|---|---|
+| `/opsx:propose`, `/opsx:update` | `prepare` steps 1 to 3 before writing, step 4 after the last artifact |
+| `/opsx:apply` | `start` when on `main`, then `commit` per task group |
+| `/opsx:archive <id>` | `close`, with the OpenSpec archive as its step 7 |
+| `/change-flow ...` | only for work outside a change (`branch`, then `close` of that branch), a commit on request, or recovering a failed close |
+
+The hooks live where `openspec update` doesn't overwrite them: the schema's instructions (`openspec/schemas/simple/schema.yaml`), and the `context` and `operations` guidance of `openspec/config.yaml`.
 
 The exact Git mechanics of closing and of detours are scripts next to this file, tested by `tests/run.sh`: `close.sh` (state, sync, release, merge, archive commit, tag, clean up, undo) and `detour.sh` (stash by object id). Use them instead of typing those Git commands; this text says when to run them and when to ask the owner. If a script refuses, report its message; never work around it with manual Git commands.
 
@@ -208,7 +219,7 @@ Commits the work in progress with the convention. Never pushes.
 
 ### close
 
-Brings a finished change into `main`. Only with the owner's explicit approval, given for this change in this run. `close.sh` does every Git step and refuses anything unsafe; the agent runs the OpenSpec workflows, the checks and the conversation. While it runs, the owner doesn't edit either checkout, or says so.
+Brings a finished change into `main`. Only with the owner's explicit approval, given for this change in this run. For an OpenSpec change, `/opsx:archive <id>` runs it (ADR 0029): the archive workflow runs steps 1 to 6 first, archives at step 7 and finishes with steps 7 to 10. Running `close` directly is for branches outside a change and for resuming or recovering a close; when it reaches step 7 it runs `/opsx:archive <id>`, which sees `next=archive` and archives without starting another close. `close.sh` does every Git step and refuses anything unsafe; the agent runs the OpenSpec workflows, the checks and the conversation. While it runs, the owner doesn't edit either checkout, or says so.
 
 1. **Find where it stands:** `close.sh status change/<id>`. It reads the evidence history keeps (the merge commit Git wrote for this branch, the release commit among the branch's own commits, the archive commit, the tag) and any step left written but not committed, and prints `next=`. Follow `next`; if it says `stop`, report to the owner. Phases that don't apply (no release, nothing to archive) are skipped by the script.
 2. **Unmerged release:** if `next=drop-release`, run `close.sh drop-release change/<id>`. A release is always made fresh, right before the merge, after this run's approval: one left by an interrupted run is dropped, never reused, because `main` may have moved and the version may have been taken.
@@ -222,7 +233,7 @@ Brings a finished change into `main`. Only with the owner's explicit approval, g
 4. **Ask the owner**, in this run: show what will be merged (`git log main..change/<id> --oneline`) and the version it will become (level from "Versions", or "no release"). Their yes covers the release, merge and archive commits. If the answer is no, stop.
 5. **Release** (when there is one and `app/package.json` exists): `close.sh release change/<id> <level> <task-code>`. It bumps, commits `chore(<id>): release vX.Y.Z - <task-code>`, and refuses if that version's tag already exists.
 6. **Merge:** `close.sh merge change/<id>`. It switches the main checkout to `main` when there is no worktree, and merges with `--no-ff` and Git's message.
-7. **Archive**, in the main checkout: `/opsx:archive <id>`. The archive is complete only when all four of its outputs are written: the delta specs synced, the change folder moved, the change's ADRs accepted and the roadmap status set; `status` lists what is missing. Archiving runs the `adr` skill's `accept`; if it had to change a Proposed ADR to match the shipped code, it shows the owner that change and waits for their yes before accepting it (the one exception to the approval in step 4). `status` also checks every step of `accept`: status, `Change` path, index row, superseded ADRs. Then `close.sh archive-commit change/<id> <task-code>`. If `status` reports it complete but not committed, only run `archive-commit`. If it reports it partly written: `close.sh show-archive change/<id>` to show the owner what was written (new files included, without touching the index), then, after the owner's yes, `close.sh undo-archive change/<id> --run`, which discards only that output and keeps the merge and release; then run this step again.
+7. **Archive**, in the main checkout on `main`: the OpenSpec archive. When `/opsx:archive <id>` started this close, continue that workflow now; otherwise run `/opsx:archive <id>` (with `next=archive` it archives directly). The archive is complete only when all four of its outputs are written: the delta specs synced, the change folder moved, the change's ADRs accepted and the roadmap status set; `status` lists what is missing. Archiving runs the `adr` skill's `accept`; if it had to change a Proposed ADR to match the shipped code, it shows the owner that change and waits for their yes before accepting it (the one exception to the approval in step 4). `status` also checks every step of `accept`: status, `Change` path, index row, superseded ADRs. Then `close.sh archive-commit change/<id> <task-code>`. If `status` reports it complete but not committed, only run `archive-commit`. If it reports it partly written: `close.sh show-archive change/<id>` to show the owner what was written (new files included, without touching the index), then, after the owner's yes, `close.sh undo-archive change/<id> --run`, which discards only that output and keeps the merge and release; then run this step again.
 8. **Tag** (when a release was made): `close.sh tag change/<id> <task-code>`. It tags the archive commit and checks it.
 9. **Clean up:** `close.sh cleanup change/<id>`. It removes the worktree (never with `--force`: if Git refuses, the worktree has untracked work; report it) and deletes the branch.
 10. **Report:** version and tag (or "no release"), merge commit, archive commit, ADRs accepted, branch and worktree removed. Don't push commits or tags unless asked.
