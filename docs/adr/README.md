@@ -4,7 +4,7 @@ The architecture and process decisions of this project, one file per decision. A
 
 ## How ADRs are written
 
-The OpenSpec schema of this project (`openspec/schemas/simple/`) adds an `adr` step to every change, between design and tasks:
+The OpenSpec schema of this project (`openspec/schemas/develoop/`) adds an `adr` step to every change, between design and tasks:
 
 1. **Design** reads the ADRs in force (`Accepted` and `Proposed`) and names any it departs from. When an Accepted ADR has a pending Proposed ADR that supersedes it, the Accepted one stays the rule for other changes until that supersession is accepted.
 2. **ADR review** (`adr.md` in the change) creates a `Proposed` ADR for each durable decision of the design, and for each decision that replaces an ADR in force. Tasks cannot be planned until this step is done.
