@@ -230,3 +230,13 @@ Use `Form` for enhanced mutations: provide a translated submit label and a succe
 Colors, typography, spacing and shapes come from `tokens.css`. Stylelint rejects color literals elsewhere and physical CSS properties; use logical properties so layouts mirror in right-to-left languages. The contrast tests cover both themes. Inter and icons are served by the app, with no external font or icon requests.
 
 While signed in on the development server, open `/dev/components` for the component and token catalog; `?dir=rtl` previews right-to-left. Change the language through the profile and the theme through the device. The catalog returns 404 in production. New screens and states must pass axe and the Spanish and `en-XA` screen checks (`npm run test:e2e:pseudo`), including open dialogs, badges, empty states and success messages.
+
+### Design tools
+
+Screens are designed before they are built ([ADR 0030](../docs/adr/0030-ux-artifact-and-design-docs.md)); `docs/design/` holds the style guide, the screen map and the approved mockups.
+
+```sh
+npm run design:export   # design-export/tokens.json (W3C tokens, light and dark) and DESIGN.md, from tokens.css
+```
+
+`design:export` writes to `design-export/`, which is not committed: regenerate it whenever `tokens.css` changes, then import `tokens.json` as Figma variables or give `DESIGN.md` to Google Stitch or any other tool.
