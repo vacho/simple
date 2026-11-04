@@ -1,6 +1,5 @@
 // Form actions on one account (spec user-auth), shared by the member page and the accounts page.
 // The account comes from the form's `userId`; the policy refuses the actor's own (ADR 0027).
-import { redirect } from '@sveltejs/kit';
 import { deactivate, resetPassword } from '#lib/features/auth/server/index.ts';
 import { setActive, setRole } from '#lib/features/users/server/index.ts';
 import { buildCtx } from '#lib/server/web/ctx.ts';
@@ -16,8 +15,6 @@ const act = (change: Change) => async (event: RequestEvent) => {
 	const values = {
 		userId: String(userId),
 		role: String(form.get('role') ?? ''),
-		// Which confirmation was open, so a failure shows it again.
-		confirm: String(form.get('confirm') ?? ''),
 		form: 'account'
 	};
 	try {
@@ -25,7 +22,7 @@ const act = (change: Change) => async (event: RequestEvent) => {
 	} catch (error) {
 		return failForAction(error, values);
 	}
-	redirect(303, `${event.url.pathname}?done`);
+	return { done: true };
 };
 
 export const accountActions = {
@@ -36,12 +33,3 @@ export const accountActions = {
 	reactivate: act((ctx, userId) => setActive(ctx, userId, true)),
 	setRole: act((ctx, userId, form) => setRole(ctx, userId, String(form.get('role') ?? '')))
 };
-
-/** The account action to confirm on the page, from `?confirm=<action>&user=<id>`. */
-export function accountConfirmation(
-	url: URL
-): { action: 'reset' | 'deactivate'; userId: number } | null {
-	const action = url.searchParams.get('confirm');
-	const userId = Number(url.searchParams.get('user'));
-	return (action === 'reset' || action === 'deactivate') && userId ? { action, userId } : null;
-}

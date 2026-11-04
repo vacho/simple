@@ -15,7 +15,8 @@ import {
 	expect,
 	open,
 	submitAndWait,
-	test
+	test,
+	choose
 } from './app.ts';
 
 test.use({ locale: 'en-US' });
@@ -54,7 +55,7 @@ async function signInElsewhere(app: App, browserContext: BrowserContext, passwor
 	const page = await browserContext.newPage();
 	await open(page, `${app.url}/login`);
 	await page.getByLabel('Username').fill('lucia');
-	await page.getByLabel('Password').fill(password);
+	await page.getByLabel('Password', { exact: true }).fill(password);
 	await submitAndWait(page, page.getByRole('button', { name: 'Sign in' }));
 	return page;
 }
@@ -75,7 +76,7 @@ test('Link the setup administrator to a member, Create an account for a member a
 	await signInWith(context, app, admin.token);
 
 	await openMember(page, app, 'Osvaldo');
-	await page.getByLabel('Account', { exact: true }).selectOption({ label: 'ana (Ana Pérez)' });
+	await choose(page, 'Account', 'ana (Ana Pérez)');
 	await submitAndWait(page, page.getByRole('button', { name: 'Link account' }));
 	await expect(page.getByText('Username: ana')).toBeVisible();
 	await expect(page.getByText('This is your account.')).toBeVisible();
@@ -100,7 +101,7 @@ test('Link the setup administrator to a member, Create an account for a member a
 	await other.close();
 });
 
-test('Deactivate an account, Reactivate an account, and Promote a member to administrator: effective at the next request', async ({
+test('Deactivate an account, Confirm a deactivation, A failed confirmed action explains why, Reactivate an account, and Promote a member to administrator: effective at the next request', async ({
 	page,
 	context,
 	browser
@@ -117,31 +118,45 @@ test('Deactivate an account, Reactivate an account, and Promote a member to admi
 	const lucia = await signInElsewhere(app, other, 'primer-dia-2026');
 	await expect(lucia.getByRole('link', { name: 'Settings' })).toHaveCount(0);
 
+	await page.getByRole('button', { name: 'Archive', exact: true }).click();
+	const archive = page.getByRole('alertdialog', { name: 'Archive Lucía?' });
+	await archive.getByRole('button', { name: 'Archive', exact: true }).click();
+	await expect(archive).toBeHidden();
+	await expect(page.getByRole('alert')).toContainText("This member's account is active.");
+	await expect(page.getByRole('button', { name: 'Archive', exact: true })).toBeVisible();
+
 	// Promote: settings open at her next request.
-	await page.getByLabel('Role').selectOption('admin');
-	await submitAndWait(page, page.getByRole('button', { name: 'Change role' }));
+	await page.getByRole('combobox', { name: 'Role' }).click();
+	await page.getByRole('option', { name: 'Administrator', exact: true }).click();
+	await page.getByRole('button', { name: 'Change role' }).click();
+	await expect(page.locator('[data-scope="toast"][data-part="group"]')).toContainText(
+		'Account updated.'
+	);
 	await lucia.reload();
 	await expect(lucia.getByRole('link', { name: 'Settings' })).toBeVisible();
 
 	// Deactivate after confirming: her next request is signed out.
-	// The confirmation step is an in-app navigation, not a page load.
 	await page.getByRole('button', { name: 'Deactivate' }).click();
-	await expect(page.getByText('Deactivate lucia?')).toBeVisible();
-	await submitAndWait(page, page.getByRole('button', { name: 'Deactivate' }).first());
+	const dialog = page.getByRole('alertdialog', { name: 'Deactivate lucia?' });
+	await expect(dialog).toBeVisible();
+	await expect(dialog).toContainText(
+		"They are signed out everywhere and can't sign in until the account is reactivated."
+	);
+	await dialog.getByRole('button', { name: 'Deactivate', exact: true }).click();
 	await expect(page.getByText('Deactivated')).toBeVisible();
 	await lucia.reload();
 	await expect(lucia).toHaveURL(/\/login/);
 
-	await submitAndWait(page, page.getByRole('button', { name: 'Reactivate' }));
+	await page.getByRole('button', { name: 'Reactivate' }).click();
 	await expect(page.getByText('Active', { exact: false }).first()).toBeVisible();
 	await other.close();
 	const again = await browser.newContext({ locale: 'en-US' });
 	const back = await signInElsewhere(app, again, 'primer-dia-2026');
-	await expect(back.locator('h1')).toHaveText('Home');
+	await expect(back.locator('h1')).toHaveText('Unnamed household');
 	await again.close();
 });
 
-test('Reset a forgotten password from the accounts page: confirmed, and the own account has no actions', async ({
+test('Reset a forgotten password from the accounts page, and Confirmation keeps what was typed private: confirmed, and the own account has no actions', async ({
 	page,
 	context
 }) => {
@@ -165,9 +180,23 @@ test('Reset a forgotten password from the accounts page: confirmed, and the own 
 		.filter({ has: page.getByRole('heading', { name: 'Lucía' }) });
 	await expect(lucia).toContainText('Waiting for a new password');
 	await lucia.getByRole('button', { name: 'Reset password' }).click();
-	await expect(page.getByText('Set a new temporary password for lucia?')).toBeVisible();
-	await page.getByLabel('Temporary password').fill('short');
-	await submitAndWait(page, page.getByRole('button', { name: 'Reset password' }).first());
+	const dialog = page.getByRole('alertdialog', { name: 'Reset the password for lucia?' });
+	await expect(dialog).toBeVisible();
+	let posts = 0;
+	page.on('request', (request) => {
+		if (request.method() === 'POST') posts++;
+	});
+	const address = page.url();
+	await dialog.getByLabel('Temporary password', { exact: true }).fill('private-cancelled-password');
+	await dialog.getByRole('button', { name: 'Cancel' }).click();
+	await expect(dialog).toBeHidden();
+	expect(posts).toBe(0);
+	expect(page.url()).toBe(address);
+	await lucia.getByRole('button', { name: 'Reset password' }).click();
+	await expect(dialog.getByLabel('Temporary password', { exact: true })).toHaveValue('');
+	await dialog.getByLabel('Temporary password', { exact: true }).fill('short');
+	await dialog.getByRole('button', { name: 'Reset password', exact: true }).click();
+	await expect(dialog).toBeHidden();
 	await expect(page).not.toHaveURL(/password=/);
 	await expect(page.getByText(/8 and 128|8 to 128/)).toBeVisible();
 });

@@ -175,10 +175,32 @@ export async function open(page: Page, url: string): Promise<void> {
 	await page.waitForLoadState('networkidle');
 }
 
-/** Submits a form by clicking, and waits for the page the server answers with to load. */
+/** Picks an option in a select (an Ark UI listbox) found by its label, inside `scope`. */
+export async function choose(
+	page: Page,
+	label: string,
+	option: string,
+	scope: Page | Locator = page
+): Promise<void> {
+	await scope.getByRole('combobox', { name: label, exact: true }).click();
+	await page.getByRole('option', { name: option, exact: true }).click();
+}
+
+/**
+ * Submits a native or enhanced form and waits until the page it leads to has loaded: after an
+ * enhanced success or redirect, SvelteKit loads the new data itself, after the POST answers.
+ */
 export async function submitAndWait(page: Page, button: Locator): Promise<void> {
-	const loaded = page.waitForEvent('load');
+	const posted = page.waitForResponse((response) => response.request().method() === 'POST');
+	const reloaded = page.waitForResponse((response) => response.url().includes('/__data.json'));
+	const navigated = page.waitForEvent('framenavigated');
+	for (const pending of [reloaded, navigated]) pending.catch(() => {});
 	await button.click();
-	await loaded;
+	const response = await posted;
+	if (response.headers()['content-type']?.includes('application/json')) {
+		const { type } = (await response.json()) as { type: string };
+		if (type === 'success' || type === 'redirect') await reloaded;
+		if (type === 'redirect') await navigated;
+	}
 	await page.waitForLoadState('networkidle');
 }

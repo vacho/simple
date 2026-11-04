@@ -8,6 +8,7 @@ This folder is the app, its own npm project ([ADR 0023](../docs/adr/0023-app-in-
 
 - Node.js 22.17 or later; 24 is recommended.
 - npm.
+- JavaScript enabled in the browser; menus, selectors and confirmation dialogs require it.
 - HTTPS for any use beyond `localhost`: browsers only install the app and run its service worker over HTTPS (see [HTTPS and reverse proxies](#https-and-reverse-proxies)).
 
 ## Set up
@@ -219,3 +220,13 @@ The app uses SvelteKit 3 and Svelte 5, which are newer than most tools' training
 - `resolve()` from `$app/paths` takes paths without the leading slash: `resolve('profile')`.
 - Runes only (`$state`, `$derived`, `$props`), no stores. Remote functions stay off; use form actions and `load`.
 - Server-only code lives under a `server` folder or file name segment.
+
+### UI components
+
+[ADR 0028](../docs/adr/0028-ui-components-and-visual-identity.md) defines the shared component library and visual identity. Routes compose `src/lib/components/`: `Button`, `IconButton`, `Card`, `Badge`, `PageHeader`, `EmptyState`, `DataList`/`DataListRow` and `Icon` for presentation; `Field`, `Select`, `PasswordInput`, `Dialog`, `ConfirmDialog`, `Menu`, `Tooltip` and `Toaster` for interaction. Interactive wrappers use Ark UI; routes never import Ark UI or Lucide directly, or use raw `dialog`, `select`, `details` or `summary` elements. ESLint enforces those boundaries.
+
+Use `Form` for enhanced mutations: provide a translated submit label and a success message key, display server field errors next to their fields, and close confirmation dialogs on the result. Destructive actions use `ConfirmDialog`, naming the item and consequence. State badges always include text; empty lists explain the next action only when the user may take it.
+
+Colors, typography, spacing and shapes come from `tokens.css`. Stylelint rejects color literals elsewhere and physical CSS properties; use logical properties so layouts mirror in right-to-left languages. The contrast tests cover both themes. Inter and icons are served by the app, with no external font or icon requests.
+
+While signed in on the development server, open `/dev/components` for the component and token catalog; `?dir=rtl` previews right-to-left. Change the language through the profile and the theme through the device. The catalog returns 404 in production. New screens and states must pass axe and the Spanish and `en-XA` screen checks (`npm run test:e2e:pseudo`), including open dialogs, badges, empty states and success messages.

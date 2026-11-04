@@ -1,0 +1,1 @@
+import '@ark-ui/svelte';

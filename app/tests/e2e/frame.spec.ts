@@ -9,6 +9,7 @@ import {
 	setUpAdmin,
 	startApp,
 	expect,
+	open,
 	test
 } from './app.ts';
 
@@ -78,11 +79,36 @@ test('User menu: the display name, a Profile link and a Sign out action', async 
 	const { app, tokens } = await startWithMember();
 	await context.addCookies([{ name: 'session', value: tokens.member, url: app.url }]);
 	await page.goto(`${app.url}/`);
-	await page.getByText('Luis').click();
-	await expect(page.getByRole('link', { name: 'Profile' })).toBeVisible();
-	await expect(page.getByRole('button', { name: 'Sign out' })).toBeVisible();
-	await page.getByRole('link', { name: 'Profile' }).click();
+	await page.getByRole('button', { name: 'Luis' }).click();
+	await expect(page.getByRole('menuitem', { name: 'Profile' })).toBeVisible();
+	await expect(page.getByRole('menuitem', { name: 'Sign out' })).toBeVisible();
+	await page.getByRole('menuitem', { name: 'Profile' }).click();
 	await expect(page).toHaveURL(`${app.url}/profile`);
+});
+
+test('Menu with the keyboard: focus moves between choices and returns to its trigger', async ({
+	page,
+	context
+}) => {
+	const { app, tokens } = await startWithMember();
+	await context.addCookies([{ name: 'session', value: tokens.member, url: app.url }]);
+	await open(page, `${app.url}/`);
+	const trigger = page.getByRole('button', { name: 'Luis' });
+	await trigger.focus();
+	await expect(trigger).toBeFocused();
+	await page.keyboard.press('Enter');
+	await expect(page.getByRole('menu')).toBeFocused();
+	await expect(page.getByRole('menuitem', { name: 'Profile' })).toHaveAttribute(
+		'data-highlighted',
+		''
+	);
+	await page.keyboard.press('ArrowDown');
+	await expect(page.getByRole('menuitem', { name: 'Sign out' })).toHaveAttribute(
+		'data-highlighted',
+		''
+	);
+	await page.keyboard.press('Escape');
+	await expect(trigger).toBeFocused();
 });
 
 test.describe('Device prefers dark', () => {
@@ -97,7 +123,7 @@ test.describe('Device prefers dark', () => {
 			return [style.backgroundColor, style.color];
 		});
 		// --color-bg and --color-text of the dark theme (tokens.css).
-		expect(colors).toEqual(['rgb(18, 20, 23)', 'rgb(232, 234, 237)']);
+		expect(colors).toEqual(['rgb(15, 17, 21)', 'rgb(229, 231, 235)']);
 	});
 });
 

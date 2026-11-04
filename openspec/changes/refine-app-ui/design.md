@@ -33,7 +33,7 @@ See `proposal.md` for why. What exists after v0.2.0 (paths relative to `app/`, A
 |---|---|---|---|
 | Neutrals | `--color-bg`, `--color-surface`, `--color-surface-raised`, `--color-text`, `--color-text-muted`, `--color-border` | `#F7F8FA`, `#EEF1F5`, `#FFFFFF`, `#111827`, `#4B5563`, `#7A8591` | `#0F1115`, `#181B21`, `#1F232B`, `#E5E7EB`, `#9CA3AF`, `#7F8A96` |
 | Accent | `--color-primary`, `--color-on-primary`, `--color-primary-soft` | `#4F46E5`, `#FFFFFF`, `#E0E7FF` | `#A5B4FC`, `#1E1B4B`, `#272A4A` |
-| Semantic | `--color-success`, `--color-warning`, `--color-danger`, `--color-info`, each with `-soft` (badge background) and `--color-on-danger` | chosen and checked in task 1.2 | chosen and checked in task 1.2 |
+| Semantic | `--color-success`, `--color-warning`, `--color-danger`, `--color-info`, each with `-soft` (badge background) and `--color-on-danger` | `#126B46` (`#DDF7E9`), `#8A4B00` (`#FFF1C2`), `#B42318` (`#FEE4E2`, on-danger `#FFFFFF`), `#175CD3` (`#DDEBFF`) | `#6CE5AD` (`#173B2D`), `#F9C77C` (`#3B2B18`), `#FF8A80` (`#422220`, on-danger `#0F1115`), `#8FB8FF` (`#1B304B`) |
 | Focus | `--color-focus` | `#4F46E5` | `#A5B4FC` |
 | Type | `--font-body` (Inter, then the system stack), `--text-xs` … `--text-2xl` (12, 14, 16, 20, 24, 28 px), `--weight-regular` 400, `--weight-strong` 600, `--leading` 1.5 | | |
 | Shape | `--radius-control` 12 px, `--radius-card` 16 px, `--shadow-raised` (one subtle shadow; dark uses a border instead) | | |
@@ -58,11 +58,11 @@ The library in `src/lib/components/`, each component in its own file:
 
 | Kind | Components | Built on |
 |---|---|---|
-| Interactive | `Dialog`, `ConfirmDialog`, `Menu`, `Select`, `Field` (replaces today's), `PasswordInput`, `Toaster` and `toast()`, `Tooltip` | Ark UI: Dialog, Menu, Select (with its hidden native select, so forms post), Field, PasswordInput, Toast, Tooltip |
-| Presentational | `Button` (variants primary, secondary, ghost, danger; sizes), `IconButton`, `Card`, `Badge` (neutral, success, warning, danger, info, muted), `PageHeader` (title, subtitle, primary action), `EmptyState`, `DataList` (rows with title, meta and trailing badges/actions), `Icon` | Semantic HTML and tokens; Ark has no such components |
+| Interactive | `AppLocaleProvider`, `Dialog`, `ConfirmDialog`, `Menu`, `Select`, `Field` (replaces today's), `PasswordInput`, `Toaster` and `toast()`, `Tooltip` | Ark UI: LocaleProvider, Dialog, Menu, Select (with its hidden native select, so forms post), Field, PasswordInput, Toast, Tooltip |
+| Presentational | `Button` (variants primary, secondary, ghost, danger; sizes), `IconButton`, `Card`, `Badge` (neutral, success, warning, danger, info, muted), `PageHeader` (title, subtitle, primary action), `EmptyState`, `DataList` and `DataListRow` (rows with title, meta and trailing badges/actions), `Icon` | Semantic HTML and tokens; Ark has no such components |
 | Form wiring | `Form` | A `<form>` with `use:enhance` (D4) |
 
-- **Locale and direction:** the root layout wraps the app in Ark's `LocaleProvider`, fed with the request's resolved locale, so Ark components lay out and announce correctly in right-to-left languages.
+- **Locale and direction:** the root layout wraps the app in `AppLocaleProvider` (wrapping Ark's `LocaleProvider` inside `src/lib/components/`, so routes never import `@ark-ui/svelte`), fed with the request's resolved locale, so Ark components lay out and announce correctly in right-to-left languages.
 - **Texts:** every visible or announced string a component shows comes from the catalogs through props or `t()`; components hold no English.
 - **Icons:** `@lucide/svelte` **1.57.0** (ISC; published 2026-10-14). `Icon` imports icons one by one (`@lucide/svelte/icons/<name>`), sets `aria-hidden` unless given a label, and mirrors directional icons under `[dir="rtl"]` (the rule already in `base.css`).
 - *Alternatives:* Bits UI (Svelte-first headless library; considered and declined by the owner in favour of Ark UI's broader, state-machine-based set); in-house widgets (accessible menus, selects and dialogs are easy to get subtly wrong); mixing a native `<dialog>` for confirmations with a library for the rest (rejected: one source for every behavior).
@@ -133,4 +133,4 @@ No data or configuration changes. Deploying v0.3.0 replaces the interface; rollb
 
 ## Open Questions
 
-- The exact semantic colors (success, warning, danger, info and their soft variants) are picked in task 1.2 within direction B and must pass the contrast test; this doesn't change the approach or the task breakdown.
+None: the semantic colors and their `-soft` badge backgrounds were chosen and contrast-checked in task 1.2 (recorded in D1 above).

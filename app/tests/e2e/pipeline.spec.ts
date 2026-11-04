@@ -62,7 +62,7 @@ test('Preference wins over the browser: saved Spanish on an English browser, sam
 		await get(app, '/', { ...page, cookie, 'accept-language': 'en-US,en' })
 	).text();
 	expect(html).toContain('<html lang="es" dir="ltr">');
-	expect(html).toContain('<h1>Inicio</h1>');
+	expect(html).toContain('<title>Inicio</title>');
 	await app.stop();
 });
 

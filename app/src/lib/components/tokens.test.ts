@@ -1,4 +1,4 @@
-// Light and dark appearance (D10): every text and control color pair meets WCAG 2.1 AA.
+// Light and dark appearance: every component color pair meets WCAG 2.1 AA.
 import { readFileSync } from 'node:fs';
 import { describe, expect, it } from 'vitest';
 
@@ -24,27 +24,34 @@ const contrast = (a: string, b: string) => {
 	return (high + 0.05) / (low + 0.05);
 };
 
-// [foreground, background, minimum]: 4.5 for text, 3 for control boundaries and focus.
+const surfaces = ['bg', 'surface', 'surface-raised'];
+const textColors = ['text', 'text-muted', 'primary', 'success', 'warning', 'danger', 'info'];
+const badgeColors = ['primary', 'success', 'warning', 'danger', 'info'];
+
+// [foreground, background, minimum]: text is 4.5:1; control boundaries are 3:1.
 const pairs: [string, string, number][] = [
-	['text', 'bg', 4.5],
-	['text', 'surface', 4.5],
-	['text-muted', 'bg', 4.5],
-	['text-muted', 'surface', 4.5],
-	['primary', 'bg', 4.5],
-	['primary', 'surface', 4.5],
+	...textColors.flatMap((foreground): [string, string, number][] =>
+		surfaces.map((background) => [foreground, background, 4.5])
+	),
 	['on-primary', 'primary', 4.5],
-	['error', 'bg', 4.5],
-	['error', 'surface', 4.5],
-	['border', 'bg', 3],
-	['border', 'surface', 3],
-	['focus', 'bg', 3],
-	['focus', 'surface', 3]
+	['on-danger', 'danger', 4.5],
+	...badgeColors.map((foreground): [string, string, number] => [
+		foreground,
+		`${foreground}-soft`,
+		4.5
+	]),
+	// Neutral and muted badges use text labels on these neutral backgrounds.
+	['text-muted', 'surface', 4.5],
+	['text-muted', 'bg', 4.5],
+	...['border', 'focus', 'primary', 'danger'].flatMap((foreground): [string, string, number][] =>
+		surfaces.map((background) => [foreground, background, 3])
+	)
 ];
 
 describe.each([
 	['light', colors(light)],
 	['dark', colors(dark)]
-])('Contrast: the %s theme', (_theme, palette) => {
+])('Contrast, and Badge without color: the %s theme', (_theme, palette) => {
 	it.each(pairs)('%s on %s reaches %s:1', (foreground, background, minimum) => {
 		expect(palette[foreground], foreground).toBeDefined();
 		expect(contrast(palette[foreground], palette[background])).toBeGreaterThanOrEqual(minimum);

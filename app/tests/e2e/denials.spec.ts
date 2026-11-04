@@ -41,7 +41,7 @@ test('Non-administrator is denied: a translated "not allowed" page, without the 
 		const response = await open(tokens.member, language);
 		const html = await response.text();
 		expect(response.status).toBe(403);
-		expect(html).toContain(`<h1>${text}</h1>`);
+		expect(html).toMatch(new RegExp(`<h1[^>]*>${RegExp.escape(text)}</h1>`));
 		expect(html).not.toContain(version);
 	}
 });
@@ -60,5 +60,5 @@ test('an address matching no page shows a translated not-found page', async () =
 		headers: { cookie: `session=${tokens.member}`, accept: 'text/html', 'accept-language': 'es' }
 	});
 	expect(missing.status).toBe(404);
-	expect(await missing.text()).toContain('<h1>Esta página no existe.</h1>');
+	expect(await missing.text()).toMatch(/<h1[^>]*>Esta página no existe\.<\/h1>/);
 });

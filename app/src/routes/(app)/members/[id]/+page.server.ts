@@ -11,7 +11,7 @@ import {
 	unlinkAccount,
 	updateMember
 } from '#lib/features/household/server/index.ts';
-import { accountActions, accountConfirmation } from '../../account-actions.server.ts';
+import { accountActions } from '../../account-actions.server.ts';
 import { buildCtx } from '#lib/server/web/ctx.ts';
 import { failForAction, throwForLoad } from '#lib/server/web/responses.ts';
 import type { Actions, PageServerLoad, RequestEvent } from './$types';
@@ -24,17 +24,11 @@ export const load: PageServerLoad = (event) => {
 		const types = listMemberTypes(ctx).filter(
 			(type) => !type.archived || type.id === member.memberTypeId
 		);
-		// A destructive action is confirmed on the page, as a second step (design D6).
-		const action = event.url.searchParams.get('confirm');
-		const confirm = action === 'archive' || action === 'delete' ? action : null;
 		return {
 			member,
 			types,
-			confirm,
-			accountConfirm: accountConfirmation(event.url),
 			unlinked: member.account ? [] : listUnlinkedAccounts(ctx),
-			ownId: ctx.actor.kind === 'user' ? ctx.actor.id : null,
-			done: event.url.searchParams.has('done')
+			ownId: ctx.actor.kind === 'user' ? ctx.actor.id : null
 		};
 	} catch (error) {
 		throwForLoad(error);
@@ -79,7 +73,7 @@ export const actions: Actions = {
 			const { displayName, username, role } = input;
 			return failForAction(error, { displayName, username, role, form: 'create-account' });
 		}
-		redirect(303, `${event.url.pathname}?done`);
+		redirect(303, event.url.pathname);
 	},
 	linkAccount: act((ctx, id, values) => linkAccount(ctx, id, Number(values.userId))),
 	unlinkAccount: act((ctx, id) => unlinkAccount(ctx, id)),

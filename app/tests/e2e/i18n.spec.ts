@@ -30,11 +30,11 @@ for (const [browser, locale, title] of [
 		}) => {
 			const { app, admin } = await startSetUpApp();
 			const html = await home(app.url, `session=${admin.token}`, browser);
-			expect(html).toContain(`<h1>${title}</h1>`);
+			expect(html).toContain(`<title>${title}</title>`);
 			expect(html).toContain(`<html lang="${locale}" dir="ltr">`);
 			await context.addCookies([{ name: 'session', value: admin.token, url: app.url }]);
 			expect(await openHome(page, app.url, locale)).toEqual([]);
-			await expect(page.locator('h1')).toHaveText(title);
+			await expect(page).toHaveTitle(title);
 			await app.stop();
 		});
 	});
@@ -44,7 +44,7 @@ test('Browser language not installed: a French-only browser gets English', async
 	const { app, cookie } = await startSetUpApp();
 	const html = await home(app.url, cookie, 'fr');
 	expect(html).toContain('<html lang="en" dir="ltr">');
-	expect(html).toContain('<h1>Home</h1>');
+	expect(html).toContain('<title>Home</title>');
 	await app.stop();
 });
 

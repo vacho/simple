@@ -28,8 +28,14 @@ const signInWith = (context: BrowserContext, app: App, token: string) =>
 	context.addCookies([{ name: 'session', value: token, url: app.url }]);
 
 async function save(page: Page, language?: string, zone?: string) {
-	if (language) await page.getByLabel(/^(Language|Idioma)$/).selectOption({ label: language });
-	if (zone) await page.getByLabel(/^(Time zone|Zona horaria)$/).selectOption(zone);
+	if (language) {
+		await page.getByRole('combobox', { name: /^(Language|Idioma)$/ }).click();
+		await page.getByRole('option', { name: language }).click();
+	}
+	if (zone) {
+		await page.getByRole('combobox', { name: /^(Time zone|Zona horaria)$/ }).click();
+		await page.getByRole('option', { name: zone, exact: true }).click();
+	}
 	await submitAndWait(page, page.getByRole('button', { name: /^(Save|Guardar)$/ }));
 }
 
@@ -54,9 +60,9 @@ test.describe('with an English browser', () => {
 		await open(second, `${app.url}/login`);
 		await expect(second.locator('h1')).toHaveText('Sign in');
 		await second.getByLabel('Username').fill('ana');
-		await second.getByLabel('Password').fill('correct horse battery');
+		await second.locator('input[name="password"]').fill('correct horse battery');
 		await submitAndWait(second, second.getByRole('button', { name: 'Sign in' }));
-		await expect(second.locator('h1')).toHaveText('Inicio');
+		await expect(second.locator('h1')).toHaveText('Hogar sin nombre');
 		await other.close();
 	});
 
@@ -85,11 +91,11 @@ test.describe('with an English browser', () => {
 		await signInWith(other, app, tokens.admin);
 		const second = await other.newPage();
 		await open(second, `${app.url}/profile`);
-		await expect(second.getByLabel('Time zone')).toHaveValue('Europe/Madrid');
+		await expect(second.locator('select[name="timeZone"]')).toHaveValue('Europe/Madrid');
 		await other.close();
 
 		await save(page, undefined, 'UTC');
-		await expect(page.getByLabel('Time zone')).toHaveValue('UTC');
+		await expect(page.locator('select[name="timeZone"]')).toHaveValue('UTC');
 	});
 
 	for (const [scenario, value] of [
@@ -104,14 +110,15 @@ test.describe('with an English browser', () => {
 			await signInWith(context, app, tokens.admin);
 			await open(page, `${app.url}/profile`);
 			await save(page, undefined, 'America/La_Paz');
-			// A value the selector doesn't offer, as a crafted request would send it.
-			await page.getByLabel('Time zone').evaluate((select: HTMLSelectElement, zone) => {
-				select.add(new Option(zone, zone, true, true));
-			}, value);
-			await submitAndWait(page, page.getByRole('button', { name: 'Save', exact: true }));
-			await expect(page.getByText('Choose a valid time zone.')).toBeVisible();
+			// The Ark selector cannot choose an invalid zone; send the crafted request directly.
+			const response = await page.request.post(`${app.url}/profile?/save`, {
+				headers: { origin: app.url },
+				form: { locale: '', timeZone: value }
+			});
+			expect(response.status()).toBe(400);
+			expect(await response.text()).toContain('users.time_zone.invalid');
 			await open(page, `${app.url}/profile`);
-			await expect(page.getByLabel('Time zone')).toHaveValue('America/La_Paz');
+			await expect(page.locator('select[name="timeZone"]')).toHaveValue('America/La_Paz');
 		});
 	}
 
@@ -123,7 +130,7 @@ test.describe('with an English browser', () => {
 		await signInWith(context, app, tokens.member);
 		await open(page, `${app.url}/profile`);
 		await expect(page.locator('h1')).toHaveText('Profile');
-		await expect(page.getByLabel('Language')).toHaveValue('');
+		await expect(page.locator('select[name="locale"]')).toHaveValue('');
 	});
 
 	test('No selector outside the profile', async ({ page, context }) => {

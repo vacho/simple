@@ -1,59 +1,27 @@
 <script lang="ts">
+	import DataList from '#lib/components/DataList.svelte';
+	import DataListRow from '#lib/components/DataListRow.svelte';
+	import PageHeader from '#lib/components/PageHeader.svelte';
 	import { getI18n } from '#lib/i18n/t.ts';
 	import AccountActions from '../../AccountActions.svelte';
 	import type { PageProps } from './$types';
-
 	let { data, form }: PageProps = $props();
 	const i18n = getI18n();
 </script>
 
-<svelte:head>
-	<title>{i18n.t('users.accounts.title')}</title>
-</svelte:head>
-
-<h1>{i18n.t('users.accounts.title')}</h1>
-<p>{i18n.t('users.accounts.intro')}</p>
-
-{#if data.done && !form}
-	<p role="status">{i18n.t('users.accounts.done')}</p>
-{/if}
-
-<ul class="accounts">
+<svelte:head><title>{i18n.t('users.accounts.title')}</title></svelte:head>
+<PageHeader title={i18n.t('users.accounts.title')} subtitle={i18n.t('users.accounts.intro')} />
+<DataList>
 	{#each data.accounts as account (account.id)}
-		<li>
-			<h2>{account.displayName}</h2>
-			{#if account.passwordTemporary}
-				<p>{i18n.t('users.account.state_temporary')}</p>
-			{/if}
-			<AccountActions
-				account={{ ...account, userId: account.id }}
-				own={account.id === data.ownId}
-				confirm={data.confirm}
-				{form}
-			/>
-		</li>
+		<DataListRow title={account.displayName} muted={!account.active}>
+			{#snippet titleLink()}<h2>{account.displayName}</h2>{/snippet}
+			{#snippet trailing()}
+				<AccountActions
+					account={{ ...account, userId: account.id }}
+					own={account.id === data.ownId}
+					{form}
+				/>
+			{/snippet}
+		</DataListRow>
 	{/each}
-</ul>
-
-<style>
-	.accounts {
-		display: grid;
-		gap: var(--space-4);
-		padding: 0;
-		list-style: none;
-	}
-
-	.accounts li {
-		padding-block-end: var(--space-3);
-		border-block-end: 1px solid var(--color-border);
-	}
-
-	h2 {
-		margin-block: 0 var(--space-1);
-		font-size: 1.125rem;
-	}
-
-	p {
-		margin: 0 0 var(--space-1);
-	}
-</style>
+</DataList>

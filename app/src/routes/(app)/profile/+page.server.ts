@@ -20,8 +20,7 @@ export const load: PageServerLoad = (event) => {
 		return {
 			profile,
 			languages: languageOptions(listInstalled(ctx)),
-			timeZones: timeZoneOptions(profile.timeZone),
-			passwordChanged: event.url.searchParams.has('password-changed')
+			timeZones: timeZoneOptions(profile.timeZone)
 		};
 	} catch (error) {
 		throwForLoad(error);
@@ -61,6 +60,6 @@ export const actions: Actions = {
 			// `form` tells the page which form the errors belong to; passwords are never sent back.
 			return failForAction(error, { form: 'password' });
 		}
-		redirect(303, '/profile?password-changed');
+		redirect(303, '/profile');
 	}
 };

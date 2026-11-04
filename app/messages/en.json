@@ -15,6 +15,10 @@
 		"text": "The current password is wrong.",
 		"description": "Error under the current password field when the user types a password that isn't theirs."
 	},
+	"auth.password.hide": {
+		"text": "Hide password",
+		"description": "Accessible name of the button that hides the currently visible password."
+	},
 	"auth.password.intro": {
 		"text": "An administrator gave you a temporary password. Choose your own to continue; only you will know it.",
 		"description": "Introduction on the page that asks for a new password at the first sign-in after an account is created or its password reset."
@@ -42,6 +46,10 @@
 	"auth.password.section_hint": {
 		"text": "You stay signed in on this device; your other devices are signed out.",
 		"description": "Help text above the password change form on the profile page."
+	},
+	"auth.password.show": {
+		"text": "Show password",
+		"description": "Accessible name of the button that reveals the currently hidden password."
 	},
 	"auth.password.title": {
 		"text": "Choose your password",
@@ -131,6 +139,10 @@
 		"text": "Minor",
 		"description": "Base class of a member type: a child under legal age. Shown in lists and in the base class selector."
 	},
+	"household.changes.saved": {
+		"text": "Changes saved.",
+		"description": "Confirmation after a household or member change."
+	},
 	"household.confirm.archive_member": {
 		"text": "Archive \"{name}\"? Only administrators will see this member.",
 		"description": "Confirmation before archiving a member; {name} is the member's name as entered."
@@ -146,6 +158,34 @@
 	"household.confirm.delete_type": {
 		"text": "Delete the member type \"{name}\"? This can't be undone.",
 		"description": "Confirmation before deleting a member type that no member has; {name} is the type's name as entered."
+	},
+	"household.confirm.unlink": {
+		"text": "Unlink the account from {name}? The account keeps its current access status and can be linked to another member.",
+		"description": "Consequence of unlinking the named member from an account."
+	},
+	"household.danger_zone": {
+		"text": "Danger zone",
+		"description": "Heading above destructive member actions."
+	},
+	"household.dialog.archive_member.title": {
+		"text": "Archive {name}?",
+		"description": "Title confirming that the named member will be archived."
+	},
+	"household.dialog.archive_type.title": {
+		"text": "Archive the member type \"{name}\"?",
+		"description": "Title confirming that the named member type will be archived."
+	},
+	"household.dialog.delete_member.title": {
+		"text": "Delete {name}?",
+		"description": "Title confirming that the named member will be deleted."
+	},
+	"household.dialog.delete_type.title": {
+		"text": "Delete member type \"{name}\"?",
+		"description": "Title of the confirmation dialog before deleting a member type; {name} is its name."
+	},
+	"household.dialog.unlink.title": {
+		"text": "Unlink the account from {name}?",
+		"description": "Title confirming account unlinking from the named member."
 	},
 	"household.field.base_class": {
 		"text": "Base class",
@@ -171,10 +211,6 @@
 		"text": "This member's account is active. Deactivate or unlink the account before archiving the member.",
 		"description": "Error shown when an administrator tries to archive a member linked to an active user account."
 	},
-	"household.member.archived": {
-		"text": "This member is archived.",
-		"description": "Notice on an archived member's page."
-	},
 	"household.member.back": {
 		"text": "Back to members",
 		"description": "Link from a member's page back to the members list."
@@ -190,6 +226,10 @@
 	"household.member.save": {
 		"text": "Save changes",
 		"description": "Button that saves a member's name and type."
+	},
+	"household.member.state_archived": {
+		"text": "Archived",
+		"description": "Badge on an archived member, in the members list and on the member's page."
 	},
 	"household.member.title": {
 		"text": "Member {name}",
@@ -275,6 +315,10 @@
 		"text": "No account",
 		"description": "Shown next to a member in the administrators' list when the member has no user account."
 	},
+	"household.members.show_archived": {
+		"text": "Show archived",
+		"description": "Button that shows or hides archived members for administrators."
+	},
 	"household.members.title": {
 		"text": "Members",
 		"description": "Heading and page title of the household members page."
@@ -339,6 +383,14 @@
 		"text": "App version {version}",
 		"description": "Line on the settings page showing the installed app version; {version} is a version number such as 0.1.0."
 	},
+	"shell.dev.catalog.intro": {
+		"text": "Examples of the app components, colors and type scale.",
+		"description": "Introduction on the development-only component catalog page."
+	},
+	"shell.dev.catalog.title": {
+		"text": "Component catalog",
+		"description": "Heading and page title of the development-only component catalog."
+	},
 	"shell.home.title": {
 		"text": "Home",
 		"description": "Heading of the home page shown after signing in."
@@ -358,6 +410,10 @@
 	"shell.nav.settings": {
 		"text": "Settings",
 		"description": "Navigation link to the administrators' settings page."
+	},
+	"shell.notifications": {
+		"text": "Notifications",
+		"description": "Accessible name of the live region that announces saved changes."
 	},
 	"shell.skip_to_content": {
 		"text": "Skip to content",
@@ -459,6 +515,14 @@
 		"text": "Set a new temporary password for {username}? Their sessions end, and they must choose a new password when they sign in.",
 		"description": "Confirmation before an administrator resets a password, above the new temporary password field; {username} is the account's username."
 	},
+	"users.dialog.deactivate.title": {
+		"text": "Deactivate {username}?",
+		"description": "Title of the dialog confirming account deactivation; {username} names the account."
+	},
+	"users.dialog.reset.title": {
+		"text": "Reset the password for {username}?",
+		"description": "Title of the dialog confirming a password reset; {username} names the account."
+	},
 	"users.display_name.control_characters": {
 		"text": "The name contains characters that are not allowed.",
 		"description": "Error under the display name field when it contains invisible control characters."
@@ -522,6 +586,10 @@
 	"users.profile.save": {
 		"text": "Save",
 		"description": "Button that saves the profile settings."
+	},
+	"users.profile.saved": {
+		"text": "Profile saved.",
+		"description": "Confirmation after profile settings are saved."
 	},
 	"users.profile.title": {
 		"text": "Profile",

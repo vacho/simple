@@ -15,6 +15,10 @@
 		"text": "La contraseña actual es incorrecta.",
 		"source": "055bc05cf859a64e"
 	},
+	"auth.password.hide": {
+		"text": "Ocultar contraseña",
+		"source": "a60a56c584b3b05b"
+	},
 	"auth.password.intro": {
 		"text": "Una persona administradora te dio una contraseña temporal. Elige la tuya para continuar; solo tú la conocerás.",
 		"source": "343f123384bfae45"
@@ -42,6 +46,10 @@
 	"auth.password.section_hint": {
 		"text": "Sigues con la sesión iniciada en este dispositivo; en tus otros dispositivos se cerrará la sesión.",
 		"source": "4acbc57c892f4f94"
+	},
+	"auth.password.show": {
+		"text": "Mostrar contraseña",
+		"source": "6aeaa6a53d09dcad"
 	},
 	"auth.password.title": {
 		"text": "Elige tu contraseña",
@@ -131,6 +139,10 @@
 		"text": "Menor",
 		"source": "5717c39b819da72b"
 	},
+	"household.changes.saved": {
+		"text": "Cambios guardados.",
+		"source": "12b3f1a3e924fd13"
+	},
 	"household.confirm.archive_member": {
 		"text": "¿Archivar a \"{name}\"? Solo las personas administradoras verán a este miembro.",
 		"source": "e6e384fe0152ec1a"
@@ -146,6 +158,34 @@
 	"household.confirm.delete_type": {
 		"text": "¿Eliminar el tipo de miembro \"{name}\"? Esto no se puede deshacer.",
 		"source": "f6f11bfb04ec1ff4"
+	},
+	"household.confirm.unlink": {
+		"text": "¿Desvincular la cuenta de {name}? La cuenta conserva su estado de acceso actual y puede vincularse a otro miembro.",
+		"source": "05c9aff6f8c6012a"
+	},
+	"household.danger_zone": {
+		"text": "Zona de peligro",
+		"source": "fd8b8dae44216610"
+	},
+	"household.dialog.archive_member.title": {
+		"text": "¿Archivar a {name}?",
+		"source": "1440693e59d365ce"
+	},
+	"household.dialog.archive_type.title": {
+		"text": "¿Archivar el tipo de miembro «{name}»?",
+		"source": "9b523da91ffc4fb6"
+	},
+	"household.dialog.delete_member.title": {
+		"text": "¿Eliminar a {name}?",
+		"source": "a4b982a9e0bc2413"
+	},
+	"household.dialog.delete_type.title": {
+		"text": "¿Eliminar el tipo de miembro «{name}»?",
+		"source": "761b0f5e2ff24ffe"
+	},
+	"household.dialog.unlink.title": {
+		"text": "¿Desvincular la cuenta de {name}?",
+		"source": "a579705698e860a8"
 	},
 	"household.field.base_class": {
 		"text": "Clase base",
@@ -171,10 +211,6 @@
 		"text": "La cuenta de este miembro está activa. Desactiva o desvincula la cuenta antes de archivar al miembro.",
 		"source": "4dbcefe2317c4fc6"
 	},
-	"household.member.archived": {
-		"text": "Este miembro está archivado.",
-		"source": "43c171467167c1a0"
-	},
 	"household.member.back": {
 		"text": "Volver a los miembros",
 		"source": "ae1cfb212ff58fd0"
@@ -190,6 +226,10 @@
 	"household.member.save": {
 		"text": "Guardar cambios",
 		"source": "dd0ae7a5cbcf2339"
+	},
+	"household.member.state_archived": {
+		"text": "Archivado",
+		"source": "bdb86505f8062d15"
 	},
 	"household.member.title": {
 		"text": "Miembro {name}",
@@ -275,6 +315,10 @@
 		"text": "Sin cuenta",
 		"source": "79eb5c21a49f5f26"
 	},
+	"household.members.show_archived": {
+		"text": "Mostrar archivados",
+		"source": "e9de9f2f7a8547e2"
+	},
 	"household.members.title": {
 		"text": "Miembros",
 		"source": "1044a4c056d0d685"
@@ -339,6 +383,14 @@
 		"text": "Versión de la aplicación {version}",
 		"source": "72d8d877ecb8d5a9"
 	},
+	"shell.dev.catalog.intro": {
+		"text": "Ejemplos de los componentes, colores y escala tipográfica de la aplicación.",
+		"source": "d8816dfb770d212c"
+	},
+	"shell.dev.catalog.title": {
+		"text": "Catálogo de componentes",
+		"source": "344287dcc1273996"
+	},
 	"shell.home.title": {
 		"text": "Inicio",
 		"source": "3a78695388b38b5c"
@@ -358,6 +410,10 @@
 	"shell.nav.settings": {
 		"text": "Configuración",
 		"source": "74a883a037bc227f"
+	},
+	"shell.notifications": {
+		"text": "Notificaciones",
+		"source": "788011833a5a0f22"
 	},
 	"shell.skip_to_content": {
 		"text": "Ir al contenido",
@@ -459,6 +515,14 @@
 		"text": "¿Poner una nueva contraseña temporal a {username}? Sus sesiones terminan y deberá elegir una nueva contraseña al iniciar sesión.",
 		"source": "fb26ac795dfc5c5d"
 	},
+	"users.dialog.deactivate.title": {
+		"text": "¿Desactivar a {username}?",
+		"source": "d58a79aa1177bd2a"
+	},
+	"users.dialog.reset.title": {
+		"text": "¿Restablecer la contraseña de {username}?",
+		"source": "4aff5c5e988b653f"
+	},
 	"users.display_name.control_characters": {
 		"text": "El nombre contiene caracteres no permitidos.",
 		"source": "b0ef3c0d05b4d1e3"
@@ -522,6 +586,10 @@
 	"users.profile.save": {
 		"text": "Guardar",
 		"source": "1509f561f2416598"
+	},
+	"users.profile.saved": {
+		"text": "Perfil guardado.",
+		"source": "c1632eafd4468cab"
 	},
 	"users.profile.title": {
 		"text": "Perfil",

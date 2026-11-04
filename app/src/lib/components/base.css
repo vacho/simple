@@ -2,6 +2,30 @@
    stylelint rejects physical ones (left, right, margin-left...). */
 @import './tokens.css';
 
+/* Only the Latin subsets are bundled; other scripts use the system fallback. */
+@font-face {
+	font-family: 'Inter Variable';
+	font-style: normal;
+	font-display: swap;
+	font-weight: 100 900;
+	src: url('@fontsource-variable/inter/files/inter-latin-ext-wght-normal.woff2') format('woff2');
+	unicode-range:
+		U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329,
+		U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F,
+		U+A720-A7FF;
+}
+
+@font-face {
+	font-family: 'Inter Variable';
+	font-style: normal;
+	font-display: swap;
+	font-weight: 100 900;
+	src: url('@fontsource-variable/inter/files/inter-latin-wght-normal.woff2') format('woff2');
+	unicode-range:
+		U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329,
+		U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 *,
 *::before,
 *::after {
@@ -10,7 +34,8 @@
 
 html {
 	font-family: var(--font-body);
-	line-height: 1.5;
+	line-height: var(--leading);
+	font-variant-numeric: tabular-nums;
 	-webkit-text-size-adjust: 100%;
 	text-size-adjust: 100%;
 }
@@ -21,11 +46,11 @@ body {
 	color: var(--color-text);
 	text-align: start;
 	/* Long words (some languages, pasted names) wrap instead of widening the page. */
-	overflow-wrap: break-word;
+	overflow-wrap: anywhere;
 }
 
 h1 {
-	font-size: 1.5rem;
+	font-size: var(--text-xl);
 	line-height: 1.25;
 	margin-block: 0 var(--space-3);
 }
@@ -45,30 +70,5 @@ a {
 }
 
 .error {
-	color: var(--color-error);
-}
-
-button {
-	font: inherit;
-	min-block-size: 2.75rem;
-	padding-block: var(--space-2);
-	padding-inline: var(--space-3);
-	border: 1px solid transparent;
-	border-radius: var(--radius);
-	background: var(--color-primary);
-	color: var(--color-on-primary);
-	cursor: pointer;
-}
-
-input,
-select {
-	font: inherit;
-	inline-size: 100%;
-	min-block-size: 2.75rem;
-	padding-block: var(--space-2);
-	padding-inline: var(--space-3);
-	border: 1px solid var(--color-border);
-	border-radius: var(--radius);
-	background: var(--color-bg);
-	color: var(--color-text);
+	color: var(--color-danger);
 }
