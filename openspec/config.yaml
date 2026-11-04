@@ -29,8 +29,12 @@ context: |
   only the OpenSpec command; never hand a Git step back to them as a
   separate command.
   Architecture and process decisions are recorded as ADRs in docs/adr/; the
-  project schema (openspec/schemas/simple/) adds an adr step between design
-  and tasks.
+  project schema (openspec/schemas/simple/) adds a ux step between specs and
+  design (ADR 0030) and an adr step between design and tasks.
+  How the interface looks is recorded in docs/design/ (ADR 0030): the style
+  guide, the screen map and the approved mockup of every screen. Read it
+  before designing or building a screen; the tokens and components
+  themselves live in the app (ADR 0028).
   Artifacts are written in English; the owner may converse in Spanish.
 
   Stack: SvelteKit 3 with Svelte 5 (runes only) and TypeScript 6, released
@@ -65,7 +69,14 @@ context: |
     after first use, unique names, one permission per catalog.
   - Privacy: household and financial data never leave the server. AI features
     run only when an administrator triggers them, send only what their spec
-    allows, and go through the single ai-assistant feature.
+    allows, and go through the single ai-assistant feature. The rule covers
+    the app's data (database, backups, captures of the real instance);
+    designs, mockups and anything given to an external design tool use
+    fictitious data only (ADR 0030).
+  - Same origin: the running app loads everything from its own origin
+    (app-shell spec). Mockups kept in the repository are reference, not part
+    of the app, and may load fonts or styles from elsewhere; their code is
+    never copied into the app.
 
 rules:
   proposal:
@@ -78,13 +89,20 @@ rules:
     - Catalog changes include scenarios for archiving a used item and for editing a field that becomes immutable after first use.
     - Creates of household data include a duplicate-submission scenario (same ID sent twice).
     - Scenarios must be testable; write concrete values in WHEN and THEN, not vague outcomes.
+  ux:
+    - Every new or changed screen has a wireframe, a mockup folder that follows the handoff contract in docs/design/README.md, and a row for each state in the states table.
+    - Mockups and examples use fictitious data only, never data or captures from the household's real instance.
+    - List every departure from the tokens, components and style-guide patterns in Conformance, with its resolution.
+    - Interface texts are written in English, ready for the message catalogs; never concatenate translated fragments.
   design:
     - List the exact versions of new dependencies, checked on npm on the day of writing.
+    - List the components each new or changed screen uses, and justify any new component (ADR 0028).
     - Update the policy matrix (actions x actors) for every new or changed action.
     - Record the alternatives considered and why they were rejected.
     - Name any use case that needs more than one transaction, and why.
   tasks:
     - Each task states how it is verified; each task group lands its own tests and docs.
+    - A task that builds or changes a screen names its mockup in ux.md and is verified by axe, the Spanish and en-XA screen checks, and a screenshot of the real screen (fictitious data, phone and desktop width) shown to the owner next to the mockup.
     - Strict scenario traceability (a test quoting each scenario name) is checked when closing the change, not during it.
     - 'End with a final verification task that runs the full checks from a clean clone, including the scenario check. Don''t call it closing: closing the change is the change-flow skill''s close action, after every task is done.'
 
@@ -94,10 +112,13 @@ operations:
       - Run npm run check and the relevant tests, in app/, before marking a task done.
       - If a spec turns out to be wrong or incomplete, stop and update it with the update workflow (skill openspec-update-change) before changing code.
       - Never weaken a lint rule, a permission or a test to make a task pass; report the conflict instead.
+      - Build each screen from the component library and tokens, following its mockup in ux.md; never copy code exported by a design tool. If the mockup can't be built with the system, stop and update ux.md (update workflow) instead of improvising.
+      - Before marking a screen task done, take a screenshot of the real screen with fictitious data at phone and desktop width, and show it to the owner next to its mockup.
   archive:
     guidance:
       - '/opsx:archive <id> is how the owner closes a change (ADR 0029): it runs the change-flow skill''s close action around the OpenSpec archive. Before any archive step, run .claude/skills/change-flow/close.sh status change/<id> and follow next=: when it is drop-release, resolve-sync or sync, run close steps 1 to 6 first (update the branch, checks and /opsx:verify, the owner''s approval, release, merge), then come back here in the main checkout on main; when it is archive, archive now; when it is archive-commit, tag, cleanup or done, the archive is already written, so skip to the close step it names. Never archive while the branch is unmerged or outside the main checkout on main.'
-      - 'After the archive outputs are written (specs synced, change folder moved, ADRs accepted, roadmap status set), finish the close: close steps 7 (archive-commit), 8 (tag), 9 (cleanup) and 10 (report). The approval given in close step 4 covers these commits.'
+      - 'Promote the approved mockups (ADR 0030): for each screen in the change''s ux.md, copy its mockup folder to docs/design/screens/<screen>/ (replacing the previous one), update docs/design/screens.md, and fold any pattern the change added into docs/design/style-guide.md. A change whose ux.md says "No UI." promotes nothing.'
+      - 'After the archive outputs are written (specs synced, change folder moved, ADRs accepted, roadmap status set, mockups promoted), finish the close: close steps 7 (archive-commit), 8 (tag), 9 (cleanup) and 10 (report). The approval given in close step 4 covers these commits.'
       - Summarize the archive outcome before finishing.
       - In docs/roadmap.md, set the change's Status to "Archived vX.Y.Z" (or "Archived" when there is no release), and move any decision it settled out of the roadmap's open questions.
       - 'Accept the change''s ADRs with the adr skill (action accept), every step of it: check each Proposed ADR listed in adr.md against the shipped code (if one must change, show the owner the edit and wait for their yes before accepting it); set each to Accepted; point its Change line to the archived change folder; mark the ADRs it supersedes as Superseded by NNNN; update the index in docs/adr/README.md. Reject (adr skill) any Proposed ADR of the change that adr.md no longer lists. close.sh status lists any step still missing.'

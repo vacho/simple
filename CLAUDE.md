@@ -8,8 +8,9 @@ A personal and family finance app for a single household, built with spec-driven
 - `openspec/config.yaml`: project context and the rules every change must follow. Read it before planning or implementing.
 - `openspec/specs/`: what the system does today. `openspec/changes/`: work in progress.
 - `docs/roadmap.md`: the planned changes, decisions already taken, catalog rules and rules for AI inside the app.
-- `docs/adr/`: architecture and process decision records, one file per decision. ADR 0008 describes how the code is organized. The project schema `openspec/schemas/simple/` adds an ADR step to every change.
-- `docs/` is a source of truth changed only through defined steps (the `adr` skill; the roadmap status through `change-flow` and the archive guidance). Other documents there are the owner's: read them when pointed to them, never edit them unasked.
+- `docs/adr/`: architecture and process decision records, one file per decision. ADR 0008 describes how the code is organized. The project schema `openspec/schemas/simple/` adds a UX step and an ADR step to every change.
+- `docs/design/`: how the interface looks (ADR 0030): style guide, screen map, the approved mockup of every screen, and the handoff contract for designs made in any tool (Claude, Google Stitch, Figma). Designs use fictitious data only.
+- `docs/` is a source of truth changed only through defined steps (the `adr` skill; the roadmap status through `change-flow` and the archive guidance; `docs/design/` through the archive, which promotes approved mockups). Other documents there are the owner's: read them when pointed to them, never edit them unasked.
 
 ## How to work
 

@@ -170,6 +170,58 @@ artifacts:
     requires:
       - proposal
 
+  - id: ux
+    generates: ux.md
+    description: User experience of the change - flows, wireframes, mockups and screen states
+    template: ux.md
+    instruction: |
+      Create the UX document that shows WHAT the user sees and does, before
+      the technical design (ADR 0030). Read docs/design/style-guide.md,
+      docs/design/screens.md and the screens it lists under docs/design/screens/
+      first, and the component library and tokens named in ADR 0028.
+
+      If the change adds or changes no screen, message or interaction, write
+      only "No UI." with one line saying why, and stop.
+
+      Otherwise, sections:
+      - **Screens**: every new or changed screen, with its route, and its
+        place in docs/design/screens.md (navigation, where it is reached from).
+      - **Flows**: each user flow with more than one step, as a Mermaid
+        flowchart (start, decisions, outcomes, errors).
+      - **Wireframes**: low-fidelity layout per screen (ASCII or Markdown),
+        agreed with the owner before any mockup. Layout and hierarchy only.
+      - **Mockups**: one folder per screen under mockups/<screen>/ in the
+        change, following the handoff contract: an export (.html preferred,
+        or a compressed .png/.webp) at phone and desktop width, a states/
+        folder, and source.md (tool, link, frame or version, date, approved
+        by). Any tool may make them (Claude, Google Stitch, Figma, by hand):
+        the snapshot in the change is the truth, not the tool. A mockup made
+        by hand is static HTML that links the app's tokens.
+      - **States**: a table per screen - empty, loading, error, no
+        permission, offline, long content (long names, en-XA), right-to-left
+        - each with what is shown and its mockup, or "same as" another.
+      - **Components**: the library components each screen uses; a new
+        component, with why the existing ones don't fit (it becomes an Ark UI
+        wrapper or a presentational component, ADR 0028).
+      - **Conformance**: every place a mockup departs from the system (a
+        color, size, spacing or component that doesn't exist, a pattern other
+        than the style guide's) and its resolution: the mockup is changed, or
+        the system change is named (and, if it changes the identity, flagged
+        for the adr step).
+      - **Texts**: the new interface texts in English, with plurals and
+        arguments marked, for the message catalogs.
+
+      Mockups use fictitious data only (a demo household), never data or
+      captures of the household's real instance, because they may be made
+      in or sent to external tools. Exported code is reference: never copy
+      it into the app; the tasks rebuild each screen from the library.
+
+      Behavior stays in the specs: point to a requirement or scenario
+      instead of restating it, and if a mockup implies behavior the specs
+      don't state, add it to the specs first.
+    requires:
+      - specs
+
   - id: design
     generates: design.md
     description: Technical design document with implementation details
@@ -211,8 +263,12 @@ artifacts:
       adr artifact records the superseding decision. When an Accepted ADR has
       a pending Proposed ADR that supersedes it (from another open change),
       follow the Accepted one and name the pending one in the decision.
+
+      Interface: build on ux.md. List, per screen, the components it uses
+      and justify any new one (ADR 0028); don't restate flows or mockups.
     requires:
       - proposal
+      - ux
 
   - id: adr
     generates: adr.md

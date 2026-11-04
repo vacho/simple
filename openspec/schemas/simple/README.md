@@ -1,10 +1,12 @@
 # Schema `simple`
 
-The OpenSpec workflow of this project: proposal → specs → design → **adr** → tasks.
+The OpenSpec workflow of this project: proposal → specs → **ux** → design → **adr** → tasks.
 
 It is a fork of OpenSpec's built-in `spec-driven` schema, taken from OpenSpec 1.14.3 with `openspec schema fork spec-driven simple`. Changes from the original:
 
 - `design`: reads the ADRs in force in `docs/adr/` before writing decisions, and names any ADR a decision departs from.
+- `ux` (new): flows, wireframes, mockups following the handoff contract in `docs/design/README.md`, screen states, components, conformance and texts ([ADR 0030](../../../docs/adr/0030-ux-artifact-and-design-docs.md)); "No UI." when the change has no interface. `design` requires it and lists the components per screen.
+- `templates/ux.md` (new).
 - `adr` (new): reviews the design against the ADRs in force, creates Proposed ADRs for its durable decisions and writes `adr.md` in the change. See `docs/adr/README.md` and the `adr` skill.
 - `tasks`: requires `adr` and honors the ADRs it lists; task documentation goes in `app/README.md`, never in `docs/` (the upstream example used `docs/export.md`).
 - `templates/adr.md` (new).
