@@ -79,7 +79,7 @@ Start the agents in parallel, one per change, each told:
 
 ### 7. Merge and archive, only with the owner's approval
 
-When the owner approves, one change at a time, in roadmap order, run the `change-flow` skill's `close` action for it, from the main checkout. Its branch steps (sync, checks, `/opsx:verify`, release) run in that change's worktree: `close.sh` does so by itself, and your own commands (`npm run check`, the tests, `/opsx:verify`) must `cd` into the worktree first. It drops any release left by an interrupted run, updates the branch with `main`, regenerates migrations when needed, re-runs the checks and verify, asks the owner, releases (`chore(<id>): release vX.Y.Z`), merges with `--no-ff`, archives on `main`, tags `vX.Y.Z`, and removes the worktree and branch. Then continue with the next change, which now updates on top of the one just archived.
+When the owner approves, one change at a time, in roadmap order, the owner runs `/opsx:archive <change-id>` from the main checkout, which runs the `change-flow` skill's `close` action for it (ADR 0029). Its branch steps (sync, checks, `/opsx:verify`, release) run in that change's worktree: `close.sh` does so by itself, and your own commands (`npm run check`, the tests, `/opsx:verify`) must `cd` into the worktree first. It drops any release left by an interrupted run, updates the branch with `main`, regenerates migrations when needed, re-runs the checks and verify, asks the owner, releases (`chore(<id>): release vX.Y.Z`), merges with `--no-ff`, archives on `main`, tags `vX.Y.Z`, and removes the worktree and branch. Then continue with the next change, which now updates on top of the one just archived.
 
 ## Known gaps (resolve on first use)
 

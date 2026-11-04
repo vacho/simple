@@ -47,8 +47,9 @@ artifacts:
       (.claude/skills/change-flow/SKILL.md) ran its steps 1 to 3: on main (or
       on change/<id> when updating a change whose branch exists), with a clean
       working tree. Run them now only if they weren't run before this
-      workflow started. Its step 4 (commits) comes after every artifact is
-      written.
+      workflow started. Its step 4 (roadmap status, then the commits by the
+      commit mode) is part of this same workflow: run it after the last
+      artifact is written, before reporting (ADR 0029).
 
       Keep it concise (1-2 pages). Focus on the "why" not the "how" -
       implementation details belong in design.md.
@@ -267,6 +268,11 @@ artifacts:
     instruction: |
       Create the task list that breaks down the implementation work.
 
+      This is the last artifact: once it is written (by propose or by an
+      update), finish the workflow with the change-flow skill's prepare step
+      4 (roadmap status for a new proposal, then the commits by the commit
+      mode) before reporting (ADR 0029).
+
       Before writing tasks, check design.md for Open Questions. If any of them
       would change what gets built, resolve them with the user first - do not
       bake an unstated assumption into the task list.
@@ -357,5 +363,5 @@ apply:
     - A spec corrected during apply is committed on its own, before the code
       that relies on it.
     - When every task is done, run verify and report. Merging and archiving
-      happen later, on main, through the skill's close action and only with
-      the owner's approval.
+      happen later, when the owner runs /opsx:archive, which runs the
+      skill's close action and asks for the owner's approval (ADR 0029).

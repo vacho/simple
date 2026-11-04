@@ -23,6 +23,11 @@ context: |
   before exploring or proposing a change. The Git flow (one branch per
   change, parallel worktrees, merge and archive order) and the commit
   convention are in the change-flow skill (.claude/skills/change-flow/).
+  Git follows the OpenSpec commands (ADR 0029): propose and update run
+  change-flow prepare around their artifacts, apply commits each task group,
+  and archive closes the change through change-flow close. The owner runs
+  only the OpenSpec command; never hand a Git step back to them as a
+  separate command.
   Architecture and process decisions are recorded as ADRs in docs/adr/; the
   project schema (openspec/schemas/simple/) adds an adr step between design
   and tasks.
@@ -91,7 +96,8 @@ operations:
       - Never weaken a lint rule, a permission or a test to make a task pass; report the conflict instead.
   archive:
     guidance:
-      - 'Archive as part of the change-flow skill''s close action: on main, after the change branch was merged.'
+      - '/opsx:archive <id> is how the owner closes a change (ADR 0029): it runs the change-flow skill''s close action around the OpenSpec archive. Before any archive step, run .claude/skills/change-flow/close.sh status change/<id> and follow next=: when it is drop-release, resolve-sync or sync, run close steps 1 to 6 first (update the branch, checks and /opsx:verify, the owner''s approval, release, merge), then come back here in the main checkout on main; when it is archive, archive now; when it is archive-commit, tag, cleanup or done, the archive is already written, so skip to the close step it names. Never archive while the branch is unmerged or outside the main checkout on main.'
+      - 'After the archive outputs are written (specs synced, change folder moved, ADRs accepted, roadmap status set), finish the close: close steps 7 (archive-commit), 8 (tag), 9 (cleanup) and 10 (report). The approval given in close step 4 covers these commits.'
       - Summarize the archive outcome before finishing.
       - In docs/roadmap.md, set the change's Status to "Archived vX.Y.Z" (or "Archived" when there is no release), and move any decision it settled out of the roadmap's open questions.
       - 'Accept the change''s ADRs with the adr skill (action accept), every step of it: check each Proposed ADR listed in adr.md against the shipped code (if one must change, show the owner the edit and wait for their yes before accepting it); set each to Accepted; point its Change line to the archived change folder; mark the ADRs it supersedes as Superseded by NNNN; update the index in docs/adr/README.md. Reject (adr skill) any Proposed ADR of the change that adr.md no longer lists. close.sh status lists any step still missing.'

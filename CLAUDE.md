@@ -30,7 +30,7 @@ Each action is a skill in `.claude/skills/` and `.agents/skills/`. When the user
 | **Verify** | `openspec-verify-change` | `/opsx:verify` | `/openspec-verify-change` | `/opsx-verify` | `$openspec-verify-change` |
 | **Archive** | `openspec-archive-change` | `/opsx:archive` | `/openspec-archive-change` | `/opsx-archive` | `$openspec-archive-change` |
 
-The skills use the `openspec` CLI (`status`, `instructions`, `validate`, `archive`) as needed; never run those commands as a substitute for following a skill. In particular, `openspec update` refreshes the generated tool files, not a change's plan, and archiving happens only inside `change-flow` `close`.
+The skills use the `openspec` CLI (`status`, `instructions`, `validate`, `archive`) as needed; never run those commands as a substitute for following a skill. In particular, `openspec update` refreshes the generated tool files, not a change's plan, and `/opsx:archive` closes a change by running `change-flow` `close` (ADR 0029): never archive on a branch or before the merge.
 
 Codex uses the OpenSpec skills in `.agents/skills/` alongside Antigravity. In the Codex desktop app, select the matching skill from the Skills sidebar. To refresh both integrations, run `openspec init --tools antigravity,codex`; the CLI keeps one shared skill tree and Antigravity's workflows.
 
@@ -38,7 +38,8 @@ Codex uses the OpenSpec skills in `.agents/skills/` alongside Antigravity. In th
 
 ## Git
 
-- Run `change-flow` `prepare` before proposing a change or updating a plan.
+- Proposing a change or updating a plan runs `change-flow` `prepare` around the workflow (steps 1 to 3 before, step 4 after).
+- Git follows the OpenSpec commands (ADR 0029): the owner runs `/opsx:propose`, `/opsx:apply`, `/opsx:archive`…, and each runs its Git steps through `change-flow`. `/change-flow` is invoked directly only for work outside a change and to recover a failed close.
 - Every branch, commit, merge and archive goes through the `change-flow` skill, which holds the rules (branch names, commit convention with the owner's task code, merge and archive order). Read it before any Git operation. Parallel changes also use `openspec-parallel-apply`.
 - Commits follow the commit mode (`git config simple.commitMode`, default `review`): propose the commits, wait for the owner's approval, then commit. With `auto`, commit directly.
 - Git hooks in `.githooks/` check every commit; enable them once per clone with `git config core.hooksPath .githooks`, and never bypass them with `--no-verify`.
