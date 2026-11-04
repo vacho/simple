@@ -1,6 +1,6 @@
 ---
 name: af-to-openspec
-description: Turn a functional analysis document (análisis funcional, AF, requirements specification, SRS), given as PDF, DOCX or Markdown, into a project ready to generate OpenSpec changes. Converts it to clean Markdown, classifies every section, then derives the project context and rules in openspec/config.yaml, ADRs for the architecture decisions, design docs, and a roadmap of changes that each cite the section they implement. Use when the owner hands over such a document to start a new project, onboard a legacy one, or bring in a new version of the document. It stops before the first change, which goes through /opsx:explore and /opsx:propose.
+description: Turn a functional analysis document (análisis funcional, AF, requirements specification, SRS), given as PDF, DOCX or Markdown, into a project ready to generate OpenSpec changes. Converts it to clean Markdown, classifies every section, then derives the project context and rules in openspec/config.yaml, ADRs for the architecture decisions, design docs, and a roadmap of changes that each cite the section they implement. Use when the owner hands over such a document to start a new project, onboard a legacy one, or bring in a new version of the document, either a new file or edits to the Markdown copy in the project. It stops before the first change, which goes through /opsx:explore and /opsx:propose.
 argument-hint: "[path to the AF: .pdf, .docx or .md]"
 ---
 
@@ -32,8 +32,10 @@ The AF never goes into `openspec/specs/`. Specs say what the system does today, 
 
 Called as `/af-to-openspec <file>` (Claude Code, Antigravity CLI), `$af-to-openspec <file>` (Codex) or by asking in words. Decide where to start from the argument and what the project already has:
 
-- **The argument is the AF file.** Without one, look for it in `docs/` (`af*`, `*funcional*`, `*.pdf`, `*.docx`); with none or several, ask which.
-- **New version:** if `docs/af.md` exists and the file's version differs from the one in its header, follow "A new version of the AF" below.
+- **The argument is the AF file.** Without one, look for it in `docs/` (`af*`, `*funcional*`, `*.pdf`, `*.docx`); with none or several, ask which. Without one and with `docs/af.md` present, the argument is `docs/af.md`.
+- **The integrated version** is the one the project builds from: the "AF v<v>" of the source line in `openspec/config.yaml` (step 4). Before step 4 there is none yet.
+- **New version from a file:** the argument is a PDF, DOCX or Markdown file other than `docs/af.md`, and `docs/af.md` already exists. Follow "A new version of the AF", case A.
+- **New version edited in place:** the argument is `docs/af.md`, and its text differs from the integrated version (uncommitted edits, or commits since). Follow "A new version of the AF", case B.
 - **Resume:** otherwise, find the first step whose output is missing and start there, after saying which steps are done. Outputs: `docs/af/source/` (1), `docs/af.md` with its header (2), the classification (3: `docs/af/inventory.md` if it was committed, else redo it from `docs/af.md`, since the later steps need it), the source line in `openspec/config.yaml` (4), ADRs citing "AF v<v>" (5), design docs citing it (6), roadmap rows citing it (7).
 - **Advance one step per approval.** After each step, show what it wrote and stop; the owner's "go ahead" starts the next step, a correction redoes the current one.
 
@@ -88,7 +90,11 @@ Add a header at the top:
 > Functional analysis of <project>, version <v>, <date>, by <author>, for <client>.
 > Source: `docs/af/source/<file>`, converted with <tool> on YYYY-MM-DD. This is the reference
 > of what was asked; what the system does lives in `openspec/specs/`. Cite it as "AF v<v> §<n>".
+> To change it, edit this file and raise the version above, or bring a new version of the source
+> file; then run `/af-to-openspec` to turn the differences into work.
 ```
+
+From then on the owner may keep the AF in either place: the original file (exported again as a new version) or `docs/af.md` itself (edited in place). Agents never edit it; only this skill writes it: in steps 1 and 2, when converting a new version, and the header of a version edited in place.
 
 Show the owner the size before and after, the list of headings, and every place where the content was ambiguous after conversion.
 
@@ -174,11 +180,36 @@ Stop here. Tell the owner:
 
 ## A new version of the AF
 
-When version v+1 arrives:
+The owner may change the AF at any time, also while changes are being built. A new version changes nothing by itself: the system and its specs stay as they are until changes built from the differences ship. Two ways in:
 
-1. Steps 1 and 2 on the new file, into `docs/af.md` (the previous version stays in Git history and in `docs/af/source/`).
-2. Compare section by section with the previous version and classify each difference as in step 3: new, changed, removed, renumbered.
-3. For each: a context or rule edit (step 4), a new or superseding ADR (step 5), a design doc edit (step 6), or a roadmap change: a new one, an edit to a planned one, or an `update-<capability>` change for behavior already built. Removed behavior that is built becomes a change that removes it.
-4. Update every citation to the new numbering if sections moved.
+**Case A, from a file** (`/af-to-openspec docs/af.v6.pdf`): the owner edited the original (Word, Google Docs…) and exported it again.
 
-Show the owner the difference table before writing anything.
+1. Steps 1 and 2 on the new file, into a scratch `af.md`, never over `docs/af.md` yet.
+2. If `docs/af.md` also has edits made in place since the integrated version (case B edits), the two have diverged: show the owner the in-place edits the new file lacks, and ask whether the file replaces them or they are carried over. Never drop them silently.
+3. The base to compare with is `docs/af.md` as integrated.
+
+**Case B, edited in place** (`/af-to-openspec` or `/af-to-openspec docs/af.md`): the owner edited `docs/af.md` itself.
+
+1. The base to compare with is `docs/af.md` at the integrated version: the last commit whose header carries that version (`git log --format=%h -- docs/af.md`, then `git show <commit>:docs/af.md`, reading each header until it matches). Uncommitted edits count as part of the new version.
+2. If the header still carries the integrated version, ask the owner for the new version number (the next one by default) and write it in the header, with today's date; citations need a version that names the new text. Update the header's Source line to say the file is edited in place since v<v>.
+3. Show what was edited with `git diff <base> -- docs/af.md` (plus uncommitted edits), read section by section.
+
+Then, in both cases:
+
+1. Compare section by section with the base and list each difference as new, changed, removed or renumbered, with its section and the kind it has under step 3.
+2. Send each difference to where it belongs, by the state of what it touches:
+
+   | The difference touches | Goes to |
+   |---|---|
+   | context or a rule | an edit to `openspec/config.yaml` (step 4) |
+   | a decision | a new ADR, superseding the old one if there is one (step 5) |
+   | identity or screen structure | an edit to the design docs (step 6) |
+   | behavior in a roadmap change not started | an edit to that roadmap row |
+   | behavior in a change in progress (`openspec/changes/<id>/`) | `/opsx:update <id>`, which the owner runs; this skill only names it |
+   | behavior already built (in `openspec/specs/`) | a new roadmap change, `update-<capability>` |
+   | built behavior the new version removes | a new roadmap change that removes it |
+   | something new | a new roadmap row |
+
+3. Show the owner that table before writing anything; then apply it one destination at a time, with approval, as in steps 4 to 7.
+4. If sections moved, update the citations in `openspec/config.yaml`, the design docs and the roadmap to the new numbering; Accepted ADRs keep theirs, since they cite the version they were decided on. Update the source line in `openspec/config.yaml` to the new version: from then on it is the integrated version.
+5. In case A, write the new text into `docs/af.md` and keep the new source in `docs/af/source/`; in case B the file is already in place. Commit the new version of the AF on its own, before the edits that derive from it.
