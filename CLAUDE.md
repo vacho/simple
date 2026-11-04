@@ -35,7 +35,7 @@ The skills use the `openspec` CLI (`status`, `instructions`, `validate`, `archiv
 
 Codex uses the OpenSpec skills in `.agents/skills/` alongside Antigravity. In the Codex desktop app, select the matching skill from the Skills sidebar. To refresh both integrations, run `openspec init --tools antigravity,codex`; the CLI keeps one shared skill tree and Antigravity's workflows.
 
-*To add support for another AI assistant: run `openspec init --tools <tool>`, and symlink or share the project skills (`change-flow`, `adr`).*
+*To add support for another AI assistant: run `openspec init --tools <tool>`, and symlink or share the project skills (`change-flow`, `adr`, `af-to-openspec`).*
 
 ## Git
 
