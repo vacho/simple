@@ -168,7 +168,7 @@ archive_written_state() {
   local files foreign
   files=$(dirty_files "$main_co" | cut -c4-)
   [ -n "$files" ] || { echo none; return; }
-  foreign=$(printf '%s\n' "$files" | grep -Ev '^(openspec/|docs/adr/|docs/roadmap\.md$|"openspec/|"docs/adr/)')
+  foreign=$(printf '%s\n' "$files" | grep -Ev '^(openspec/|docs/adr/|docs/design/|docs/roadmap\.md$|"openspec/|"docs/adr/|"docs/design/)')
   [ -z "$foreign" ] || { echo foreign; return; }
   [ -z "$(archive_missing)" ] && echo complete || echo partial
 }
@@ -277,7 +277,7 @@ print_status() {
 # a pathspec that matches nothing makes the whole command fail.
 archive_paths() {
   local p out=
-  for p in openspec/ docs/adr/ docs/roadmap.md; do
+  for p in openspec/ docs/adr/ docs/design/ docs/roadmap.md; do
     if git -C "$main_co" cat-file -e "HEAD:${p%/}" 2>/dev/null \
        || [ -n "$(git -C "$main_co" ls-files --cached --others --exclude-standard -- "$p")" ]; then
       out="$out $p"

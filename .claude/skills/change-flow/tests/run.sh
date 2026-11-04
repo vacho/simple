@@ -233,6 +233,15 @@ git switch -q -c change/x; echo a > a.txt; git add a.txt; git commit -q -m "feat
 "$close" merge change/x >/dev/null; fake_archive
 expect "the Proposed ADR is still missing"     'missing: adr-0001'          "$("$close" status change/x)"
 
+echo "20. mockups promoted to docs/design/ are archive output (ADR 0030)"
+new_repo s20
+git switch -q -c change/x; echo a > a.txt; git add a.txt; git commit -q -m "feat(x): add a - 003"
+"$close" merge change/x >/dev/null
+fake_archive; mkdir -p "docs/design/screens/sign-in"; echo "<p>mockup</p>" > "docs/design/screens/sign-in/export.html"
+expect "the archive is complete, not foreign"   '^archived=complete'         "$("$close" status change/x)"
+"$close" archive-commit change/x 003 >/dev/null
+expect "the promoted mockup is committed"       'docs/design/screens/sign-in/export.html' "$(git show --stat --format= HEAD)"
+
 rm -rf "$base" "$base".*
 echo; echo "passed $pass, failed $fail"
 [ "$fail" -eq 0 ]
