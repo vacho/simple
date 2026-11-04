@@ -1,6 +1,7 @@
 ---
 name: af-to-openspec
 description: Turn a functional analysis document (análisis funcional, AF, requirements specification, SRS), given as PDF, DOCX or Markdown, into a project ready to generate OpenSpec changes. Converts it to clean Markdown, classifies every section, then derives the project context and rules in openspec/config.yaml, ADRs for the architecture decisions, design docs, and a roadmap of changes that each cite the section they implement. Use when the owner hands over such a document to start a new project, onboard a legacy one, or bring in a new version of the document. It stops before the first change, which goes through /opsx:explore and /opsx:propose.
+argument-hint: "[path to the AF: .pdf, .docx or .md]"
 ---
 
 # Functional analysis to OpenSpec
@@ -26,6 +27,15 @@ The AF never goes into `openspec/specs/`. Specs say what the system does today, 
 - **Ask, don't invent.** What the AF leaves open (a missing decision, a contradiction, an ambiguous rule) is an open question for the owner, listed in the step that found it. Never fill it with a plausible default.
 - **Respect what exists.** In a project that already has `openspec/`, ADRs, design docs or a roadmap, add to them in their format and numbering; never overwrite. Read the project's `CLAUDE.md`/`AGENTS.md` and `openspec/config.yaml` first.
 - Artifacts are written in the project's language for artifacts (English unless the project says otherwise); the AF stays in its own language. Answer the owner in theirs.
+
+## Invocation
+
+Called as `/af-to-openspec <file>` (Claude Code, Antigravity CLI), `$af-to-openspec <file>` (Codex) or by asking in words. Decide where to start from the argument and what the project already has:
+
+- **The argument is the AF file.** Without one, look for it in `docs/` (`af*`, `*funcional*`, `*.pdf`, `*.docx`); with none or several, ask which.
+- **New version:** if `docs/af.md` exists and the file's version differs from the one in its header, follow "A new version of the AF" below.
+- **Resume:** otherwise, find the first step whose output is missing and start there, after saying which steps are done. Outputs: `docs/af/source/` (1), `docs/af.md` with its header (2), the classification (3: `docs/af/inventory.md` if it was committed, else redo it from `docs/af.md`, since the later steps need it), the source line in `openspec/config.yaml` (4), ADRs citing "AF v<v>" (5), design docs citing it (6), roadmap rows citing it (7).
+- **Advance one step per approval.** After each step, show what it wrote and stop; the owner's "go ahead" starts the next step, a correction redoes the current one.
 
 ## Inputs
 
