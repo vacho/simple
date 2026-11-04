@@ -47,10 +47,15 @@ So that a tool designs with what the app can build, give it the system first:
 
 - **Any tool:** the summary in [`style-guide.md`](style-guide.md) (tokens by role, components, patterns), pasted as instructions.
 - **Claude:** sync the component library to a design-system project with `/design-sync`; then make designs from Claude's Design artifacts with that system.
-- **Google Stitch:** a `DESIGN.md` describing the system, imported in Stitch.
-- **Figma:** the tokens as variables, imported from a tokens file (W3C design tokens format).
+- **Google Stitch:** `app/design-export/DESIGN.md`, imported in Stitch.
+- **Figma:** `app/design-export/tokens.json` (W3C design tokens format, light and dark modes), imported as variables (for example with Tokens Studio).
 
-The `DESIGN.md` and the tokens file are generated from `tokens.css` once the export script exists; until then, use the style guide summary.
+Both files are generated from `tokens.css` by `npm run design:export` in `app/`; they aren't committed, so regenerate them before handing the system to a tool.
+
+## Demo data and captures
+
+- `npm run demo -- <path>` in `app/` creates a database with the demo household (the Rivera family, all made up). Design, capture and demo with it; never with the real database.
+- `npm run design:capture` in `app/` captures every shipped screen with that household at 390 px and 1280 px into `screens/<screen>/`, with its `source.md`. Run it on `main` after a change that alters screens, and commit the result.
 
 ## Optional connectors
 
