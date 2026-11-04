@@ -1,8 +1,8 @@
 # 0028. One component library on Ark UI, and one visual identity as tokens
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-10-30
-- Change: refine-app-ui (`openspec/changes/refine-app-ui/design.md`, decisions D1, D3, D4 and D5)
+- Change: refine-app-ui (`openspec/changes/archive/2026-11-04-refine-app-ui/design.md`, decisions D1, D3, D4 and D5)
 
 ## Context
 

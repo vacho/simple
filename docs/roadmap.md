@@ -24,7 +24,7 @@ Git flow (one branch per change, parallel worktrees, merge and archive order) an
 |---|---|---|---|---|
 | 1 | `bootstrap-app-foundation` | App skeleton, setup, sign-in, sessions, deny-by-default policy, profile (language, time zone), runtime translations (English base, Spanish preinstalled), PWA shell, backups | `user-auth`, `access-control`, `app-shell`, `localization`, `data-backup` | Archived v0.1.0 |
 | 2 | `add-household-members` | Household, member types catalog, members, admin creating users and linking them to members | `household`, modifies `user-auth` | Archived v0.2.0 |
-| 3 | `refine-app-ui` | Visual identity ("Modern fintech" tokens, Inter), the component library on Ark UI, confirmation dialogs, badges and saved-change messages, every existing screen rebuilt; the UI standard every later change uses (ADR 0028) | modifies `app-shell` | Proposed |
+| 3 | `refine-app-ui` | Visual identity ("Modern fintech" tokens, Inter), the component library on Ark UI, confirmation dialogs, badges and saved-change messages, every existing screen rebuilt; the UI standard every later change uses (ADR 0028) | modifies `app-shell` | Archived v0.3.0 |
 | 4 | `add-access-control` | Roles as a catalog, per-user grants, visibility rule B (visible if the account or the attributed member is visible) | modifies `access-control` | Planned |
 | 5 | `add-language-catalog` | The in-app AI assistant (first consumer: translation); admin installs languages, generates their translations with an AI model, reviews, edits and activates them; export and import | `ai-assistant`, modifies `localization` | Planned |
 | 6 | `add-categories` | Category trees for income and expenses, tags, essential vs discretionary, seeded defaults | `categories` | Planned |
