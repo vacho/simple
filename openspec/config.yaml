@@ -1,4 +1,4 @@
-schema: simple
+schema: develoop
 
 # Project context: constraints for every OpenSpec artifact and workflow in this
 # repository. Keep it to what an agent cannot infer by reading the code.
@@ -29,7 +29,7 @@ context: |
   only the OpenSpec command; never hand a Git step back to them as a
   separate command.
   Architecture and process decisions are recorded as ADRs in docs/adr/; the
-  project schema (openspec/schemas/simple/) adds a ux step between specs and
+  project schema (openspec/schemas/develoop/) adds a ux step between specs and
   design (ADR 0030) and an adr step between design and tasks.
   How the interface looks is recorded in docs/design/ (ADR 0030): the style
   guide, the screen map and the approved mockup of every screen. Read it

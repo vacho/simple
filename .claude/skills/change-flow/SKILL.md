@@ -16,7 +16,7 @@ How OpenSpec changes move through Git in this project. This skill is the source 
 | `/opsx:archive <id>` | `close`, with the OpenSpec archive as its step 7 |
 | `/change-flow ...` | only for work outside a change (`branch`, then `close` of that branch), a commit on request, or recovering a failed close |
 
-The hooks live where `openspec update` doesn't overwrite them: the schema's instructions (`openspec/schemas/simple/schema.yaml`), and the `context` and `operations` guidance of `openspec/config.yaml`.
+The hooks live where `openspec update` doesn't overwrite them: the schema's instructions (`openspec/schemas/develoop/schema.yaml`), and the `context` and `operations` guidance of `openspec/config.yaml`.
 
 The exact Git mechanics of closing and of detours are scripts next to this file, tested by `tests/run.sh`: `close.sh` (state, sync, release, merge, archive commit, tag, clean up, undo) and `detour.sh` (stash by object id). Use them instead of typing those Git commands; this text says when to run them and when to ask the owner. If a script refuses, report its message; never work around it with manual Git commands.
 

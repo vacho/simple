@@ -1,6 +1,6 @@
 ---
 name: adr
-description: Manage the project's architecture and process decision records in docs/adr/. List the ADRs in force, create a new ADR, supersede one, accept the Proposed ADRs of an archived change, or reject Proposed ADRs that won't ship. Used by the adr artifact of the OpenSpec schema "simple", by /opsx:archive, by change-flow (detours, abandoning a change), and directly when the owner asks to record or reverse a decision.
+description: Manage the project's architecture and process decision records in docs/adr/. List the ADRs in force, create a new ADR, supersede one, accept the Proposed ADRs of an archived change, or reject Proposed ADRs that won't ship. Used by the adr artifact of the OpenSpec schema "develoop", by /opsx:archive, by change-flow (detours, abandoning a change), and directly when the owner asks to record or reverse a decision.
 ---
 
 # ADR

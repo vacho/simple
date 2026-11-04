@@ -1,8 +1,8 @@
-# Schema `simple`
+# Schema `develoop`
 
 The OpenSpec workflow of this project: proposal → specs → **ux** → design → **adr** → tasks.
 
-It is a fork of OpenSpec's built-in `spec-driven` schema, taken from OpenSpec 1.14.3 with `openspec schema fork spec-driven simple`. Changes from the original:
+It is a fork of OpenSpec's built-in `spec-driven` schema, taken from OpenSpec 1.14.3 with `openspec schema fork spec-driven simple`, and renamed `develoop` since. Changes from the original:
 
 - `design`: reads the ADRs in force in `docs/adr/` before writing decisions, and names any ADR a decision departs from.
 - `ux` (new): flows, wireframes, mockups following the handoff contract in `docs/design/README.md`, screen states, components, conformance and texts ([ADR 0030](../../../docs/adr/0030-ux-artifact-and-design-docs.md)); "No UI." when the change has no interface. `design` requires it and lists the components per screen.
@@ -22,4 +22,4 @@ The fork does not receive improvements to `spec-driven`. To bring them in when u
 2. Upgrade OpenSpec, then `diff -r` the old copy against the new built-in folder. That diff is what upstream changed.
 3. Apply those changes to this schema, keeping the changes listed above.
 4. Update the OpenSpec version named at the top of this file.
-5. Run `openspec schema validate simple` and `openspec validate --all --strict`.
+5. Run `openspec schema validate develoop` and `openspec validate --all --strict`.

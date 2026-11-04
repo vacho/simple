@@ -1,4 +1,4 @@
-name: simple
+name: develoop
 version: 1
 description: Project workflow - proposal → specs → design → adr → tasks (forked from spec-driven, see README.md)
 artifacts:
